@@ -1,0 +1,96 @@
+#!/bin/zsh
+#
+# flags.sh -- the compiler configuration for the native Apple Silicon build.
+#
+# Every flag here was derived empirically by compiling the tree and eliminating
+# the largest error class at each step. The comments record WHY each one is
+# needed, because none of them are obvious and removing any one of them
+# re-breaks 180+ translation units.
+
+RA_ROOT="${RA_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
+
+RA_TARGET=(
+  # arm64 explicitly. This build must never depend on Rosetta, which in any
+  # case only ever translated x86_64 -- never the 32-bit x86 this code was
+  # originally written for.
+  -target arm64-apple-macos13
+)
+
+RA_STD=(
+  -std=c++11
+
+  # CODE/movie.h declares the MPEG player's entry points with
+  # __declspec(dllimport). clang accepts __declspec under this flag alone,
+  # which is preferable to -fms-extensions: it enables exactly the one
+  # construct needed, without the rest of the MSVC dialect.
+  -fdeclspec
+
+  # Watcom used one-phase template lookup, so the engine refers to inherited
+  # members of dependent base classes without `this->` (see CODE/ftimer.h).
+  # This restores that behaviour instead of editing every template.
+  -fdelayed-template-parsing
+)
+
+RA_DEFINES=(
+  # Suppresses the 1994-era `enum {false,true}; typedef int bool;` polyfill in
+  # 22 headers, so the real C++ bool is used consistently.
+  -DTRUE_FALSE_DEFINED
+
+  # Selects the Win32 code paths over the DOS ones. The Win32 paths are much
+  # closer to what a modern SDL2 backend needs.
+  -DWIN32
+)
+
+RA_INCLUDES=(
+  # Force-included into every TU: the non-standard Watcom CRT entry points.
+  -include "${RA_ROOT}/port/compat/wwcompat.h"
+
+  # CRITICAL: -iquote vs -I is load-bearing, not stylistic.
+  #
+  # CODE/ and WIN32LIB/INCLUDE/ both contain files named AUDIO.H, DEFINES.H,
+  # EXTERNS.H, FILEPCX.H, FUNCTION.H, KEYBOARD.H, MOUSE.H, RAWFILE.H and
+  # WWFILE.H -- nine collisions of entirely different content. The original
+  # build told them apart by bracket style: <mouse.h> meant the library's
+  # WWMouseClass, "mouse.h" meant the game's MouseClass.
+  #
+  # -iquote applies to "..." only, -I to <...>, which reproduces that exactly.
+  # Collapsing these into plain -I silently compiles the wrong headers.
+  -iquote "${RA_ROOT}/CODE"
+
+  -I"${RA_ROOT}/port/compat"
+  -I"${RA_ROOT}/WIN32LIB/INCLUDE"
+  -I"${RA_ROOT}/WINVQ/INCLUDE"
+)
+
+RA_CXXFLAGS=($RA_TARGET $RA_STD $RA_DEFINES $RA_INCLUDES)
+
+# ---------------------------------------------------------------------------
+# Backend (Objective-C++) flags.
+#
+# DELIBERATELY NOT $RA_CXXFLAGS. The backend must be built WITHOUT -DWIN32 and
+# WITHOUT -include wwcompat.h, because the Win32 shim and the Cocoa/Metal
+# headers cannot coexist in one translation unit:
+#
+#   * port/compat/windows.h has `typedef int BOOL`; <objc/objc.h> has
+#     `typedef bool BOOL`. A hard typedef redefinition error, unfixable by
+#     include ordering.
+#   * windows.h defines min/max as function-like macros, and Metal's own
+#     MTLAccelerationStructureTypes.h calls `min(a, b, c)` with three args.
+#
+# The two sides meet only at port/backend/ra_platform.h, which is plain C.
+# Keep it that way; see the comment at the top of that file.
+# ---------------------------------------------------------------------------
+RA_OBJCXXFLAGS=(
+  $RA_TARGET
+  -fobjc-arc
+  -fmodules
+  -I"${RA_ROOT}/port/backend"
+)
+
+# The whole native stack ships with macOS -- there is nothing to install, and
+# nothing to bundle into the .app beyond the binary itself.
+RA_FRAMEWORKS=(
+  -framework Cocoa
+  -framework Metal
+  -framework QuartzCore
+)

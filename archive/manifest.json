@@ -1,0 +1,162 @@
+[
+ {
+  "path": "WWFLAT32",
+  "files": 400,
+  "reason": "DOS-era twin of WIN32LIB. Its one live-looking reference, CODE/KEY.H:40, is inside #ifndef WIN32 and therefore dead in this build."
+ },
+ {
+  "path": "VQ",
+  "files": 183,
+  "reason": "DOS twin of WINVQ. Not on the include path (-I uses WINVQ/INCLUDE)."
+ },
+ {
+  "path": "IPX",
+  "files": 52,
+  "reason": "16-bit DOS IPX. Multiplayer, out of scope."
+ },
+ {
+  "path": "LAUNCHER",
+  "files": 47,
+  "reason": "Windows launcher application, not the game."
+ },
+ {
+  "path": "LAUNCH",
+  "files": 2,
+  "reason": "Windows launcher support, not the game."
+ },
+ {
+  "path": "TOOLS",
+  "files": 25,
+  "reason": "Win32 .EXE asset tools (MIXFILE, FONTMAKE, ...). Useful as reference for file formats; not buildable or needed here."
+ },
+ {
+  "path": "WIN32LIB/SRCDEBUG",
+  "files": 169,
+  "reason": "Debug-build duplicates of WIN32LIB sources."
+ },
+ {
+  "path": "WIN32LIB/EXAMPLE",
+  "files": 11,
+  "reason": "Library usage examples."
+ },
+ {
+  "path": "WIN32LIB/AUDIO/OLD",
+  "files": 25,
+  "reason": "Superseded audio sources."
+ },
+ {
+  "path": "WIN32LIB/KEYBOARD/OLD",
+  "files": 21,
+  "reason": "Superseded keyboard sources."
+ },
+ {
+  "path": "WIN32LIB/KEYBOARD/OLDTEST",
+  "files": 7,
+  "reason": "Superseded keyboard tests."
+ },
+ {
+  "path": "WIN32LIB/KEYBOARD/TEST",
+  "files": 9,
+  "reason": "Library tests; its ../mouse.h include only resolves inside this dir."
+ },
+ {
+  "path": "WIN32LIB/DRAWBUFF/TEST",
+  "files": 9,
+  "reason": "Library tests; its ../gbuffer.h include only resolves inside this dir."
+ },
+ {
+  "path": "WIN32LIB/MEM/OLDMEM",
+  "files": 10,
+  "reason": "Superseded memory sources."
+ },
+ {
+  "path": "WIN32LIB/MEM/MSVC",
+  "files": 11,
+  "reason": "MSVC-specific duplicate of MEM_COPY.ASM."
+ },
+ {
+  "path": "WIN32LIB/WW_WIN/OLD",
+  "files": 6,
+  "reason": "Superseded windowing sources."
+ },
+ {
+  "path": "WINVQ/VQA32/OLD",
+  "files": 30,
+  "reason": "Superseded VQA decoder sources."
+ },
+ {
+  "path": "CODE/KEYFBUFF.ASM",
+  "files": 1,
+  "reason": "DOS variant; CODE/MAKEFILE builds 2KEYFBUF.OBJ under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/TXTPRNT.ASM",
+  "files": 1,
+  "reason": "DOS variant; 2TXTPRNT.OBJ is the Win32 one."
+ },
+ {
+  "path": "CODE/SUPPORT.ASM",
+  "files": 1,
+  "reason": "DOS variant; 2SUPPORT.ASM is the Win32 one."
+ },
+ {
+  "path": "CODE/IPXREAL.ASM",
+  "files": 1,
+  "reason": "DOS IPX real mode. Multiplayer, out of scope."
+ },
+ {
+  "path": "CODE/IPXPROT.ASM",
+  "files": 1,
+  "reason": "DOS IPX protected mode. Multiplayer, out of scope."
+ },
+ {
+  "path": "CODE/WINASM.ASM",
+  "files": 1,
+  "reason": "Greenleaf serial + HMI modem + IPX + 8259 PIC + ModeX blit. Its one game-relevant export, Asm_Create_Palette_Interpolation_Table, is ALREADY SUPERSEDED: CODE/INTERPAL.CPP:147 has a full C implementation and the asm call at :150 is commented out."
+ },
+ {
+  "path": "WINVQ/VQM32/XMODE.ASM",
+  "files": 1,
+  "reason": "VGA Mode X. No such path under Metal."
+ },
+ {
+  "path": "WINVQ/VQM32/VESABUF.ASM",
+  "files": 1,
+  "reason": "VESA banked framebuffer."
+ },
+ {
+  "path": "WINVQ/VQM32/MCGABUF.ASM",
+  "files": 1,
+  "reason": "MCGA framebuffer."
+ },
+ {
+  "path": "WINVQ/VQM32/PORTIO.ASM",
+  "files": 1,
+  "reason": "Direct x86 port I/O."
+ },
+ {
+  "path": "WINVQ/VQM32/MONO.ASM",
+  "files": 1,
+  "reason": "Monochrome MDA debug monitor output."
+ },
+ {
+  "path": "WINVQ/VQA32/UNVQXMDE.ASM",
+  "files": 1,
+  "reason": "VQ decode straight to Mode X."
+ },
+ {
+  "path": "WINVQ/VQA32/UNVQVESA.ASM",
+  "files": 1,
+  "reason": "VQ decode straight to VESA."
+ },
+ {
+  "path": "WIN32LIB/PROFILE/APROFILE.ASM",
+  "files": 1,
+  "reason": "x86 cycle-counter profiler; Instruments replaces it."
+ },
+ {
+  "path": "WIN32LIB/MEM/VMPAGEIN.ASM",
+  "files": 1,
+  "reason": "DOS virtual-memory paging helper."
+ }
+]

@@ -1,0 +1,1776 @@
+{
+ "code": [
+  {
+   "file": "CODE/2KEYFRAM.CPP",
+   "tag": "TWEAK",
+   "note": "cast from pointer to smaller type 'unsigned int' loses information"
+  },
+  {
+   "file": "CODE/AADATA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/ABSTRACT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/ADATA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/ADPCM.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/AIRCRAFT.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'face'"
+  },
+  {
+   "file": "CODE/ALLOC.CPP",
+   "tag": "TWEAK",
+   "note": "variable has incomplete type 'union REGS'"
+  },
+  {
+   "file": "CODE/ANIM.CPP",
+   "tag": "TWEAK",
+   "note": "cannot assign to non-static data member within const member function 'Render'"
+  },
+  {
+   "file": "CODE/AUDIO.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/B64PIPE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/B64STRAW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BAR.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BASE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BASE64.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BBDATA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BDATA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BENCH.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BFIOFILE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BIGCHECK.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BLOWFISH.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BLOWPIPE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BLWSTRAW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BMP8.CPP",
+   "tag": "TWEAK",
+   "note": "unknown type name 'HWND'"
+  },
+  {
+   "file": "CODE/BUFF.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/BUILDING.CPP",
+   "tag": "TWEAK",
+   "note": "out-of-line definition of 'Take_Damage' does not match any declaration in 'BuildingClass'"
+  },
+  {
+   "file": "CODE/BULLET.CPP",
+   "tag": "TWEAK",
+   "note": "cannot decrement expression of type bool"
+  },
+  {
+   "file": "CODE/CARGO.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CARRY.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CCDDE.CPP",
+   "tag": "TWEAK",
+   "note": "unknown type name 'VOID'"
+  },
+  {
+   "file": "CODE/CCFILE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CCINI.CPP",
+   "tag": "TWEAK",
+   "note": "no matching member function for call to 'Load'"
+  },
+  {
+   "file": "CODE/CCMPATH.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CCPTR.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CCTEN.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CDATA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CDFILE.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier '_HARDERR_FAIL'"
+  },
+  {
+   "file": "CODE/CELL.CPP",
+   "tag": "TWEAK",
+   "note": "non-object type 'char *(const char *, int)' is not assignable"
+  },
+  {
+   "file": "CODE/CHECKBOX.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CHEKLIST.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CLASS.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/COLRLIST.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/COMBAT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/COMBUF.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/COMINIT.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'OleInitialize'"
+  },
+  {
+   "file": "CODE/COMQUEUE.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'CommQueueClass'; did you mean 'CommBufferClass'?"
+  },
+  {
+   "file": "CODE/CONFDLG.CPP",
+   "tag": "TWEAK",
+   "note": "no matching function for call to 'Fancy_Text_Print'"
+  },
+  {
+   "file": "CODE/CONNECT.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/CONQUER.CPP",
+   "tag": "TWEAK",
+   "note": "member access into incomplete type 'PaletteClass'"
+  },
+  {
+   "file": "CODE/CONST.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CONTROL.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/COORD.CPP",
+   "tag": "TWEAK",
+   "note": "constant expression evaluates to 253 which cannot be narrowed to type 'char' [-Wc++11-narrowing]"
+  },
+  {
+   "file": "CODE/CRATE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CRC.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CRCPIPE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CRCSTRAW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CREDITS.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CREW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/CSTRAW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/DDE.CPP",
+   "tag": "TWEAK",
+   "note": "'static' can only be specified inside the class definition"
+  },
+  {
+   "file": "CODE/DEBUG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/DESCDLG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/DIAL8.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/DIALOG.CPP",
+   "tag": "TWEAK",
+   "note": "no matching function for call to 'Simple_Text_Print'"
+  },
+  {
+   "file": "CODE/DIBFILE.CPP",
+   "tag": "TWEAK",
+   "note": "unknown type name 'VOID'"
+  },
+  {
+   "file": "CODE/DIBUTIL.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'BI_RGB'"
+  },
+  {
+   "file": "CODE/DISPLAY.CPP",
+   "tag": "TWEAK",
+   "note": "no viable overloaded '='"
+  },
+  {
+   "file": "CODE/DOOR.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/DPMI.CPP",
+   "tag": "TWEAK",
+   "note": "expected 'volatile', 'inline', 'goto', or '('"
+  },
+  {
+   "file": "CODE/DRIVE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/DROP.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/DTABLE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/DYNAVEC.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'Length'"
+  },
+  {
+   "file": "CODE/EDIT.CPP",
+   "tag": "TWEAK",
+   "note": "no matching function for call to 'Fancy_Text_Print'"
+  },
+  {
+   "file": "CODE/EGOS.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/ENDING.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/EVENT.CPP",
+   "tag": "TWEAK",
+   "note": "reference to non-static member function must be called; did you mean to call it with no arguments?"
+  },
+  {
+   "file": "CODE/EXPAND.CPP",
+   "tag": "TWEAK",
+   "note": "member access into incomplete type 'PaletteClass'"
+  },
+  {
+   "file": "CODE/FACE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/FACING.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/FACTORY.CPP",
+   "tag": "TWEAK",
+   "note": "cannot decrement expression of type bool"
+  },
+  {
+   "file": "CODE/FIELD.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/FILE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/FINDPATH.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/FIXED.CPP",
+   "tag": "TWEAK",
+   "note": "cannot initialize a variable of type 'char *' with an rvalue of type 'const char *'"
+  },
+  {
+   "file": "CODE/FLASHER.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/FLY.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/FOOT.CPP",
+   "tag": "TWEAK",
+   "note": "out-of-line definition of 'Take_Damage' does not match any declaration in 'FootClass'"
+  },
+  {
+   "file": "CODE/FUSE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/GADGET.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/GAMEDLG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/GAUGE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/GETCPU.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/GLOBALS.CPP",
+   "tag": "TWEAK",
+   "note": "template parameter list matching the non-templated nested type 'CCPtr<AircraftClass>' should be empty ('templa"
+  },
+  {
+   "file": "CODE/GOPTIONS.CPP",
+   "tag": "TWEAK",
+   "note": "member access into incomplete type 'PaletteClass'"
+  },
+  {
+   "file": "CODE/GSCREEN.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/HDATA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/HEAP.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/HELP.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/HOUSE.CPP",
+   "tag": "TWEAK",
+   "note": "template specialization requires 'template<>'"
+  },
+  {
+   "file": "CODE/HSV.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/ICONLIST.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/IDATA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/INFANTRY.CPP",
+   "tag": "TWEAK",
+   "note": "out-of-line definition of 'Take_Damage' does not match any declaration in 'InfantryClass'"
+  },
+  {
+   "file": "CODE/INI.CPP",
+   "tag": "TWEAK",
+   "note": "no matching member function for call to 'Load'"
+  },
+  {
+   "file": "CODE/INIBIN.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/INICODE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/INIT.CPP",
+   "tag": "TWEAK",
+   "note": "no matching function for call to 'Load_Title_Screen'"
+  },
+  {
+   "file": "CODE/INT.CPP",
+   "tag": "TWEAK",
+   "note": "template specialization requires 'template<>'"
+  },
+  {
+   "file": "CODE/INTERNET.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/INTERPAL.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/INTRO.CPP",
+   "tag": "TWEAK",
+   "note": "no viable overloaded '='"
+  },
+  {
+   "file": "CODE/IOMAP.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'cell'"
+  },
+  {
+   "file": "CODE/IOOBJ.CPP",
+   "tag": "TWEAK",
+   "note": "C-style cast from 'HouseClass *' to 'HousesType' is not allowed"
+  },
+  {
+   "file": "CODE/IPX.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/IPX95.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/IPXADDR.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/IPXCONN.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/IPXGCONN.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/IPXMGR.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/ITABLE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/JSHELL.CPP",
+   "tag": "TWEAK",
+   "note": "value of type 'const PaletteClass' is not contextually convertible to 'bool'"
+  },
+  {
+   "file": "CODE/KEY.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'MapVirtualKey'"
+  },
+  {
+   "file": "CODE/KEYBOARD.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'MapVirtualKey'"
+  },
+  {
+   "file": "CODE/KEYFRAME.CPP",
+   "tag": "TWEAK",
+   "note": "cast from pointer to smaller type 'unsigned int' loses information"
+  },
+  {
+   "file": "CODE/LAYER.CPP",
+   "tag": "TWEAK",
+   "note": "comparison between pointer and integer ('int' and 'char *(*)(const char *, int)')"
+  },
+  {
+   "file": "CODE/LCW.CPP",
+   "tag": "TWEAK",
+   "note": "cast from pointer to smaller type 'unsigned int' loses information"
+  },
+  {
+   "file": "CODE/LCWPIPE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/LCWSTRAW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/LCWUNCMP.CPP",
+   "tag": "TWEAK",
+   "note": "cast from pointer to smaller type 'unsigned int' loses information"
+  },
+  {
+   "file": "CODE/LINK.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/LIST.CPP",
+   "tag": "TWEAK",
+   "note": "no matching function for call to 'Fancy_Text_Print'"
+  },
+  {
+   "file": "CODE/LOADDLG.CPP",
+   "tag": "TWEAK",
+   "note": "member access into incomplete type 'PaletteClass'"
+  },
+  {
+   "file": "CODE/LOGIC.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/LZO1X_C.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/LZO1X_D.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/LZOPIPE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/LZOSTRAW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/LZW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/LZWOTRAW.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'LZWStraw'; did you mean 'LZOStraw'?"
+  },
+  {
+   "file": "CODE/LZWPIPE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/LZWSTRAW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/MAP.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'i'"
+  },
+  {
+   "file": "CODE/MAPEDDLG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/MAPEDIT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/MAPEDPLC.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/MAPEDSEL.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/MAPEDTM.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/MAPSEL.CPP",
+   "tag": "TWEAK",
+   "note": "variable has incomplete type 'PaletteClass'"
+  },
+  {
+   "file": "CODE/MCI.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/MCIMOVIE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/MENUS.CPP",
+   "tag": "TWEAK",
+   "note": "member access into incomplete type 'PaletteClass'"
+  },
+  {
+   "file": "CODE/MISSION.CPP",
+   "tag": "TWEAK",
+   "note": "conflicting types for 'Is_Recruitable_Mission'"
+  },
+  {
+   "file": "CODE/MIXFILE.CPP",
+   "tag": "TWEAK",
+   "note": "conflicting types for 'Offset'"
+  },
+  {
+   "file": "CODE/MONOC.CPP",
+   "tag": "TWEAK",
+   "note": "constant expression evaluates to 218 which cannot be narrowed to type 'char' [-Wc++11-narrowing]"
+  },
+  {
+   "file": "CODE/MOUSE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/MP.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/MPGSET.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/MPLAYER.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/MPLIB.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/MPLPC.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/MPMGRD.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/MPMGRW.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/MPU.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/MSGBOX.CPP",
+   "tag": "TWEAK",
+   "note": "no matching function for call to 'Fancy_Text_Print'"
+  },
+  {
+   "file": "CODE/MSGLIST.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/NETDLG.CPP",
+   "tag": "TWEAK",
+   "note": "member access into incomplete type 'PaletteClass'"
+  },
+  {
+   "file": "CODE/NOSEQCON.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'NonSequencedConnClass'"
+  },
+  {
+   "file": "CODE/NULLCONN.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/NULLDLG.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/NULLMGR.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/NUMBER.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'g'"
+  },
+  {
+   "file": "CODE/OBJECT.CPP",
+   "tag": "TWEAK",
+   "note": "cannot assign to non-static data member within const member function 'Render'"
+  },
+  {
+   "file": "CODE/ODATA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/OPTIONS.CPP",
+   "tag": "TWEAK",
+   "note": "member access into incomplete type 'PaletteClass'"
+  },
+  {
+   "file": "CODE/OVERLAY.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/PACKET.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/PIPE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/PK.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/PKPIPE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/PKSTRAW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/POWER.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/PROFILE.CPP",
+   "tag": "TWEAK",
+   "note": "assigning to 'char *' from 'const char *' discards qualifiers"
+  },
+  {
+   "file": "CODE/QUEUE.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/RADAR.CPP",
+   "tag": "TWEAK",
+   "note": "a type specifier is required for all declarations"
+  },
+  {
+   "file": "CODE/RADIO.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/RAMFILE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/RAND.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/RANDOM.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/RAWFILE.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'GENERIC_READ'"
+  },
+  {
+   "file": "CODE/RAWOLAPI.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/READLINE.CPP",
+   "tag": "TWEAK",
+   "note": "no matching function for call to 'Read_Line'"
+  },
+  {
+   "file": "CODE/RECT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/REINF.CPP",
+   "tag": "TWEAK",
+   "note": "cannot decrement expression of type bool"
+  },
+  {
+   "file": "CODE/RGB.CPP",
+   "tag": "TWEAK",
+   "note": "incomplete type 'PaletteClass' named in nested name specifier"
+  },
+  {
+   "file": "CODE/RNDSTRAW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/ROTBMP.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier '_READ'"
+  },
+  {
+   "file": "CODE/RULES.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'Sub_Saturate'"
+  },
+  {
+   "file": "CODE/SAVELOAD.CPP",
+   "tag": "TWEAK",
+   "note": "non-object type 'char *(const char *, int)' is not assignable"
+  },
+  {
+   "file": "CODE/SCENARIO.CPP",
+   "tag": "TWEAK",
+   "note": "member access into incomplete type 'PaletteClass'"
+  },
+  {
+   "file": "CODE/SCORE.CPP",
+   "tag": "TWEAK",
+   "note": "constant expression evaluates to 192 which cannot be narrowed to type 'char' [-Wc++11-narrowing]"
+  },
+  {
+   "file": "CODE/SCROLL.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/SDATA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/SEDITDLG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/SENDFILE.CPP",
+   "tag": "TWEAK",
+   "note": "no matching function for call to 'Set_Palette'"
+  },
+  {
+   "file": "CODE/SEQCONN.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'SequencedConnClass'"
+  },
+  {
+   "file": "CODE/SESSION.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/SHA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/SHAPEBTN.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/SHAPIPE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/SHASTRAW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/SIDEBAR.CPP",
+   "tag": "TWEAK",
+   "note": "variable has incomplete type 'PaletteClass'"
+  },
+  {
+   "file": "CODE/SLIDER.CPP",
+   "tag": "TWEAK",
+   "note": "'virtual' can only be specified inside the class definition"
+  },
+  {
+   "file": "CODE/SMUDGE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/SOUNDDLG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/SPECIAL.CPP",
+   "tag": "TWEAK",
+   "note": "non-object type 'char *(const char *, int)' is not assignable"
+  },
+  {
+   "file": "CODE/SPRITE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/STARTUP.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'WINDOW_NAME'; did you mean 'WINDOW_MAIN'?"
+  },
+  {
+   "file": "CODE/STATBTN.CPP",
+   "tag": "TWEAK",
+   "note": "no matching function for call to 'Fancy_Text_Print'"
+  },
+  {
+   "file": "CODE/STATS.CPP",
+   "tag": "TWEAK",
+   "note": "no matching member function for call to 'Add_Field'"
+  },
+  {
+   "file": "CODE/STRAW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/STUB.CPP",
+   "tag": "TWEAK",
+   "note": "'main' must return 'int'"
+  },
+  {
+   "file": "CODE/SUPER.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/SURFACE.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'Logical_Size'"
+  },
+  {
+   "file": "CODE/TAB.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/TACTION.CPP",
+   "tag": "TWEAK",
+   "note": "member access into incomplete type 'PaletteClass'"
+  },
+  {
+   "file": "CODE/TARCOM.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'TarComClass'"
+  },
+  {
+   "file": "CODE/TARGET.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/TCPIP.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/TDATA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/TEAM.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/TEAMTYPE.CPP",
+   "tag": "TWEAK",
+   "note": "non-object type 'char *(const char *, int)' is not assignable"
+  },
+  {
+   "file": "CODE/TECHNO.CPP",
+   "tag": "TWEAK",
+   "note": "out-of-line definition of 'Take_Damage' does not match any declaration in 'TechnoClass'"
+  },
+  {
+   "file": "CODE/TEMP.CPP",
+   "tag": "TWEAK",
+   "note": "unknown type name 'THIS'"
+  },
+  {
+   "file": "CODE/TEMPLATE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/TENMGR.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/TERRAIN.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/TEVENT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/TEXTBTN.CPP",
+   "tag": "TWEAK",
+   "note": "no matching function for call to 'Fancy_Text_Print'"
+  },
+  {
+   "file": "CODE/THEME.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'theme'; did you mean 'Theme'?"
+  },
+  {
+   "file": "CODE/TOGGLE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/TOOLTIP.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'ToolTipClass'"
+  },
+  {
+   "file": "CODE/TRACKER.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/TRIGGER.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/TRIGTYPE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/TURRET.CPP",
+   "tag": "TWEAK",
+   "note": "constructor for 'TurretClass' must explicitly initialize the base class 'DriveClass' which does not have a def"
+  },
+  {
+   "file": "CODE/TXTLABEL.CPP",
+   "tag": "TWEAK",
+   "note": "'virtual' can only be specified inside the class definition"
+  },
+  {
+   "file": "CODE/UDATA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/UDPADDR.CPP",
+   "tag": "TWEAK",
+   "note": "'nspapi.h' file not found"
+  },
+  {
+   "file": "CODE/UNIT.CPP",
+   "tag": "TWEAK",
+   "note": "out-of-line definition of 'Take_Damage' does not match any declaration in 'UnitClass'"
+  },
+  {
+   "file": "CODE/UTRACKER.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/VDATA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/VECTOR.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/VERSION.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'GAME_VERSION'; did you mean 'MAX_VERSION'?"
+  },
+  {
+   "file": "CODE/VESSEL.CPP",
+   "tag": "TWEAK",
+   "note": "cannot decrement expression of type bool"
+  },
+  {
+   "file": "CODE/VISUDLG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/VORTEX.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'i'"
+  },
+  {
+   "file": "CODE/W95TRACE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/WARHEAD.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/WEAPON.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/WINSTUB.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'WM_USER'; did you mean 'BT_USER'?"
+  },
+  {
+   "file": "CODE/WOLAPIOB.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/WOLEDIT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/WOLSTRNG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/WOL_CGAM.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/WOL_CHAT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/WOL_DNLD.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/WOL_GSUP.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/WOL_LOGN.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/WOL_MAIN.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/WOL_OPT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/WRITEPCX.CPP",
+   "tag": "TWEAK",
+   "note": "invalid application of 'sizeof' to an incomplete type 'PaletteClass'"
+  },
+  {
+   "file": "CODE/WSPIPX.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/WSPROTO.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/WSPUDP.CPP",
+   "tag": "DROP",
+   "note": "multiplayer / online / serial - out of scope for single-player build"
+  },
+  {
+   "file": "CODE/XPIPE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/XSTRAW.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "CODE/_WSPROTO.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  }
+ ],
+ "asm": [
+  {
+   "file": "CODE/2KEYFBUF.ASM",
+   "tag": "TRANSLATE",
+   "lines": 4848
+  },
+  {
+   "file": "WINVQ/VQM32/SOSCODEC.ASM",
+   "tag": "NATIVE",
+   "lines": 1271
+  },
+  {
+   "file": "WINVQ/VQA32/UNVQBUFF.ASM",
+   "tag": "TRANSLATE",
+   "lines": 1153
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DRAWSHP.ASM",
+   "tag": "TRANSLATE",
+   "lines": 1128
+  },
+  {
+   "file": "WIN32LIB/AUDIO/OLSOSDEC.ASM",
+   "tag": "NATIVE",
+   "lines": 755
+  },
+  {
+   "file": "WIN32LIB/AUDIO/SOSCODEC.ASM",
+   "tag": "NATIVE",
+   "lines": 724
+  },
+  {
+   "file": "WIN32LIB/WSA/XORDELTA.ASM",
+   "tag": "TRANSLATE",
+   "lines": 669
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/FILLQUAD.ASM",
+   "tag": "TRANSLATE",
+   "lines": 669
+  },
+  {
+   "file": "WIN32LIB/KEYBOARD/WWMOUSE.ASM",
+   "tag": "NATIVE",
+   "lines": 662
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/STAMP.ASM",
+   "tag": "TRANSLATE",
+   "lines": 600
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/SCALE.ASM",
+   "tag": "TRANSLATE",
+   "lines": 570
+  },
+  {
+   "file": "CODE/2SUPPORT.ASM",
+   "tag": "TRANSLATE",
+   "lines": 564
+  },
+  {
+   "file": "CODE/2TXTPRNT.ASM",
+   "tag": "TRANSLATE",
+   "lines": 507
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/TXTPRNT.ASM",
+   "tag": "TRANSLATE",
+   "lines": 502
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/DRAWLINE.ASM",
+   "tag": "TRANSLATE",
+   "lines": 464
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/BITBLIT.ASM",
+   "tag": "TRANSLATE",
+   "lines": 462
+  },
+  {
+   "file": "WIN32LIB/FONT/TEXTPRNT.ASM",
+   "tag": "TRANSLATE",
+   "lines": 436
+  },
+  {
+   "file": "WIN32LIB/PALETTE/PAL.ASM",
+   "tag": "TRANSLATE",
+   "lines": 410
+  },
+  {
+   "file": "WINVQ/VQM32/DRAWCHAR.ASM",
+   "tag": "TRANSLATE",
+   "lines": 395
+  },
+  {
+   "file": "WINVQ/VQM32/HUFFDCMP.ASM",
+   "tag": "TRANSLATE",
+   "lines": 391
+  },
+  {
+   "file": "WINVQ/VQM32/AUDUNZAP.ASM",
+   "tag": "TRANSLATE",
+   "lines": 375
+  },
+  {
+   "file": "WIN32LIB/AUDIO/AUDUNCMP.ASM",
+   "tag": "TRANSLATE",
+   "lines": 374
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_DSR.ASM",
+   "tag": "TRANSLATE",
+   "lines": 341
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_DS.ASM",
+   "tag": "TRANSLATE",
+   "lines": 341
+  },
+  {
+   "file": "WINVQ/VQM32/PALETTE.ASM",
+   "tag": "TRANSLATE",
+   "lines": 319
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/TOPAGE.ASM",
+   "tag": "TRANSLATE",
+   "lines": 294
+  },
+  {
+   "file": "WIN32LIB/IFF/LCWUNCMP.ASM",
+   "tag": "TRANSLATE",
+   "lines": 292
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/TOBUFF.ASM",
+   "tag": "TRANSLATE",
+   "lines": 292
+  },
+  {
+   "file": "WIN32LIB/PLAYCD/PLAYCD.ASM",
+   "tag": "NATIVE",
+   "lines": 289
+  },
+  {
+   "file": "WIN32LIB/IFF/LCWCOMP.ASM",
+   "tag": "TRANSLATE",
+   "lines": 286
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/STMPCACH.ASM",
+   "tag": "TRANSLATE",
+   "lines": 284
+  },
+  {
+   "file": "CODE/LCWCOMP.ASM",
+   "tag": "TRANSLATE",
+   "lines": 284
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/FILLRECT.ASM",
+   "tag": "TRANSLATE",
+   "lines": 275
+  },
+  {
+   "file": "WIN32LIB/MISC/CLIPRECT.ASM",
+   "tag": "TRANSLATE",
+   "lines": 269
+  },
+  {
+   "file": "WINVQ/VQM32/LCWCOMP.ASM",
+   "tag": "TRANSLATE",
+   "lines": 266
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_DR.ASM",
+   "tag": "TRANSLATE",
+   "lines": 257
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_DN.ASM",
+   "tag": "TRANSLATE",
+   "lines": 257
+  },
+  {
+   "file": "WINVQ/VQM32/LCWUNCMP.ASM",
+   "tag": "TRANSLATE",
+   "lines": 221
+  },
+  {
+   "file": "WINVQ/VQM32/FILLRECT.ASM",
+   "tag": "TRANSLATE",
+   "lines": 216
+  },
+  {
+   "file": "WIN32LIB/MISC/FADING.ASM",
+   "tag": "TRANSLATE",
+   "lines": 215
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/SHADOW.ASM",
+   "tag": "TRANSLATE",
+   "lines": 210
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_TABLE.ASM",
+   "tag": "TRANSLATE",
+   "lines": 187
+  },
+  {
+   "file": "CODE/CPUID.ASM",
+   "tag": "REBUILD",
+   "lines": 185
+  },
+  {
+   "file": "WIN32LIB/MEM/MEM_COPY.ASM",
+   "tag": "TRANSLATE",
+   "lines": 184
+  },
+  {
+   "file": "WINVQ/VQM32/TEXTPRNT.ASM",
+   "tag": "TRANSLATE",
+   "lines": 178
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/REMAP.ASM",
+   "tag": "TRANSLATE",
+   "lines": 175
+  },
+  {
+   "file": "WIN32LIB/MISC/FACINGFF.ASM",
+   "tag": "TRANSLATE",
+   "lines": 165
+  },
+  {
+   "file": "WINVQ/VQAVIEW/INTERPAL.ASM",
+   "tag": "TRANSLATE",
+   "lines": 162
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_LSS.ASM",
+   "tag": "TRANSLATE",
+   "lines": 159
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_LSRS.ASM",
+   "tag": "TRANSLATE",
+   "lines": 159
+  },
+  {
+   "file": "WIN32LIB/MISC/SHAKESCR.ASM",
+   "tag": "TRANSLATE",
+   "lines": 158
+  },
+  {
+   "file": "WIN32LIB/MISC/OPSYS.ASM",
+   "tag": "REBUILD",
+   "lines": 150
+  },
+  {
+   "file": "WIN32LIB/MISC/FACING16.ASM",
+   "tag": "TRANSLATE",
+   "lines": 148
+  },
+  {
+   "file": "WIN32LIB/MISC/FACING8.ASM",
+   "tag": "TRANSLATE",
+   "lines": 140
+  },
+  {
+   "file": "WIN32LIB/MISC/REVERSE.ASM",
+   "tag": "TRANSLATE",
+   "lines": 139
+  },
+  {
+   "file": "WINVQ/VQM32/VB.ASM",
+   "tag": "TRANSLATE",
+   "lines": 137
+  },
+  {
+   "file": "CODE/COORDA.ASM",
+   "tag": "TRANSLATE",
+   "lines": 134
+  },
+  {
+   "file": "WINVQ/VQM32/CRC.ASM",
+   "tag": "TRANSLATE",
+   "lines": 133
+  },
+  {
+   "file": "WIN32LIB/IFF/PACK2PLN.ASM",
+   "tag": "TRANSLATE",
+   "lines": 132
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/CLEAR.ASM",
+   "tag": "TRANSLATE",
+   "lines": 130
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_LS.ASM",
+   "tag": "TRANSLATE",
+   "lines": 118
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_LRS.ASM",
+   "tag": "TRANSLATE",
+   "lines": 118
+  },
+  {
+   "file": "WIN32LIB/MISC/RANDOM.ASM",
+   "tag": "TRANSLATE",
+   "lines": 118
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/GETCLIP.ASM",
+   "tag": "TRANSLATE",
+   "lines": 115
+  },
+  {
+   "file": "WIN32LIB/MISC/DETPROC.ASM",
+   "tag": "REBUILD",
+   "lines": 115
+  },
+  {
+   "file": "WIN32LIB/MISC/CRC.ASM",
+   "tag": "TRANSLATE",
+   "lines": 114
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_RSS.ASM",
+   "tag": "TRANSLATE",
+   "lines": 110
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_RSRS.ASM",
+   "tag": "TRANSLATE",
+   "lines": 110
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_RS.ASM",
+   "tag": "TRANSLATE",
+   "lines": 110
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_RRS.ASM",
+   "tag": "TRANSLATE",
+   "lines": 110
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/PUTPIX.ASM",
+   "tag": "TRANSLATE",
+   "lines": 110
+  },
+  {
+   "file": "WIN32LIB/FONT/SETFPAL.ASM",
+   "tag": "TRANSLATE",
+   "lines": 106
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/GETPIX.ASM",
+   "tag": "TRANSLATE",
+   "lines": 106
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/FTPUTPIX.ASM",
+   "tag": "TRANSLATE",
+   "lines": 106
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/SZREGION.ASM",
+   "tag": "TRANSLATE",
+   "lines": 101
+  },
+  {
+   "file": "WIN32LIB/SHAPE/SHAPE.ASM",
+   "tag": "TRANSLATE",
+   "lines": 94
+  },
+  {
+   "file": "WIN32LIB/SHAPE/SETSHAPE.ASM",
+   "tag": "TRANSLATE",
+   "lines": 81
+  }
+ ]
+}

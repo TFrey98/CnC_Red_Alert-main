@@ -142,8 +142,8 @@
   },
   {
    "file": "CODE/CCDDE.CPP",
-   "tag": "TWEAK",
-   "note": "unknown type name 'VOID'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/CCFILE.CPP",
@@ -233,7 +233,7 @@
   {
    "file": "CODE/CONNECT.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/CONQUER.CPP",
@@ -318,12 +318,12 @@
   {
    "file": "CODE/DIBFILE.CPP",
    "tag": "TWEAK",
-   "note": "unknown type name 'VOID'"
+   "note": "unknown type name 'OFSTRUCT'"
   },
   {
    "file": "CODE/DIBUTIL.CPP",
    "tag": "TWEAK",
-   "note": "use of undeclared identifier 'BI_RGB'"
+   "note": "use of undeclared identifier 'GHND'"
   },
   {
    "file": "CODE/DISPLAY.CPP",
@@ -368,7 +368,7 @@
   {
    "file": "CODE/EGOS.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/ENDING.CPP",
@@ -543,7 +543,7 @@
   {
    "file": "CODE/INTERNET.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/INTERPAL.CPP",
@@ -557,8 +557,8 @@
   },
   {
    "file": "CODE/IOMAP.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'cell'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/IOOBJ.CPP",
@@ -568,12 +568,12 @@
   {
    "file": "CODE/IPX.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/IPX95.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/IPXADDR.CPP",
@@ -593,7 +593,7 @@
   {
    "file": "CODE/IPXMGR.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/ITABLE.CPP",
@@ -608,12 +608,12 @@
   {
    "file": "CODE/KEY.CPP",
    "tag": "TWEAK",
-   "note": "use of undeclared identifier 'MapVirtualKey'"
+   "note": "use of undeclared identifier 'ToAscii'"
   },
   {
    "file": "CODE/KEYBOARD.CPP",
    "tag": "TWEAK",
-   "note": "use of undeclared identifier 'MapVirtualKey'"
+   "note": "use of undeclared identifier 'ToAscii'"
   },
   {
    "file": "CODE/KEYFRAME.CPP",
@@ -708,7 +708,7 @@
   {
    "file": "CODE/MAP.CPP",
    "tag": "TWEAK",
-   "note": "use of undeclared identifier 'i'"
+   "note": "assigning to 'CELL' (aka 'short') from incompatible type 'char *(const char *, int)'"
   },
   {
    "file": "CODE/MAPEDDLG.CPP",
@@ -783,32 +783,32 @@
   {
    "file": "CODE/MPGSET.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/MPLAYER.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/MPLIB.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/MPLPC.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/MPMGRD.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/MPMGRW.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/MPU.CPP",
@@ -843,12 +843,12 @@
   {
    "file": "CODE/NULLDLG.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/NULLMGR.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/NUMBER.CPP",
@@ -878,7 +878,7 @@
   {
    "file": "CODE/PACKET.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/PIPE.CPP",
@@ -913,7 +913,7 @@
   {
    "file": "CODE/QUEUE.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/RADAR.CPP",
@@ -943,7 +943,7 @@
   {
    "file": "CODE/RAWFILE.CPP",
    "tag": "TWEAK",
-   "note": "use of undeclared identifier 'GENERIC_READ'"
+   "note": "use of undeclared identifier 'CreateFile'"
   },
   {
    "file": "CODE/RAWOLAPI.CPP",
@@ -988,7 +988,7 @@
   {
    "file": "CODE/SAVELOAD.CPP",
    "tag": "TWEAK",
-   "note": "non-object type 'char *(const char *, int)' is not assignable"
+   "note": "no matching member function for call to 'Load'"
   },
   {
    "file": "CODE/SCENARIO.CPP",
@@ -1028,7 +1028,7 @@
   {
    "file": "CODE/SESSION.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/SHA.CPP",
@@ -1138,7 +1138,7 @@
   {
    "file": "CODE/TCPIP.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/TDATA.CPP",
@@ -1152,8 +1152,8 @@
   },
   {
    "file": "CODE/TEAMTYPE.CPP",
-   "tag": "TWEAK",
-   "note": "non-object type 'char *(const char *, int)' is not assignable"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/TECHNO.CPP",
@@ -1192,8 +1192,8 @@
   },
   {
    "file": "CODE/THEME.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'theme'; did you mean 'Theme'?"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/TOGGLE.CPP",
@@ -1278,7 +1278,7 @@
   {
    "file": "CODE/VORTEX.CPP",
    "tag": "TWEAK",
-   "note": "use of undeclared identifier 'i'"
+   "note": "incomplete type 'PaletteClass' named in nested name specifier"
   },
   {
    "file": "CODE/W95TRACE.CPP",
@@ -1298,7 +1298,7 @@
   {
    "file": "CODE/WINSTUB.CPP",
    "tag": "TWEAK",
-   "note": "use of undeclared identifier 'WM_USER'; did you mean 'BT_USER'?"
+   "note": "use of undeclared identifier 'PostMessage'"
   },
   {
    "file": "CODE/WOLAPIOB.CPP",
@@ -1333,7 +1333,7 @@
   {
    "file": "CODE/WOL_GSUP.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/WOL_LOGN.CPP",
@@ -1358,17 +1358,17 @@
   {
    "file": "CODE/WSPIPX.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/WSPROTO.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/WSPUDP.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope for single-player build"
+   "note": "multiplayer / online / serial - out of scope"
   },
   {
    "file": "CODE/XPIPE.CPP",

@@ -178,6 +178,33 @@ the honest answer is a constant, since every target is a known-good arm64 Mac.
 | **Ordinary Win32/CRT** | `commctrl.h`, `winerror.h`, `memory.h`, `stat.h`, `types.h`, `timeb.h`, `algo.h` | **Tweak** — small additions to `port/compat/`, same as the 20 shims already there. |
 | **Resource scripts** | `debug.rh`, `strings.rh`, `text.rh` | **Rebuild** if the dialogs are wanted; the `.rh` files defining control IDs are absent. |
 
+### `PaletteClass` — a missing core header, found the hard way
+
+**`CODE/PALETTE.H` and `PALETTE.CPP` are absent from EA's release.** The class
+is used by 18 files, including `CONQUER.CPP`, `JSHELL.CPP` and `OPTIONS.CPP`,
+and `EXTERNS.H:321` declares `extern PaletteClass GamePalette;` — but the only
+trace of the class itself anywhere in the tree (archive included) is a forward
+declaration at `CODE/RGB.H:41`.
+
+This did not appear in the missing-header list above, and the reason is worth
+understanding. `CODE/function.h:318` has `#include "palette.h"`. That file does
+**not** exist in `CODE/`, so the quoted include falls through `-iquote` to `-I`
+and silently resolves to `WIN32LIB/INCLUDE/PALETTE.H` — the *library's* C
+palette functions, an entirely different header that happens to share the name.
+No "file not found" is ever reported. It is the nine-way header collision that
+`flags.sh` warns about, in its most dangerous form: not two files fighting, but
+a missing one quietly answered by a stranger.
+
+Rebuilding it is tractable. The required surface, taken from actual call sites:
+
+- `PaletteClass::COLOR_COUNT` — static count, 256
+- `PaletteClass::CurrentPalette` — static instance
+- `operator[](int)` returning `RGBClass &` (`CurrentPalette[1].Red_Component()`)
+- `Set(...)` — the fade entry point (`GamePalette.Set(FADE_PALETTE_MEDIUM)`)
+
+`RGBClass` itself survives intact in `RGB.H`/`RGB.CPP`, so this is a container
+over an existing, working type rather than a from-scratch reimplementation.
+
 ### Already handled
 
 Four proprietary SDKs that blocked every translation unit are now stubbed and no

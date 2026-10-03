@@ -1180,7 +1180,7 @@ void HouseClass::AI(void)
 			}
 			if( !iCount )
 			{
-				for( i = 0; i != UNIT_RA_COUNT-3; ++i )
+				for( int i = 0; i != UNIT_RA_COUNT-3; ++i )
 				{
 					iCount += UQuantity[ i ];
 				}
@@ -1188,7 +1188,7 @@ void HouseClass::AI(void)
 				{
 					//	ajw - Found bug - house's civilians are not removed from IQuantity when they die.
 					//	Workaround...
-					for( i = 0; i <= INFANTRY_DOG; ++i )
+					for( int i = 0; i <= INFANTRY_DOG; ++i )
 					{
 						iCount += IQuantity[ i ];
 					}

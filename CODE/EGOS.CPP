@@ -711,7 +711,7 @@ void Show_Who_Was_Responsible (void)
 	unsigned char *creditpal_ptr = (unsigned char *) &credit_palette;
 	memcpy (ComboPalette, CCPalette, sizeof (ComboPalette));
 
-	for (index = 0 ; index < 256 ; index++ ){
+	for (int index = 0 ; index < 256 ; index++ ){
 		if (PaletteLUT[index]) {
 			ComboPalPtr[index*3] = 0;
 			ComboPalPtr[index*3+1] = 0;

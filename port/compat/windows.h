@@ -309,8 +309,13 @@ void  EnterCriticalSection(LPCRITICAL_SECTION section);
 void  LeaveCriticalSection(LPCRITICAL_SECTION section);
 
 /*
-**	The handful of Win32 entry points the engine calls directly. Backed by
-**	SDL2/POSIX in port/compat/wincompat.cpp.
+**	The Win32 entry points the engine calls directly.
+**
+**	DECLARATIONS ONLY -- there is no implementation file yet. They let the tree
+**	compile and let probe.sh surface the real remaining work; every one that is
+**	actually reached at runtime still needs a native implementation (Cocoa,
+**	CoreAudio or POSIX) behind the plain-C boundary described in
+**	port/backend/ra_platform.h. Linking the game will name the ones that matter.
 */
 DWORD   GetTickCount(void);
 void    Sleep(DWORD milliseconds);
@@ -347,6 +352,164 @@ HGLOBAL GlobalFree(HGLOBAL mem);
 #define FILE_ATTRIBUTE_NORMAL 0x00000080
 
 /*
+**	Additional primitive spellings the engine uses.
+*/
+#define VOID void
+typedef unsigned char *     PBYTE;
+typedef unsigned char *     LPBYTE;
+typedef unsigned int *      PUINT;
+typedef const void *        LPCVOID;
+
+#define LOWORD(l)   ((WORD)((DWORD_PTR)(l) & 0xffff))
+#define HIWORD(l)   ((WORD)(((DWORD_PTR)(l) >> 16) & 0xffff))
+#define LOBYTE(w)   ((BYTE)((DWORD_PTR)(w) & 0xff))
+#define HIBYTE(w)   ((BYTE)(((DWORD_PTR)(w) >> 8) & 0xff))
+#define MAKELONG(a,b) ((LONG)(((WORD)(a)) | (((DWORD)((WORD)(b))) << 16)))
+
+/*
+**	Bitmap file structures. BITMAPFILEHEADER IS PACKED ON WIN32 -- it is 14
+**	bytes, not 16, because bfType (2 bytes) is followed by a 4-byte field. The
+**	attribute is required, not cosmetic: CODE/BMP8.CPP reads it straight off
+**	disk with `sizeof(BITMAPFILEHEADER)`, so a padded 16-byte version would
+**	silently misparse every .BMP.
+*/
+#pragma pack(push, 2)
+typedef struct tagBITMAPFILEHEADER {
+	WORD  bfType;
+	DWORD bfSize;
+	WORD  bfReserved1;
+	WORD  bfReserved2;
+	DWORD bfOffBits;
+} BITMAPFILEHEADER, *LPBITMAPFILEHEADER, *PBITMAPFILEHEADER;
+#pragma pack(pop)
+
+typedef struct tagBITMAPCOREHEADER {
+	DWORD bcSize;
+	WORD  bcWidth;
+	WORD  bcHeight;
+	WORD  bcPlanes;
+	WORD  bcBitCount;
+} BITMAPCOREHEADER, *LPBITMAPCOREHEADER, *PBITMAPCOREHEADER;
+
+typedef struct tagLOGPALETTE {
+	WORD         palVersion;
+	WORD         palNumEntries;
+	PALETTEENTRY palPalEntry[1];
+} LOGPALETTE, *LPLOGPALETTE;
+
+#define BI_RGB        0
+#define BI_RLE8       1
+#define BI_RLE4       2
+#define BI_BITFIELDS  3
+
+typedef struct _MEMORYSTATUS {
+	DWORD  dwLength;
+	DWORD  dwMemoryLoad;
+	SIZE_T dwTotalPhys;
+	SIZE_T dwAvailPhys;
+	SIZE_T dwTotalPageFile;
+	SIZE_T dwAvailPageFile;
+	SIZE_T dwTotalVirtual;
+	SIZE_T dwAvailVirtual;
+} MEMORYSTATUS, *LPMEMORYSTATUS;
+void GlobalMemoryStatus(LPMEMORYSTATUS buffer);
+
+/*
+**	Window messages and the message pump.
+**
+**	The engine drives its own pump (CODE/KEY.CPP, KEYBOARD.CPP, WINSTUB.CPP).
+**	On macOS that becomes an NSApplication run loop, so these declarations are
+**	a staging post: they get the tree compiling and mark exactly which call
+**	sites the Cocoa input backend has to take over.
+*/
+#define WM_NULL         0x0000
+#define WM_CREATE       0x0001
+#define WM_DESTROY      0x0002
+#define WM_MOVE         0x0003
+#define WM_SIZE         0x0005
+#define WM_ACTIVATE     0x0006
+#define WM_SETFOCUS     0x0007
+#define WM_KILLFOCUS    0x0008
+#define WM_PAINT        0x000F
+#define WM_CLOSE        0x0010
+#define WM_QUIT         0x0012
+#define WM_ACTIVATEAPP  0x001C
+#define WM_KEYDOWN      0x0100
+#define WM_KEYUP        0x0101
+#define WM_CHAR         0x0102
+#define WM_SYSKEYDOWN   0x0104
+#define WM_SYSKEYUP     0x0105
+#define WM_COMMAND      0x0111
+#define WM_TIMER        0x0113
+#define WM_MOUSEMOVE    0x0200
+#define WM_LBUTTONDOWN  0x0201
+#define WM_LBUTTONUP    0x0202
+#define WM_LBUTTONDBLCLK 0x0203
+#define WM_RBUTTONDOWN  0x0204
+#define WM_RBUTTONUP    0x0205
+#define WM_RBUTTONDBLCLK 0x0206
+#define WM_USER         0x0400
+
+#define PM_NOREMOVE     0x0000
+#define PM_REMOVE       0x0001
+#define PM_NOYIELD      0x0002
+
+BOOL  GetMessageA(LPMSG msg, HWND wnd, UINT filtermin, UINT filtermax);
+BOOL  PeekMessageA(LPMSG msg, HWND wnd, UINT filtermin, UINT filtermax, UINT remove);
+BOOL  TranslateMessage(const MSG * msg);
+LRESULT DispatchMessageA(const MSG * msg);
+UINT  MapVirtualKeyA(UINT code, UINT maptype);
+BOOL  SetForegroundWindow(HWND wnd);
+HWND  FindWindowA(LPCSTR classname, LPCSTR windowname);
+HWND  GetFocus(void);
+BOOL  ShowWindow(HWND wnd, int cmdshow);
+
+/*
+**	Win32's A/W split: <windows.h> defines the unsuffixed name as a macro for
+**	the ANSI variant. The engine uses the unsuffixed spellings throughout.
+*/
+#define GetMessage      GetMessageA
+#define PeekMessage     PeekMessageA
+#define DispatchMessage DispatchMessageA
+#define MapVirtualKey   MapVirtualKeyA
+#define FindWindow      FindWindowA
+
+/*
+**	CreateFile-style access flags. CODE/RAWFILE.CPP uses these; they map onto
+**	open(2) flags in whatever implements them.
+*/
+#define GENERIC_READ        0x80000000u
+#define GENERIC_WRITE       0x40000000u
+#define FILE_SHARE_READ     0x00000001u
+#define FILE_SHARE_WRITE    0x00000002u
+#define CREATE_NEW          1
+#define CREATE_ALWAYS       2
+#define OPEN_EXISTING       3
+#define OPEN_ALWAYS         4
+#define TRUNCATE_EXISTING   5
+#define INVALID_HANDLE_VALUE ((HANDLE)(LONG_PTR)-1)
+
+UINT SetErrorMode(UINT mode);
+#define SEM_FAILCRITICALERRORS 0x0001
+#define SEM_NOOPENFILEERRORBOX 0x8000
+
+/*
+**	Registry. Used only to read install paths and CD drive letters, neither of
+**	which exists on macOS -- these will become NSUserDefaults or a plist, so
+**	the declarations are placeholders to get the tree compiling.
+*/
+#define ERROR_SUCCESS       0L
+#define HKEY_CLASSES_ROOT   ((HKEY)(ULONG_PTR)0x80000000)
+#define HKEY_CURRENT_USER   ((HKEY)(ULONG_PTR)0x80000001)
+#define HKEY_LOCAL_MACHINE  ((HKEY)(ULONG_PTR)0x80000002)
+#define KEY_READ            0x20019
+LONG RegCloseKey(HKEY key);
+LONG RegOpenKeyExA(HKEY key, LPCSTR subkey, DWORD options, DWORD desired, PHKEY result);
+LONG RegQueryValueExA(HKEY key, LPCSTR name, LPDWORD reserved, LPDWORD type, LPBYTE data, LPDWORD cbdata);
+#define RegOpenKeyEx    RegOpenKeyExA
+#define RegQueryValueEx RegQueryValueExA
+
+/*
 **	Compile-time guarantees that the LP64 host did not widen anything.
 */
 #if defined(__cplusplus) && __cplusplus >= 201103L
@@ -356,6 +519,7 @@ static_assert(sizeof(DWORD) == 4, "DWORD must be 32 bits on LP64");
 static_assert(sizeof(LONG)  == 4, "LONG must be 32 bits on LP64");
 static_assert(sizeof(PALETTEENTRY) == 4, "PALETTEENTRY layout changed");
 static_assert(sizeof(BITMAPINFOHEADER) == 40, "BITMAPINFOHEADER layout changed");
+static_assert(sizeof(BITMAPFILEHEADER) == 14, "BITMAPFILEHEADER must stay packed to 14 bytes");
 #endif
 
 #endif /* WWPORT_COMPAT_WINDOWS_H */

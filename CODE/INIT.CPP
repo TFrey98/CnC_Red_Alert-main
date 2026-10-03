@@ -2237,7 +2237,7 @@ long Obfuscate(char const * string)
 		if (((length+3) & 0x00FC) > maxlen) {
 			maxlen = ((length+3) & 0x00FC);
 		}
-		for (index = length; index < maxlen; index++) {
+		for (int index = length; index < maxlen; index++) {
 			buffer[index] = 'A' + ((('?' ^ buffer[index-length]) + index) % 26);
 		}
 		length = index;

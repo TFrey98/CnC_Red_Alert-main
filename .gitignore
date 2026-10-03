@@ -1,0 +1,11 @@
+# Build output. The port's scripts currently write to $TMPDIR, so nothing lands
+# in the tree yet; these cover the real build when it exists.
+build/
+*.o
+*.air
+*.metallib
+*.dSYM/
+*.app/
+
+# macOS
+.DS_Store

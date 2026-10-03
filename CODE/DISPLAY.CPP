@@ -1245,7 +1245,7 @@ bool DisplayClass::Scroll_Map(DirType facing, int & distance, bool really)
 		for (int index = 0; index < Layer[LAYER_TOP].Count(); index++) {
 			Layer[LAYER_TOP][index]->Mark(MARK_CHANGE);
 		}
-		for (index = 0; index < Layer[LAYER_AIR].Count(); index++) {
+		for (int index = 0; index < Layer[LAYER_AIR].Count(); index++) {
 			Layer[LAYER_AIR][index]->Mark(MARK_CHANGE);
 		}
 
@@ -1688,18 +1688,18 @@ ObjectClass * DisplayClass::Cell_Object(CELL cell, int x, int y) const
 			for (CELL cell = Coord_Cell(TacticalCoord); cell < Coord_Cell(TacticalCoord) + Lepton_To_Cell(TacLeptonWidth)+1; cell++) {
 				(*this)[cell].Redraw_Objects();
 			}
-			for (cell = Coord_Cell(TacticalCoord) + MAP_CELL_W;
+			for (CELL cell = Coord_Cell(TacticalCoord) + MAP_CELL_W;
 				cell < Coord_Cell(TacticalCoord) + MAP_CELL_W + Lepton_To_Cell(TacLeptonWidth)+1; cell++) {
 				(*this)[cell].Redraw_Objects();
 			}
 			if (num > 1) {
-				for (cell = Coord_Cell(TacticalCoord) + MAP_CELL_W*2;
+				for (CELL cell = Coord_Cell(TacticalCoord) + MAP_CELL_W*2;
 					cell < Coord_Cell(TacticalCoord) + MAP_CELL_W*2 + Lepton_To_Cell(TacLeptonWidth)+1; cell++) {
 					(*this)[cell].Redraw_Objects();
 				}
 			}
 			if (num > 2) {
-				for (cell = Coord_Cell(TacticalCoord) + MAP_CELL_W*3;
+				for (CELL cell = Coord_Cell(TacticalCoord) + MAP_CELL_W*3;
 					cell < Coord_Cell(TacticalCoord) + MAP_CELL_W*3 + Lepton_To_Cell(TacLeptonWidth)+1; cell++) {
 					(*this)[cell].Redraw_Objects();
 				}
@@ -2754,7 +2754,7 @@ void DisplayClass::Refresh_Band(void)
 		for (int index = 0; index < Layer[LAYER_TOP].Count(); index++) {
 			Layer[LAYER_TOP][index]->Mark(MARK_CHANGE);
 		}
-		for (index = 0; index < Layer[LAYER_AIR].Count(); index++) {
+		for (int index = 0; index < Layer[LAYER_AIR].Count(); index++) {
 			Layer[LAYER_AIR][index]->Mark(MARK_CHANGE);
 		}
 	}

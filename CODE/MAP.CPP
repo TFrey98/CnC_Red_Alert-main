@@ -909,7 +909,7 @@ int MapClass::Write_Binary(Pipe & pipe)
 	}
 
 	cellptr = &Array[0];
-	for (i = 0; i < MAP_CELL_TOTAL; i++) {
+	for (int i = 0; i < MAP_CELL_TOTAL; i++) {
 		total += comp.Put(&cellptr->TIcon, sizeof(cellptr->TIcon));
 		cellptr++;
 	}
@@ -1617,7 +1617,7 @@ int MapClass::Zone_Span(CELL cell, int zone, MZoneType check)
 	**	end of the scan. This is necessary because diagonals are considered
 	**	adjacent.
 	*/
-	for (x = xbegin-1; x <= xend; x++) {
+	for (int x = xbegin-1; x <= xend; x++) {
 		filled += Zone_Span(XY_Cell(x, y-1), zone, check);
 		filled += Zone_Span(XY_Cell(x, y+1), zone, check);
 	}

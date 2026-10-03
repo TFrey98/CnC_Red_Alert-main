@@ -751,7 +751,7 @@ void CellClass::Overlap_Down(ObjectClass * object)
 	**	else out in this case.
 	*/
 	if (!ptr && object->What_Am_I() == RTTI_BUILDING) {
-		for (index = 0; index < ARRAY_SIZE(Overlapper); index++) {
+		for (int index = 0; index < ARRAY_SIZE(Overlapper); index++) {
 			switch (Overlapper[index]->What_Am_I()) {
 				case RTTI_BUILDING:
 				case RTTI_TERRAIN:
@@ -2440,7 +2440,7 @@ crate_money:
 			**	Create a squad of miscellaneous composition.
 			*/
 			case CRATE_SQUAD:
-				for (index = 0; index < 5; index++) {
+				for (int index = 0; index < 5; index++) {
 					static InfantryType _inf[] = {
 						INFANTRY_E1,INFANTRY_E1,INFANTRY_E1,INFANTRY_E1,INFANTRY_E1,INFANTRY_E1,
 						INFANTRY_E2,
@@ -2487,7 +2487,7 @@ crate_money:
 					int d = CrateData[powerup];
 					object->Take_Damage(d, 0, WARHEAD_HE, 0, true);
 				}
-				for (index = 0; index < 5; index++) {
+				for (int index = 0; index < 5; index++) {
 					COORDINATE frag_coord = Coord_Scatter(Cell_Coord(), Random_Pick(0, 0x0200));
 					new AnimClass(ANIM_FBALL1, frag_coord);
 					damage = CrateData[powerup];
@@ -2513,7 +2513,7 @@ crate_money:
 			**	All objects within a certain range will gain the ability to cloak.
 			*/
 			case CRATE_CLOAK:
-				for (index = 0; index < DisplayClass::Layer[LAYER_GROUND].Count(); index++) {
+				for (int index = 0; index < DisplayClass::Layer[LAYER_GROUND].Count(); index++) {
 					ObjectClass * obj = DisplayClass::Layer[LAYER_GROUND][index];
 
 					if (obj && obj->Is_Techno() && Distance(Cell_Coord(), obj->Center_Coord()) < Rule.CrateRadius) {
@@ -2529,7 +2529,7 @@ crate_money:
 				if (object->IsOwnedByPlayer) {
 					Sound_Effect(VOC_HEAL, object->Center_Coord());
 				}
-				for (index = 0; index < Logic.Count(); index++) {
+				for (int index = 0; index < Logic.Count(); index++) {
 					ObjectClass * obj = Logic[index];
 
 					if (obj && object->Is_Techno() && object->House->Class->House == obj->Owner()) {

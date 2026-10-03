@@ -78,7 +78,7 @@ class ObjectClass : public AbstractClass
 		**	flag could be set by many different circumstances. It is automatically cleared
 		**	when the object is rerendered.
 		*/
-		unsigned IsToDisplay:1;
+		mutable unsigned IsToDisplay:1;	// port: set by the const Render(); Watcom did not enforce const on it
 
 		/*
 		**	An object in the game may be valid yet held in a state of "limbo". Units are in such

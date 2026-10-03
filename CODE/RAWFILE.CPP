@@ -530,7 +530,7 @@ void RawFileClass::Close(void)
  *=============================================================================================*/
 long RawFileClass::Read(void * buffer, long size)
 {
-	long	bytesread = 0;			// Running count of the number of bytes read into the buffer.
+	DWORD	bytesread = 0;			// Running count of the number of bytes read into the buffer.	// port: was long (8 bytes on macOS); ReadFile/WriteFile write a 4-byte DWORD
 	int	opened = false;		// Was the file opened by this routine?
 
 	/*
@@ -563,7 +563,7 @@ long RawFileClass::Read(void * buffer, long size)
 		bytesread = 0;
 
 		SetErrorMode(SEM_FAILCRITICALERRORS);
-		if (!ReadFile(Handle, buffer, size, &(unsigned long&)bytesread, NULL)) {
+		if (!ReadFile(Handle, buffer, size, &bytesread, NULL)) {
 			size -= bytesread;
 			total += bytesread;
 			Error(GetLastError(), true, Filename);
@@ -661,7 +661,7 @@ long RawFileClass::Read(void * buffer, long size)
  *=============================================================================================*/
 long RawFileClass::Write(void const * buffer, long size)
 {
-	long	bytesread = 0;
+	DWORD	bytesread = 0;	// port: was long (8 bytes on macOS); ReadFile/WriteFile write a 4-byte DWORD
 	int	opened = false;		// Was the file manually opened?
 
 	/*
@@ -677,7 +677,7 @@ long RawFileClass::Write(void const * buffer, long size)
 	}
 
 #ifdef WIN32
-	if (!WriteFile(Handle, buffer, size, &(unsigned long&)bytesread, NULL)) {
+	if (!WriteFile(Handle, buffer, size, &bytesread, NULL)) {
 		Error(GetLastError(), false, Filename);
 	}
 

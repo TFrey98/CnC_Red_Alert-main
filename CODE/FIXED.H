@@ -229,4 +229,21 @@ class fixed
 };
 
 
+/*
+**	Port: Watcom injected friend functions into the enclosing scope, so these --
+**	defined as friends inside the class above -- were callable like any free
+**	function. Standard C++ only finds them through an argument of type `fixed`
+**	(ADL), so RULES.CPP's `Sub_Saturate(1, 1)`, which passes two ints, could not
+**	see them. Redeclaring them here restores the original visibility; the
+**	definitions are still the in-class ones.
+*/
+const fixed Round_Up(fixed const & value);
+const fixed Round_Down(fixed const & value);
+const fixed Round(fixed const & value);
+const fixed Saturate(fixed const & value, unsigned capvalue);
+const fixed Saturate(fixed const & value, fixed const & capvalue);
+const fixed Sub_Saturate(fixed const & value, unsigned capvalue);
+const fixed Sub_Saturate(fixed const & value, fixed const & capvalue);
+const fixed Inverse(fixed const & value);
+
 #endif

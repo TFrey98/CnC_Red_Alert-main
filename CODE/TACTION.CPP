@@ -222,7 +222,7 @@ void TActionClass::Detach(TARGET target)
  *=============================================================================================*/
 void TActionClass::Build_INI_Entry(char * ptr) const
 {
-	sprintf(ptr, "%d,%d,%d,%d", Action, TeamTypes.Logical_ID(Team), TriggerTypes.Logical_ID(Trigger), Data.Value);
+	sprintf(ptr, "%d,%d,%d,%d", Action, TeamTypes.Logical_ID(Team), TriggerTypes.Logical_ID(Trigger), (int)Data.Value);	// port: Value is long (64-bit on macOS) but only ever holds 32-bit values; %d wants an int
 }
 
 

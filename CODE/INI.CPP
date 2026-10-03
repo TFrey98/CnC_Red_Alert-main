@@ -178,7 +178,7 @@ bool INIClass::Clear(char const * section, char const * entry)
  *=============================================================================================*/
 bool INIClass::Load(FileClass & file)
 {
-	return(Load(FileStraw(file)));
+	return(Load(ww_lvalue(FileStraw(file))));
 }
 
 
@@ -314,7 +314,7 @@ bool INIClass::Load(Straw & file)
  *=============================================================================================*/
 int INIClass::Save(FileClass & file) const
 {
-	return(Save(FilePipe(file)));
+	return(Save(ww_lvalue(FilePipe(file))));
 }
 
 

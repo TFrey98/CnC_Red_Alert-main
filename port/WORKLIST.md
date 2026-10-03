@@ -7,9 +7,10 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 | Tag | Meaning | Files |
 |---|---|---|
-| DONE | compiles clean for arm64 | 176 |
-| TWEAK | needs source or compat fixes | 50 |
-| DROP | out of scope for single-player; left in place because live code includes its headers | 21 |
+| DONE | compiles clean for arm64 | 220 |
+| TWEAK | needs source or compat fixes | 0 |
+| DROP | out of scope for single-player; left in place because live code includes its headers | 22 |
+| NATIVE | the Win32 platform layer: reimplement over port/backend/ | 5 |
 
 ## Assembly
 
@@ -23,91 +24,7 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## TWEAK -- 50 files, grouped by first error
-
-### use of undeclared identifier 'X' (12)
-
-`AIRCRAFT.CPP`, `CDFILE.CPP`, `COMINIT.CPP`, `DYNAVEC.CPP`, `KEY.CPP`, `RAWFILE.CPP`, `REINF.CPP`, `ROTBMP.CPP`, `RULES.CPP`, `SCORE.CPP`, `STARTUP.CPP`, `WINSTUB.CPP`
-
-### no matching function for call to 'X' (9)
-
-`CONQUER.CPP`, `DIALOG.CPP`, `EDIT.CPP`, `LIST.CPP`, `MSGBOX.CPP`, `READLINE.CPP`, `SPECIAL.CPP`, `STATBTN.CPP`, `TEXTBTN.CPP`
-
-### out-of-line definition of 'X' does not match any declaration in 'X' (5)
-
-`BUILDING.CPP`, `FOOT.CPP`, `INFANTRY.CPP`, `TECHNO.CPP`, `UNIT.CPP`
-
-### no matching member function for call to 'X' (5)
-
-`CCINI.CPP`, `INI.CPP`, `INIT.CPP`, `SAVELOAD.CPP`, `SCENARIO.CPP`
-
-### cannot assign to non-static data member within const member function 'X' (2)
-
-`ANIM.CPP`, `OBJECT.CPP`
-
-### 'X' can only be specified inside the class definition (2)
-
-`SLIDER.CPP`, `TXTLABEL.CPP`
-
-### cast from pointer to smaller type 'X' loses information (1)
-
-`2KEYFRAM.CPP`
-
-### reference to non-static member function must be called; did you mean to  (1)
-
-`EVENT.CPP`
-
-### cannot initialize a variable of type 'X' with an rvalue of type 'X' (1)
-
-`FIXED.CPP`
-
-### template parameter list matching the non-templated nested type 'X' shoul (1)
-
-`GLOBALS.CPP`
-
-### template specialization requires 'X' (1)
-
-`HOUSE.CPP`
-
-### C-style cast from 'X' to 'X' is not allowed (1)
-
-`IOOBJ.CPP`
-
-### comparison between pointer and integer ('X' and 'X') (1)
-
-`LAYER.CPP`
-
-### variable has incomplete type 'X' (1)
-
-`LOADDLG.CPP`
-
-### assigning to 'X' (aka 'X') from incompatible type 'X' (1)
-
-`MAP.CPP`
-
-### unknown type name 'X' (1)
-
-`MENUS.CPP`
-
-### conflicting types for 'X' (1)
-
-`MISSION.CPP`
-
-### assigning to 'X' from 'X' discards qualifiers (1)
-
-`PROFILE.CPP`
-
-### a type specifier is required for all declarations (1)
-
-`RADAR.CPP`
-
-### 'X' file not found (1)
-
-`UDPADDR.CPP`
-
-### use of undeclared identifier 'X'; did you mean 'X'? (1)
-
-`VERSION.CPP`
+## TWEAK -- 0 files, grouped by first error
 
 ---
 
@@ -223,11 +140,23 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## DROP -- 21 files
+## NATIVE (C++) -- 5 files
+
+| File | What replaces it |
+|---|---|
+| `CDFILE.CPP` | CD-ROM drive detection -> a data directory |
+| `CONQUER.CPP` | game loop is portable; its remaining errors are DirectDraw palette access and the CD volume check |
+| `KEY.CPP` | Win32 keyboard and mouse messages -> NSEvent |
+| `STARTUP.CPP` | WinMain, single-instance check, CD/path setup -> the app entry point |
+| `WINSTUB.CPP` | window creation and the Win32 message pump -> NSApplication / NSWindow |
+
+---
+
+## DROP -- 22 files
 
 | File | Reason |
 |---|---|
-| `CONNECT.CPP` | multiplayer / online / serial |
+| `COMINIT.CPP` | OLE initialisation for WOLAPI; ComInit is instantiated nowhere in CODE/ |
 | `DDE.CPP` | multiplayer / online / serial |
 | `DIBFILE.CPP` | Win32 GDI bitmap files; only caller is DIBUTIL |
 | `DIBUTIL.CPP` | Win32 GDI bitmaps; only callers are WOLAPIOB.CPP and ICONLIST.CPP |
@@ -244,6 +173,7 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 | `STATS.CPP` | multiplayer / online / serial |
 | `TCPIP.CPP` | multiplayer / online / serial |
 | `TOOLTIP.CPP` | ToolTipClass; used only by WOL_* and ICONLIST |
+| `UDPADDR.CPP` | multiplayer / online / serial |
 | `WOL_GSUP.CPP` | Westwood Online (service defunct) |
 | `WSPIPX.CPP` | multiplayer / online / serial |
 | `WSPROTO.CPP` | multiplayer / online / serial |

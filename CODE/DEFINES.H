@@ -517,7 +517,16 @@ typedef union {
 	} Sub;
 } LEPTON_COMPOSITE;
 
-typedef unsigned long	COORDINATE;
+/*
+**	Port: COORDINATE and TARGET were `unsigned long` / `long` -- 32 bits on Win32,
+**	64 on macOS. Both are overlaid by packed unions (COORD_COMPOSITE,
+**	TARGET_COMPOSITE) that fill only 32 bits, so with a 64-bit typedef the upper
+**	half of every coordinate built through XY_Coord() was uninitialised stack
+**	memory. Observed: XY_Coord(0x1234,0x5678) returned 0x0000000156781234 at -O0
+**	and 0x56781234 at -O2 -- equality between identical coordinates depended on
+**	optimisation level and stack contents. Fixed-width types restore the original.
+*/
+typedef uint32_t	COORDINATE;
 typedef union {
 	COORDINATE Coord;
 	struct {
@@ -561,7 +570,7 @@ typedef int		WAYPOINT;
 **	and an index value of 0, the target value returned is identical with
 **	TARGET_NONE. This is by design and is necessary.
 */
-typedef long	TARGET;
+typedef int32_t	TARGET;	// port: see COORDINATE above
 
 #define	TARGET_MANTISSA			24				// Bits of value precision.
 #define	TARGET_EXPONENT			8
@@ -577,6 +586,10 @@ typedef union {
 #endif
 	} Sub;
 } TARGET_COMPOSITE;
+#ifdef __cplusplus
+static_assert(sizeof(COORD_COMPOSITE) == 4, "COORDINATE must be 32 bits: COORD_COMPOSITE overlays exactly two 16-bit leptons");
+static_assert(sizeof(TARGET_COMPOSITE) == 4, "TARGET must be 32 bits: TARGET_COMPOSITE packs a 24-bit mantissa and 8-bit exponent");
+#endif
 
 
 inline TARGET Build_Target(RTTIType kind, int value)

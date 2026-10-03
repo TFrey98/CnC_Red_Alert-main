@@ -590,7 +590,8 @@ AnimClass::~AnimClass(void)
 			**	this animation is attached to. If there are no others, then inform the
 			**	attached object of this fact.
 			*/
-			for (int index = 0; index < Anims.Count(); index++) {
+			int index;	// port: read after the loop below; hoisted to keep Watcom's (pre-standard) for-scope
+			for (index = 0; index < Anims.Count(); index++) {
 				if (Anims.Ptr(index) != this && Anims.Ptr(index)->xObject == xObject) break;
 			}
 

@@ -551,7 +551,7 @@ void EventClass::Execute(void)
 				Special = Data.Options.Data;
 				HouseClass * house = Houses.Raw_Ptr(ID);
 
-				sprintf(txt, Text_String(TXT_SPECIAL_WARNING), house->Name);
+				sprintf(txt, Text_String(TXT_SPECIAL_WARNING), house->Name());	// port: was `house->Name` -- a member-function name, not a string; passed to %s it printed garbage
 				Session.Messages.Add_Message(NULL, 0, txt,
 					house->RemapColor,
 					TPF_6PT_GRAD|TPF_USE_GRAD_PAL|TPF_FULLSHADOW, 1200);

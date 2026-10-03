@@ -1005,7 +1005,7 @@ void ScoreClass::Do_Nod_Buildings_Graph(void)
 /*BG		if (!Keyboard->Check()) */ Call_Back_Delay(1);
 	}
 
-	i = max(GBKilled, NBKilled);
+	int i = max(GBKilled, NBKilled);	// port: reused the leaked counter of the loop above; overwritten here, so a fresh declaration is exact
 	for (int q = 0; q <= i; q++) {
 		Set_Font_Palette(_redpal);
 		Count_Up_Print( "%d", q, NBKilled, BUILDING_X + 16, BUILDING_Y + 10);

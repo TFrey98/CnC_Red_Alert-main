@@ -64,7 +64,7 @@ class FootClass :	public TechnoClass
 		**	toggle when path limiting is true, but there is not target found within
 		**	the limited range.
 		*/
-		unsigned IsScanLimited:1;
+		mutable unsigned IsScanLimited:1;	// port: cleared by the const Greatest_Threat(); Watcom did not enforce const on it
 
 		/*
 		**	If this unit has officially joined the team's group, then this flag is

@@ -38,5 +38,22 @@ rows=[l.split() for l in open('$T/rsa_modexp_vectors.txt')]
 open('$OUT/rsa_valid.txt','w').write(''.join(' '.join(r)+'\n' for r in rows if int(r[1],16) < int(r[2],16)))"
 KAT="$OUT/rsa_valid.txt" "$OUT/rsa_modexp" || fail=1
 
+print "Coordinate composition (XY_Coord) at -O0, where a 64-bit COORDINATE leaked stack bytes"
+clang++ $RA_CXXFLAGS -w -O0 -iquote "${RA_ROOT}/CODE" -c "$T/coord_compose.cpp" -o "$OUT/coord_compose.o"
+clang++ $RA_TARGET "$OUT/coord_compose.o" -o "$OUT/coord_compose"
+"$OUT/coord_compose" | tail -1 | grep -q "exact" && "$OUT/coord_compose" | tail -1 || { "$OUT/coord_compose"; fail=1 }
+
+print "DOS directory search (scenario archives, save-game list)"
+clang++ $RA_CXXFLAGS -w -g -fsanitize=address "$T/dos_find.cpp" "${RA_ROOT}/port/compat/wwcompat.cpp" -o "$OUT/dos_find"
+"$OUT/dos_find" | tail -1 | grep -q "all pass" && "$OUT/dos_find" | tail -1 || { "$OUT/dos_find"; fail=1 }
+
+print "Win32 file API on POSIX (RawFileClass: every MIX, INI and save file)"
+clang++ $RA_CXXFLAGS -w -g -fsanitize=address "$T/win32_file.cpp" "${RA_ROOT}/port/compat/wwcompat.cpp" -o "$OUT/win32_file"
+"$OUT/win32_file" | tail -1 | grep -q "all pass" && "$OUT/win32_file" | tail -1 || { "$OUT/win32_file"; fail=1 }
+
+print "RawFileClass (CODE/RAWFILE.CPP) end to end, incl. MIX-style Bias windows"
+clang++ $RA_CXXFLAGS -w -g -fsanitize=address -iquote "${RA_ROOT}/CODE" "$T/rawfile.cpp" "${RA_ROOT}/CODE/RAWFILE.CPP" "${RA_ROOT}/port/compat/wwcompat.cpp" -o "$OUT/rawfile"
+"$OUT/rawfile" | tail -1 | grep -q "all pass" && "$OUT/rawfile" | tail -1 || { "$OUT/rawfile"; fail=1 }
+
 print ""
 (( fail )) && { print "FAILED"; exit 1 } || print "all data-path tests pass"

@@ -414,6 +414,19 @@ typedef struct _MEMORYSTATUS {
 } MEMORYSTATUS, *LPMEMORYSTATUS;
 void GlobalMemoryStatus(LPMEMORYSTATUS buffer);
 
+typedef struct _SYSTEMTIME {
+	WORD wYear;
+	WORD wMonth;
+	WORD wDayOfWeek;
+	WORD wDay;
+	WORD wHour;
+	WORD wMinute;
+	WORD wSecond;
+	WORD wMilliseconds;
+} SYSTEMTIME, *LPSYSTEMTIME;
+void GetSystemTime(LPSYSTEMTIME time);	/* implemented in wwcompat.cpp (UTC, like Win32) */
+void GetLocalTime(LPSYSTEMTIME time);	/* implemented in wwcompat.cpp */
+
 /*
 **	Window messages and the message pump.
 **
@@ -463,6 +476,7 @@ BOOL  SetForegroundWindow(HWND wnd);
 HWND  FindWindowA(LPCSTR classname, LPCSTR windowname);
 HWND  GetFocus(void);
 BOOL  ShowWindow(HWND wnd, int cmdshow);
+int   ShowCursor(BOOL show);		/* hides the OS cursor; the game draws its own (WWMOUSE). Native backend implements it. */
 
 /*
 **	Win32's A/W split: <windows.h> defines the unsuffixed name as a macro for
@@ -490,6 +504,57 @@ BOOL  ShowWindow(HWND wnd, int cmdshow);
 #define INVALID_HANDLE_VALUE ((HANDLE)(LONG_PTR)-1)
 
 UINT SetErrorMode(UINT mode);
+
+/*
+**	Win32 file API, implemented for real on POSIX in wwcompat.cpp. RawFileClass
+**	(CODE/RAWFILE.CPP) -- through which every MIX, INI and save file is opened --
+**	is written against these. File HANDLEs are tagged file descriptors so that
+**	CloseHandle() can tell them from the engine's other handle kinds.
+*/
+#define FILE_BEGIN               0
+#define FILE_CURRENT             1
+#define FILE_END                 2
+#define INVALID_SET_FILE_POINTER ((DWORD)-1)
+#define INVALID_FILE_SIZE        ((DWORD)0xFFFFFFFF)
+#define FILE_FLAG_RANDOM_ACCESS     0x10000000
+#define FILE_FLAG_SEQUENTIAL_SCAN   0x08000000
+#define ERROR_FILE_NOT_FOUND     2L
+#define ERROR_PATH_NOT_FOUND     3L
+#define ERROR_ACCESS_DENIED      5L
+#define ERROR_INVALID_HANDLE     6L
+#define ERROR_FILE_EXISTS        80L
+#define ERROR_DISK_FULL          112L
+
+typedef struct _FILETIME {				/* 100ns ticks since 1601-01-01 UTC */
+	DWORD dwLowDateTime;
+	DWORD dwHighDateTime;
+} FILETIME, *LPFILETIME;
+
+typedef struct _BY_HANDLE_FILE_INFORMATION {
+	DWORD    dwFileAttributes;
+	FILETIME ftCreationTime;
+	FILETIME ftLastAccessTime;
+	FILETIME ftLastWriteTime;
+	DWORD    dwVolumeSerialNumber;
+	DWORD    nFileSizeHigh;
+	DWORD    nFileSizeLow;
+	DWORD    nNumberOfLinks;
+	DWORD    nFileIndexHigh;
+	DWORD    nFileIndexLow;
+} BY_HANDLE_FILE_INFORMATION, *LPBY_HANDLE_FILE_INFORMATION;
+
+HANDLE CreateFileA(LPCSTR name, DWORD access, DWORD share, void * security, DWORD disposition, DWORD flags, HANDLE templatefile);
+BOOL   ReadFile(HANDLE file, LPVOID buffer, DWORD toread, LPDWORD read, LPOVERLAPPED overlapped);
+BOOL   WriteFile(HANDLE file, LPCVOID buffer, DWORD towrite, LPDWORD written, LPOVERLAPPED overlapped);
+DWORD  SetFilePointer(HANDLE file, LONG distance, LONG * distancehigh, DWORD method);
+DWORD  GetFileSize(HANDLE file, LPDWORD sizehigh);
+BOOL   DeleteFileA(LPCSTR name);
+BOOL   GetFileInformationByHandle(HANDLE file, LPBY_HANDLE_FILE_INFORMATION info);
+BOOL   SetFileTime(HANDLE file, const FILETIME * creation, const FILETIME * access, const FILETIME * write);
+BOOL   FileTimeToDosDateTime(const FILETIME * filetime, WORD * dosdate, WORD * dostime);
+BOOL   DosDateTimeToFileTime(WORD dosdate, WORD dostime, LPFILETIME filetime);
+#define CreateFile CreateFileA
+#define DeleteFile DeleteFileA
 #define SEM_FAILCRITICALERRORS 0x0001
 #define SEM_NOOPENFILEERRORBOX 0x8000
 

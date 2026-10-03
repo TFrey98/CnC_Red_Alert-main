@@ -274,14 +274,14 @@ bool Init_Game(int , char * [])
 	/*
 	**	Find and process any rules for this game.
 	*/
-	if (RuleINI.Load(CCFileClass("RULES.INI"), false)) {
+	if (RuleINI.Load(ww_lvalue(CCFileClass("RULES.INI")), false)) {
 		Rule.Process(RuleINI);
 	}
 #ifdef FIXIT_CSII	//	checked - ajw 9/28/98
 	//  Aftermath runtime change 9/29/98
 	//	This is safe to do, as only rules for aftermath units are included in this ini.
 	if (Is_Aftermath_Installed() == true) {
-		if (AftermathINI.Load(CCFileClass("AFTRMATH.INI"), false)) {
+		if (AftermathINI.Load(ww_lvalue(CCFileClass("AFTRMATH.INI")), false)) {
 			Rule.Process(AftermathINI);
 		}
 	}
@@ -1436,11 +1436,13 @@ bool Select_Game(bool fade)
 //			debugprint( "Non Internet game: NewUnitsEnabled = %i\n", NewUnitsEnabled );
 			break;
 		case GAME_INTERNET:
+#ifdef WOLAPI_INTEGRATION	// port: pWolapi only exists with Westwood Online compiled in; single-player never reaches this case
 			if( !pWolapi )
 			{
 //				debugprint( "pWolapi is null on internet game!" );
 				Fatal( "pWolapi is null on internet game!" );
 			}
+#endif
 			//if( pWolapi->bEnableNewAftermathUnits )
 			if( bAftermathMultiplayer )
 				NewUnitsEnabled = true;
@@ -2237,7 +2239,8 @@ long Obfuscate(char const * string)
 		if (((length+3) & 0x00FC) > maxlen) {
 			maxlen = ((length+3) & 0x00FC);
 		}
-		for (int index = length; index < maxlen; index++) {
+		int index;	// port: read after the loop (`length = index`); hoisted to keep Watcom's for-scope
+		for (index = length; index < maxlen; index++) {
 			buffer[index] = 'A' + ((('?' ^ buffer[index-length]) + index) % 26);
 		}
 		length = index;
@@ -3409,7 +3412,7 @@ static void Init_Bulk_Data(void)
 	**	Fetch the tutorial message data.
 	*/
 	INIClass ini;
-	ini.Load(CCFileClass("TUTORIAL.INI"));
+	ini.Load(ww_lvalue(CCFileClass("TUTORIAL.INI")));
 	for (int index = 0; index < ARRAY_SIZE(TutorialText); index++) {
 		TutorialText[index] = NULL;
 

@@ -879,7 +879,7 @@ bool Load_Game(int id)
 	**	Rescan the scenario file for any rules updates.
 	*/
 	CCINIClass ini;
-	int result = ini.Load(CCFileClass(Scen.ScenarioName), true);
+	int result = ini.Load(ww_lvalue(CCFileClass(Scen.ScenarioName)), true);
 
 	/*
 	**	Reset the rules values to their initial settings.
@@ -958,7 +958,7 @@ if(Special.IsFromWChat || SpawnedFromWChat) {
 		     	}
 			}
 			CCINIClass mpini;
-			if (mpini.Load(CCFileClass("MPLAYER.INI"), false)) {
+			if (mpini.Load(ww_lvalue(CCFileClass("MPLAYER.INI")), false)) {
 				Rule.General(mpini);
 				Rule.Recharge(mpini);
 				Rule.AI(mpini);
@@ -1323,7 +1323,7 @@ void Decode_All_Pointers(void)
 	**	Currently-selected objects.
 	*/
 	for (int index = 0; index < CurrentObject.Count(); index++) {
-		CurrentObject[index] = As_Object((TARGET)CurrentObject[index]);
+		CurrentObject[index] = As_Object((TARGET)(intptr_t)CurrentObject[index]);
 		assert(CurrentObject[index] != NULL);
 	}
 

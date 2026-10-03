@@ -851,6 +851,9 @@ int Create_Air_Reinforcement(HouseClass *house, AircraftType air, int number, Mi
 **	ROTBMP.CPP
 */
 int Rotate_Bitmap(GraphicViewPortClass *srcvp,GraphicViewPortClass *destvp,int angle);
+// port: defined in WRITEPCX.CPP and called from CONQUER.CPP, but declared in no header; only the
+// library's unrelated Write_PCX_File(char *, ...) in FILEPCX.H was visible.
+int Write_PCX_File(FileClass & file, GraphicBufferClass & pic, PaletteClass * palette);
 
 /*
 **	SAVELOAD.CPP

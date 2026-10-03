@@ -34,19 +34,21 @@ every file that needs them is in the multiplayer path.
 
 ## Current state
 
-**176 of 247 translation units compile cleanly for arm64.** 50 more are in scope
-and still failing; 21 are multiplayer/online and tagged DROP. With no per-file
-error cap, the remaining error count is 635 (from 1,465 at the start of the
-session that introduced the uncapped measurement -- clang stops at 20 errors per
-file by default, which hid ~40% of the real total).
+**Every in-scope game translation unit compiles for arm64.** Of the 247 in the
+build set: **220 compile clean**, **5 are tagged NATIVE** -- the game's Win32
+platform layer (`WINSTUB`, `STARTUP`, `KEY`, `CDFILE`, and the DirectDraw/CD
+remnants of `CONQUER`), which is reimplemented over `port/backend/` rather than
+patched -- and **22 are DROP** (multiplayer and Westwood Online). There is no
+TWEAK work left in `CODE/`.
 
-The denominator changed from 277 to 247, and that is a correction, not a
-regression. `probe.sh` used to compile every `.CPP` in `CODE/`; it now compiles
-exactly the game's build set (`port/build-set.txt`, generated from
-`CODE/MAKEFILE` by `port/gen-build-set.py`). 31 files that were never part of
-the shipped Win32 game were archived, and three source fragments that are only
-valid when `#include`d (`ITABLE.CPP`, `DTABLE.CPP`, `MAPEDSEL.CPP`) are no longer
-counted as failures.
+That changes what "next" means. The C++ compile grind for the game is done; the
+remaining phases are the platform layer, the libraries (`WIN32LIB/`, `WINVQ/`,
+not yet measured by `probe.sh`), the assembly, and then linking -- which will be
+the next great source of truth, the way compiling was.
+
+The file layer is already real: `RawFileClass`, through which every MIX, INI and
+save file is opened, runs end to end on macOS over a POSIX implementation of the
+Win32 file API, and is covered by `port/tests/run.sh`.
 
 Tools, in the order to run them:
 
@@ -102,6 +104,50 @@ Two details worth knowing before changing any of this:
 Remaining known instances are listed under "What remains". The sweep that found
 the algorithmic ones was simply: every `sizeof(long)` in live code is a place
 that reasons about `long`'s width, and on macOS that reasoning is wrong.
+
+### Second pass: more of the same class, found the same way
+
+| What | Effect before the fix | How it was found / proven |
+|---|---|---|
+| `COORDINATE` / `TARGET` typedef'd to `long` (`DEFINES.H`) | `XY_Coord()` returned `0x0000000156781234` at -O0 and `0x56781234` at -O2: the upper half of every coordinate was stack garbage, so identical coordinates compared unequal depending on build | ran it; `port/tests/coord_compose.cpp`; `static_assert`s on both unions |
+| `VesselClass::Take_Damage(..., int forced)` vs base `bool forced` | **not an override any more** -- ships hit through an `ObjectClass*` skipped their own damage logic | `-Woverloaded-virtual` across the whole build set; confirmed it is the only one |
+| Keyframe slot cache: `memset(..., frames*4)` on an array of `char *` | only half the cache zeroed; later frames read stale pointers as "already decoded" -- corrupt or crashing unit graphics | reading `2KEYFRAM.CPP`'s pointer-offset code |
+| `ShapeHeaderType::shape_data` -- an offset stored in a `char *` | struct grew from 12 to 24 bytes while `2KEYFBUF.ASM` reads it as three dwords | `static_assert(sizeof == 12)` |
+| `RawFileClass` passing `&(unsigned long&)bytesread` to `ReadFile` | 4-byte count written into an 8-byte `long`: byte counts half garbage | compiling against the real file API |
+| Save-game pointer encoding (`Code_Pointers` / `Decode_Pointers`) | 32-bit ids round-tripped through truncating casts | 12 sites, `(TARGET)(intptr_t)` |
+| `CloseHandle` was a no-op stub | once files were real, every close would have leaked a descriptor | `port/tests/win32_file.cpp` checks the descriptor is gone |
+
+Also from this pass, each a Watcom-vs-standard difference with an exact
+equivalent rather than a workaround:
+
+- **Friend injection.** Watcom made friend functions defined inside a class
+  visible like free functions; standard C++ finds them only through an argument
+  of the class type. `FIXED.H` now redeclares its eight named friends at
+  namespace scope. (I first misdiagnosed `Sub_Saturate` as missing from the
+  release and wrote a duplicate -- it was defined as a friend all along; the
+  duplicate is gone.)
+- **Temporaries bound to non-const references** -- `ini.Load(CCFileClass("RULES.INI"))`.
+  `ww_lvalue()` in `wwcompat.h` gives the temporary exactly its original
+  full-expression lifetime; naming it instead would keep files open longer.
+- **`TBLACK` as a null pointer** -- an enumerator equal to 0 was accepted as a
+  null pointer; the receiving functions explicitly handle `fore == NULL`. 33
+  sites now pass `NULL`.
+- **`static` members defined `const`, `virtual`/`static` on out-of-line
+  definitions, explicit specialisations without `template<>`, implicit `int`.**
+
+Known and deliberately left as-is:
+
+- **`RawFileClass::Read` retries a failed read forever** (`Error()` is empty and
+  the loop `continue`s). On 1997 Windows that waited for the CD to be
+  reinserted; on macOS a persistent I/O error would hang. Not changed without a
+  decision on what should happen instead.
+- **The build is a variant that never shipped.** `CODE/MAKEFILE` defined
+  `WOLAPI_INTEGRATION` and `WINSOCK_IPX`; this port does not, to keep OLE/COM and
+  defunct online code out. 51 files test those symbols. `GAME_VERSION`, which
+  lived only in the WOL header, is now supplied in `VERSION.CPP` with the same
+  value.
+- Two debug `printf`s in `EVENT.CPP` pass `long` to `%d`; harmless on this ABI and
+  only printed with `Debug_Print_Events`.
 
 ### Related: bool, narrowing, and for-scope
 
@@ -402,13 +448,8 @@ palettes in places, and silently rescaling both would corrupt one of them.
 
 ## What remains, roughly in order
 
-1. **Finish the compile grind -- 50 in-scope files in `CODE/`.** `WORKLIST.md`
-   groups them by first error. Remaining classes are now mostly per-file: Win32
-   API surface (stub in `compat/` only where the engine needs it to compile;
-   anything GDI-shaped has turned out to be online-only so far), dependent-base
-   `this->`, signature mismatches (`Take_Damage` in five files), and 18 pointer
-   truncations in `2KEYFRAM.CPP` that store pointers as integer offsets and need
-   reading, not casting.
+1. ~~**Finish the compile grind for `CODE/`.**~~ **Done** -- 0 TWEAK files remain.
+   The five NATIVE files are item 4's work.
 
    **The libraries are not measured yet.** `probe.sh` covers `CODE/` only. The
    ~200 C++ files in `WIN32LIB/` and `WINVQ/` have had their on-disk structs

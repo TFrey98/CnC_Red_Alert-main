@@ -1703,7 +1703,7 @@ void WolapiObject::DoFindPage()
 	SimpleEditDlgClass* pFindPageDlg;
 
 	//	Ask user for user desired.
-	Fancy_Text_Print( TXT_NONE, 0, 0, TBLACK, TBLACK, TPF_TEXT );	//	Required before String_Pixel_Width() call, for god's sake.
+	Fancy_Text_Print( TXT_NONE, 0, 0, NULL, TBLACK, TPF_TEXT );	//	Required before String_Pixel_Width() call, for god's sake.
 	pFindPageDlg = new SimpleEditDlgClass( 400, TXT_WOL_PAGELOCATE, TXT_WOL_USERNAMEPROMPT, WOL_NAME_LEN_MAX );
 	pFindPageDlg->SetButtons( TXT_WOL_LOCATE, Text_String( TXT_CANCEL ), TXT_WOL_PAGE );
 	bPump_In_Call_Back = true;

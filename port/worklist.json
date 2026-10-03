@@ -2,8 +2,8 @@
  "code": [
   {
    "file": "CODE/2KEYFRAM.CPP",
-   "tag": "TWEAK",
-   "note": "cast from pointer to smaller type 'unsigned int' loses information"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/AADATA.CPP",
@@ -27,13 +27,13 @@
   },
   {
    "file": "CODE/AIRCRAFT.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'face'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/ANIM.CPP",
-   "tag": "TWEAK",
-   "note": "cannot assign to non-static data member within const member function 'Render'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/AUDIO.CPP",
@@ -112,8 +112,8 @@
   },
   {
    "file": "CODE/BUILDING.CPP",
-   "tag": "TWEAK",
-   "note": "out-of-line definition of 'Take_Damage' does not match any declaration in 'BuildingClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/BULLET.CPP",
@@ -142,8 +142,8 @@
   },
   {
    "file": "CODE/CCINI.CPP",
-   "tag": "TWEAK",
-   "note": "no matching member function for call to 'Load'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/CCPTR.CPP",
@@ -157,8 +157,8 @@
   },
   {
    "file": "CODE/CDFILE.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier '_HARDERR_FAIL'"
+   "tag": "NATIVE",
+   "note": "CD-ROM drive detection -> a data directory"
   },
   {
    "file": "CODE/CELL.CPP",
@@ -192,18 +192,18 @@
   },
   {
    "file": "CODE/COMINIT.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'OleInitialize'"
+   "tag": "DROP",
+   "note": "OLE initialisation for WOLAPI; ComInit is instantiated nowhere in CODE/"
   },
   {
    "file": "CODE/CONNECT.CPP",
-   "tag": "DROP",
-   "note": "multiplayer / online / serial"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/CONQUER.CPP",
-   "tag": "TWEAK",
-   "note": "no matching function for call to 'Write_PCX_File'"
+   "tag": "NATIVE",
+   "note": "game loop is portable; its remaining errors are DirectDraw palette access and the CD volume check"
   },
   {
    "file": "CODE/CONST.CPP",
@@ -272,8 +272,8 @@
   },
   {
    "file": "CODE/DIALOG.CPP",
-   "tag": "TWEAK",
-   "note": "no matching function for call to 'Simple_Text_Print'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/DIBFILE.CPP",
@@ -307,13 +307,13 @@
   },
   {
    "file": "CODE/DYNAVEC.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'Length'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/EDIT.CPP",
-   "tag": "TWEAK",
-   "note": "no matching function for call to 'Fancy_Text_Print'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/EGOS.CPP",
@@ -327,8 +327,8 @@
   },
   {
    "file": "CODE/EVENT.CPP",
-   "tag": "TWEAK",
-   "note": "reference to non-static member function must be called; did you mean to call it with no arguments?"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/EXPAND.CPP",
@@ -362,8 +362,8 @@
   },
   {
    "file": "CODE/FIXED.CPP",
-   "tag": "TWEAK",
-   "note": "cannot initialize a variable of type 'char *' with an rvalue of type 'const char *'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/FLASHER.CPP",
@@ -377,8 +377,8 @@
   },
   {
    "file": "CODE/FOOT.CPP",
-   "tag": "TWEAK",
-   "note": "out-of-line definition of 'Take_Damage' does not match any declaration in 'FootClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/FUSE.CPP",
@@ -407,8 +407,8 @@
   },
   {
    "file": "CODE/GLOBALS.CPP",
-   "tag": "TWEAK",
-   "note": "template parameter list matching the non-templated nested type 'CCPtr<AircraftClass>' should be empty ('templa"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/GOPTIONS.CPP",
@@ -437,8 +437,8 @@
   },
   {
    "file": "CODE/HOUSE.CPP",
-   "tag": "TWEAK",
-   "note": "template specialization requires 'template<>'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/HSV.CPP",
@@ -457,18 +457,18 @@
   },
   {
    "file": "CODE/INFANTRY.CPP",
-   "tag": "TWEAK",
-   "note": "out-of-line definition of 'Take_Damage' does not match any declaration in 'InfantryClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/INI.CPP",
-   "tag": "TWEAK",
-   "note": "no matching member function for call to 'Load'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/INIT.CPP",
-   "tag": "TWEAK",
-   "note": "no matching member function for call to 'Load'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/INT.CPP",
@@ -497,8 +497,8 @@
   },
   {
    "file": "CODE/IOOBJ.CPP",
-   "tag": "TWEAK",
-   "note": "C-style cast from 'HouseClass *' to 'HousesType' is not allowed"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/IPX.CPP",
@@ -537,13 +537,13 @@
   },
   {
    "file": "CODE/KEY.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'ToAscii'"
+   "tag": "NATIVE",
+   "note": "Win32 keyboard and mouse messages -> NSEvent"
   },
   {
    "file": "CODE/LAYER.CPP",
-   "tag": "TWEAK",
-   "note": "comparison between pointer and integer ('int' and 'char *(*)(const char *, int)')"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/LCW.CPP",
@@ -572,13 +572,13 @@
   },
   {
    "file": "CODE/LIST.CPP",
-   "tag": "TWEAK",
-   "note": "no matching function for call to 'Fancy_Text_Print'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/LOADDLG.CPP",
-   "tag": "TWEAK",
-   "note": "variable has incomplete type 'struct find_t'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/LOGIC.CPP",
@@ -622,8 +622,8 @@
   },
   {
    "file": "CODE/MAP.CPP",
-   "tag": "TWEAK",
-   "note": "assigning to 'CELL' (aka 'short') from incompatible type 'char *(const char *, int)'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/MAPEDDLG.CPP",
@@ -662,13 +662,13 @@
   },
   {
    "file": "CODE/MENUS.CPP",
-   "tag": "TWEAK",
-   "note": "unknown type name 'SYSTEMTIME'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/MISSION.CPP",
-   "tag": "TWEAK",
-   "note": "conflicting types for 'Is_Recruitable_Mission'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/MIXFILE.CPP",
@@ -707,8 +707,8 @@
   },
   {
    "file": "CODE/MSGBOX.CPP",
-   "tag": "TWEAK",
-   "note": "no matching function for call to 'Fancy_Text_Print'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/MSGLIST.CPP",
@@ -737,8 +737,8 @@
   },
   {
    "file": "CODE/OBJECT.CPP",
-   "tag": "TWEAK",
-   "note": "cannot assign to non-static data member within const member function 'Render'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/ODATA.CPP",
@@ -792,8 +792,8 @@
   },
   {
    "file": "CODE/PROFILE.CPP",
-   "tag": "TWEAK",
-   "note": "assigning to 'char *' from 'const char *' discards qualifiers"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/QUEUE.CPP",
@@ -802,8 +802,8 @@
   },
   {
    "file": "CODE/RADAR.CPP",
-   "tag": "TWEAK",
-   "note": "a type specifier is required for all declarations"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/RADIO.CPP",
@@ -827,8 +827,8 @@
   },
   {
    "file": "CODE/RAWFILE.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'CreateFile'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/RAWOLAPI.CPP",
@@ -837,8 +837,8 @@
   },
   {
    "file": "CODE/READLINE.CPP",
-   "tag": "TWEAK",
-   "note": "no matching function for call to 'Read_Line'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/RECT.CPP",
@@ -847,8 +847,8 @@
   },
   {
    "file": "CODE/REINF.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'adj'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/RGB.CPP",
@@ -862,28 +862,28 @@
   },
   {
    "file": "CODE/ROTBMP.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier '_READ'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/RULES.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'Sub_Saturate'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/SAVELOAD.CPP",
-   "tag": "TWEAK",
-   "note": "no matching member function for call to 'Load'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/SCENARIO.CPP",
-   "tag": "TWEAK",
-   "note": "no matching member function for call to 'Load'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/SCORE.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'i'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/SCROLL.CPP",
@@ -937,8 +937,8 @@
   },
   {
    "file": "CODE/SLIDER.CPP",
-   "tag": "TWEAK",
-   "note": "'virtual' can only be specified inside the class definition"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/SMUDGE.CPP",
@@ -952,8 +952,8 @@
   },
   {
    "file": "CODE/SPECIAL.CPP",
-   "tag": "TWEAK",
-   "note": "no matching function for call to 'Fancy_Text_Print'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/SPRITE.CPP",
@@ -962,13 +962,13 @@
   },
   {
    "file": "CODE/STARTUP.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'SW_RESTORE'"
+   "tag": "NATIVE",
+   "note": "WinMain, single-instance check, CD/path setup -> the app entry point"
   },
   {
    "file": "CODE/STATBTN.CPP",
-   "tag": "TWEAK",
-   "note": "no matching function for call to 'Fancy_Text_Print'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/STATS.CPP",
@@ -1022,8 +1022,8 @@
   },
   {
    "file": "CODE/TECHNO.CPP",
-   "tag": "TWEAK",
-   "note": "out-of-line definition of 'Take_Damage' does not match any declaration in 'TechnoClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/TEMPLATE.CPP",
@@ -1042,8 +1042,8 @@
   },
   {
    "file": "CODE/TEXTBTN.CPP",
-   "tag": "TWEAK",
-   "note": "no matching function for call to 'Fancy_Text_Print'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/THEME.CPP",
@@ -1077,8 +1077,8 @@
   },
   {
    "file": "CODE/TXTLABEL.CPP",
-   "tag": "TWEAK",
-   "note": "'virtual' can only be specified inside the class definition"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/UDATA.CPP",
@@ -1087,13 +1087,13 @@
   },
   {
    "file": "CODE/UDPADDR.CPP",
-   "tag": "TWEAK",
-   "note": "'nspapi.h' file not found"
+   "tag": "DROP",
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/UNIT.CPP",
-   "tag": "TWEAK",
-   "note": "out-of-line definition of 'Take_Damage' does not match any declaration in 'UnitClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/UTRACKER.CPP",
@@ -1112,8 +1112,8 @@
   },
   {
    "file": "CODE/VERSION.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'GAME_VERSION'; did you mean 'MAX_VERSION'?"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/VESSEL.CPP",
@@ -1147,8 +1147,8 @@
   },
   {
    "file": "CODE/WINSTUB.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'PostMessage'"
+   "tag": "NATIVE",
+   "note": "window creation and the Win32 message pump -> NSApplication / NSWindow"
   },
   {
    "file": "CODE/WOLAPIOB.CPP",

@@ -1016,7 +1016,8 @@ void MapClass::Logic(void)
 	*/
 	int subcount = MAP_CELL_TOTAL / (Rule.GrowthRate * TICKS_PER_MINUTE);
 	subcount = max(subcount, 1);
-	for (int index = TiberiumScan; index < MAP_CELL_TOTAL; index++) {
+	int index;	// port: read after the loop below; hoisted to keep Watcom's (pre-standard) for-scope
+	for (index = TiberiumScan; index < MAP_CELL_TOTAL; index++) {
 		CELL cell = index;
 		if (In_Radar(cell)) {
 			CellClass * ptr = &(*this)[cell];

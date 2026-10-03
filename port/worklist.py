@@ -35,7 +35,7 @@ DROP = {}
 for f in ('CONNECT COMBUF COMQUEUE PACKET QUEUE SESSION NETDLG MPLAYER MPGSET '
           'IPX IPX95 IPXADDR IPXCONN IPXGCONN IPXMGR NULLCONN NULLDLG NULLMGR '
           'TCPIP INTERNET WSPROTO WSPIPX WSPUDP _WSPROTO BIGCHECK DDE CCDDE '
-          'CCMPATH CCTEN TENMGR MPMGRD MPMGRW MODEMREG SENDFILE STATS').split():
+          'CCMPATH CCTEN TENMGR MPMGRD MPMGRW MODEMREG SENDFILE STATS UDPADDR').split():
     DROP[f] = 'multiplayer / online / serial'
 for f in glob.glob('CODE/WOL*.CPP'):
     DROP[os.path.basename(f)[:-4].upper()] = 'Westwood Online (service defunct)'
@@ -44,8 +44,22 @@ for f, why in (('DIBUTIL', 'Win32 GDI bitmaps; only callers are WOLAPIOB.CPP and
                ('ICONLIST', 'IconListClass; used only by WOL_* and TOOLTIP'),
                ('TOOLTIP', 'ToolTipClass; used only by WOL_* and ICONLIST'),
                ('WOLAPIOB', 'Westwood Online API objects'),
-               ('WOLSTRNG', 'Westwood Online strings')):
+               ('WOLSTRNG', 'Westwood Online strings'),
+               ('COMINIT', 'OLE initialisation for WOLAPI; ComInit is instantiated nowhere in CODE/')):
     DROP[f] = why
+
+# --------------------------------------------------------------------------
+# The game's Win32 platform layer: reimplemented over the native backend
+# (port/backend/), not patched to compile. Declaring more Win32 surface for these
+# would only defer the real work.
+# --------------------------------------------------------------------------
+NATIVE_CPP = {
+    'WINSTUB':  'window creation and the Win32 message pump -> NSApplication / NSWindow',
+    'STARTUP':  'WinMain, single-instance check, CD/path setup -> the app entry point',
+    'KEY':      'Win32 keyboard and mouse messages -> NSEvent',
+    'CDFILE':   'CD-ROM drive detection -> a data directory',
+    'CONQUER':  'game loop is portable; its remaining errors are DirectDraw palette access and the CD volume check',
+}
 
 # --------------------------------------------------------------------------
 # Assembly the reference closure cannot classify correctly on its own.
@@ -162,6 +176,8 @@ for f in build:
         tag, note = 'DONE', 'compiles clean for arm64'
     elif stem in DROP:
         tag, note = 'DROP', DROP[stem]
+    elif stem in NATIVE_CPP:
+        tag, note = 'NATIVE', NATIVE_CPP[stem]
     else:
         tag, note = 'TWEAK', first_error(f)
     code_rows.append({'file': 'CODE/' + f, 'tag': tag, 'note': note})
@@ -194,6 +210,7 @@ out = ['# Worklist -- what needs doing, per file', '',
        f"| DONE | compiles clean for arm64 | {cc['DONE']} |",
        f"| TWEAK | needs source or compat fixes | {cc['TWEAK']} |",
        f"| DROP | out of scope for single-player; left in place because live code includes its headers | {cc['DROP']} |",
+       f"| NATIVE | the Win32 platform layer: reimplement over port/backend/ | {cc['NATIVE']} |",
        '', '## Assembly', '',
        '| Tag | Meaning | Files | Lines |', '|---|---|---|---|']
 for t, m in (('TRANSLATE', 'live, no C yet: rewrite as portable C'),
@@ -211,6 +228,9 @@ for t in ('TRANSLATE', 'SUPERSEDED', 'NATIVE', 'REBUILD', 'DEAD'):
             '| File | Lines | Note |', '|---|---|---|']
     out += [f"| `{r['file']}` | {r['lines']:,} | {r['note']} |" for r in rows]
     out.append('')
+out += ['---', '', f"## NATIVE (C++) -- {cc['NATIVE']} files", '', '| File | What replaces it |', '|---|---|']
+out += [f"| `{os.path.basename(r['file'])}` | {r['note']} |" for r in code_rows if r['tag'] == 'NATIVE']
+out.append('')
 out += ['---', '', f"## DROP -- {cc['DROP']} files", '', '| File | Reason |', '|---|---|']
 out += [f"| `{os.path.basename(r['file'])}` | {r['note']} |" for r in code_rows if r['tag'] == 'DROP']
 open('port/WORKLIST.md', 'w').write('\n'.join(out) + '\n')

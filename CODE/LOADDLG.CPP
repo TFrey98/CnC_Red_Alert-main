@@ -702,7 +702,8 @@ void LoadOptionsClass::Fill_List(ListClass * list)
 		** in the list; if any number isn't found, use that number; otherwise,
 		** use 'N + 1'.
 		*/
-		for (int i = 0; i < Files.Count(); i++) {		// i = the # we're searching for
+		int i;	// port: read after the loop below; hoisted to keep Watcom's (pre-standard) for-scope
+		for (i = 0; i < Files.Count(); i++) {		// i = the # we're searching for
 			id = -1;											// mark as 'not found'
 			for (int j = 0; j < Files.Count(); j++) {	// loop through all game ID's
 				if (Files[j]->Num==i) {					// if found, mark as found

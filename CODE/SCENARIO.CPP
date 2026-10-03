@@ -472,7 +472,7 @@ bool Read_Scenario(char * name)
 		     	}
 			}
 			CCINIClass ini;
-			if (ini.Load(CCFileClass("MPLAYER.INI"), false)) {
+			if (ini.Load(ww_lvalue(CCFileClass("MPLAYER.INI")), false)) {
 				Rule.General(ini);
 				Rule.Recharge(ini);
 				Rule.AI(ini);
@@ -1315,7 +1315,7 @@ bool Restate_Mission(char const * name, int button1, int button2)
 #define	BUTTON_2		2
 #define	BUTTON_3		3
 #define	BUTTON_FLAG	0x8000
-bool BGMessageBox(char const * msg, int btn1, int btn2)
+int BGMessageBox(char const * msg, int btn1, int btn2)	// port: declared int in FUNCTION.H; under Watcom bool was int, so they matched
 {
 #define BUFFSIZE 511
 	char buffer[BUFFSIZE];
@@ -2349,7 +2349,7 @@ bool Read_Scenario_INI(char * fname, bool )
 	**	the mission.ini file.  VG 10/17/96
 	*/
 	INIClass mini;
-	mini.Load(CCFileClass("MISSION.INI"));
+	mini.Load(ww_lvalue(CCFileClass("MISSION.INI")));
 	mini.Get_TextBlock(fname, Scen.BriefingText, sizeof(Scen.BriefingText));
 
 	/*

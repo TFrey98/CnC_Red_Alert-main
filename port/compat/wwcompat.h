@@ -109,6 +109,20 @@ static inline unsigned int wwport_rotr32(unsigned int v, int c)
 ** versions, and a macro would shadow them. Only the _lrotl/_lrotr spellings,
 ** which the engine uses but never defines, are provided. */
 
+/*
+**	ww_lvalue(temporary) -- pass a temporary where the engine takes a non-const
+**	reference, as in `ini.Load(CCFileClass("RULES.INI"))`.
+**
+**	Watcom (like old MSVC) bound temporaries to non-const references; standard
+**	C++ does not. Naming the temporary instead would change its lifetime -- a
+**	CCFileClass would keep its file open to the end of the enclosing block rather
+**	than closing at the end of the statement. This returns a reference that is
+**	valid for exactly the full-expression, which is the lifetime it had before.
+*/
+#ifdef __cplusplus
+template<class T> static inline T & ww_lvalue(T && temporary) { return temporary; }
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -162,6 +176,19 @@ int wwport_memicmp(const void * a, const void * b, size_t count);
 #endif
 
 /*
+**	File-open modes used by the library's FileClass (WIN32LIB/INCLUDE/WWFILE.H
+**	defines READ as _READ). Watcom supplied these; nothing in the tree does. The
+**	values must equal the game's own READ/WRITE in CODE/WWFILE.H (1 and 2),
+**	because both file hierarchies open the same files with the same flags.
+*/
+#ifndef _READ
+#define _READ  1
+#endif
+#ifndef _WRITE
+#define _WRITE 2
+#endif
+
+/*
 **	DOS path decomposition. Drive letters never appear on macOS, so the drive
 **	component always comes back empty and the directory carries the full path.
 */
@@ -169,6 +196,39 @@ void _splitpath(const char * path, char * drive, char * dir, char * fname, char 
 void _makepath(char * path, const char * drive, const char * dir, const char * fname, const char * ext);
 
 long filelength(int handle);
+
+/*
+**	DOS directory enumeration (_dos_findfirst / _dos_findnext).
+**
+**	Used on the load path: INIT.CPP registers every "SC*.MIX" scenario archive it
+**	finds, and LOADDLG.CPP lists "SAVEGAME.*" and orders the slots by the packed
+**	DOS date/time. Implemented for real in wwcompat.cpp on opendir + fnmatch.
+**
+**	The layout is Watcom's. `size` is uint32_t because Watcom's unsigned long
+**	was 32 bits. `name` is the 8.3 field: names that cannot fit are skipped
+**	rather than truncated -- DOS could never have returned them, and truncation
+**	could make two different files look the same.
+*/
+#define _A_NORMAL 0x00
+#define _A_RDONLY 0x01
+#define _A_HIDDEN 0x02
+#define _A_SYSTEM 0x04
+#define _A_VOLID  0x08
+#define _A_SUBDIR 0x10
+#define _A_ARCH   0x20
+
+struct find_t {
+	char           reserved[21];	/* port: holds the search-slot index */
+	char           attrib;
+	unsigned short wr_time;			/* DOS packed: hhhhh mmmmmm sssss (seconds/2) */
+	unsigned short wr_date;			/* DOS packed: yyyyyyy mmmm ddddd (year-1980) */
+	uint32_t       size;
+	char           name[13];
+};
+
+unsigned _dos_findfirst(const char * pattern, unsigned attributes, struct find_t * result);
+unsigned _dos_findnext(struct find_t * result);
+unsigned _dos_findclose(struct find_t * result);
 
 #ifdef __cplusplus
 }

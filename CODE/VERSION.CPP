@@ -51,6 +51,16 @@
 #include "rawolapi.h"		//	For version number.
 #endif
 
+/*
+**	Port: GAME_VERSION lives in RAWOLAPI.H, which is entirely inside
+**	#ifdef WOLAPI_INTEGRATION -- off in this single-player build. It is the game's
+**	own version (3.03, used for save-game compatibility), not an online constant,
+**	so it is supplied here with the identical value.
+*/
+#ifndef GAME_VERSION
+#define GAME_VERSION	0x00030003
+#endif
+
 /****************************** Globals ************************************/
 //---------------------------------------------------------------------------
 // This is a table of version numbers # the communications protocol used for

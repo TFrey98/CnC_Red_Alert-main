@@ -44,11 +44,21 @@
  * Size - Size in bytes of entire file.
  * WAVE - 4 byte identifier (always "WAVE").
  */
+/*
+**	Port: ON-DISK LAYOUT (RIFF/WAVE file header). `long` was 32 bits under Watcom and this
+**	struct was packed by the `#ifdef __WATCOMC__ #pragma pack(1)` that clang never
+**	saw. Fixed-width fields and a scoped pack restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct _WAVHeader {
-	long RIFF;
-	long Size;
-	long WAVE;
+	int32_t RIFF;
+	int32_t Size;
+	int32_t WAVE;
 } WAVHeader;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(WAVHeader) == 12, "WAVHeader must match the original 12-byte on-disk layout");
+#endif
 
 /* WAVFormat: This structure describes the format of the audio data contained
  *            in the WAV file.
@@ -60,14 +70,24 @@ typedef struct _WAVHeader {
  * BlockAlign     - padding.
  * BitsPerSample  - Number of bits per sample (8, 16).
  */
+/*
+**	Port: ON-DISK LAYOUT (WAVE fmt chunk). `long` was 32 bits under Watcom and this
+**	struct was packed by the `#ifdef __WATCOMC__ #pragma pack(1)` that clang never
+**	saw. Fixed-width fields and a scoped pack restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct _WAVFormat {
 	short FormatTag;
 	short Channels;
-	long  SamplesPerSec;
- 	long  AvgBytesPerSec;
+	int32_t  SamplesPerSec;
+ 	int32_t  AvgBytesPerSec;
 	short BlockAlign;
 	short BitsPerSample;
 } WAVFormat;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(WAVFormat) == 16, "WAVFormat must match the original 16-byte on-disk layout");
+#endif
 
 #endif /* WAVEFILE_H */
 

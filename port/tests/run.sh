@@ -52,8 +52,17 @@ clang++ $RA_CXXFLAGS -w -g -fsanitize=address "$T/win32_file.cpp" "${RA_ROOT}/po
 "$OUT/win32_file" | tail -1 | grep -q "all pass" && "$OUT/win32_file" | tail -1 || { "$OUT/win32_file"; fail=1 }
 
 print "RawFileClass (CODE/RAWFILE.CPP) end to end, incl. MIX-style Bias windows"
-clang++ $RA_CXXFLAGS -w -g -fsanitize=address -iquote "${RA_ROOT}/CODE" "$T/rawfile.cpp" "${RA_ROOT}/CODE/RAWFILE.CPP" "${RA_ROOT}/port/compat/wwcompat.cpp" -o "$OUT/rawfile"
+clang++ $RA_CXXFLAGS -w -g -fsanitize=address -iquote "${RA_ROOT}/CODE" "$T/rawfile.cpp" "$T/fake_platform.cpp" "${RA_ROOT}/CODE/RAWFILE.CPP" "${RA_ROOT}/port/compat/wwcompat.cpp" -o "$OUT/rawfile"
 "$OUT/rawfile" | tail -1 | grep -q "all pass" && "$OUT/rawfile" | tail -1 || { "$OUT/rawfile"; fail=1 }
+
+print "Disk read errors: Try Again / Cancel (scripted answers; the real dialog is an NSAlert)"
+clang++ $RA_CXXFLAGS -w -g -iquote "${RA_ROOT}/CODE" "$T/disk_error.cpp" "$T/fake_platform.cpp" "${RA_ROOT}/CODE/RAWFILE.CPP" "${RA_ROOT}/port/compat/wwcompat.cpp" -o "$OUT/disk_error"
+"$OUT/disk_error" | tail -1 | grep -q "all pass" && "$OUT/disk_error" | tail -1 || { "$OUT/disk_error"; fail=1 }
+
+print "Multimedia timers: game clock, mouse, sound, VQA (ThreadSanitizer)"
+clang++ $RA_CXXFLAGS -w -g -fsanitize=thread "$T/mm_timer.cpp" "${RA_ROOT}/port/compat/wwcompat.cpp" -o "$OUT/mm_timer"
+"$OUT/mm_timer" > "$OUT/mm_timer.out" 2>&1; mt=$?
+if (( mt == 0 )) && ! grep -q "WARNING: ThreadSanitizer" "$OUT/mm_timer.out"; then tail -1 "$OUT/mm_timer.out"; else cat "$OUT/mm_timer.out"; fail=1; fi
 
 print ""
 (( fail )) && { print "FAILED"; exit 1 } || print "all data-path tests pass"

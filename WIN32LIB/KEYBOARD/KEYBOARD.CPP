@@ -83,7 +83,7 @@ WWKeyboardClass::WWKeyboardClass(void)
 	// the num lock.
 	//
 	memset(ToggleKeys, 0, 256);
-	for (lp = 0; lp < 255; lp++ ) {
+	for (short lp = 0; lp < 255; lp++ ) {	// port: reused the previous loop's leaked counter
 		if (isalpha(lp) && isupper(lp)) {
 			ToggleKeys[lp] = 1;
 		}
@@ -233,7 +233,7 @@ BOOL WWKeyboardClass::Put(int key)
  * HISTORY:                                                                                    *
  *   10/16/1995 PWG : Created.                                                                 *
  *=============================================================================================*/
-WWKeyboardClass::Put_Key_Message(UINT vk_key, BOOL release, BOOL dbl)
+BOOL WWKeyboardClass::Put_Key_Message(UINT vk_key, BOOL release, BOOL dbl)	// port: implicit return type; declared BOOL
 {
 	int bits = 0;
 	//
@@ -290,7 +290,7 @@ int WWKeyboardClass::To_ASCII(int key)
 	return(key);
 }
 
-WWKeyboardClass::Down(int key)
+int WWKeyboardClass::Down(int key)	// port: implicit return type; declared int
 {
 	return(GetAsyncKeyState(key&0xFF));
 }
@@ -384,7 +384,7 @@ void WWKeyboardClass::Message_Handler(HWND , UINT message, UINT wParam, LONG lPa
 			break;
 		case WM_MOUSEMOVE:
 			if (CurrentCursor)
-				SetCursor(CurrentCursor);
+				SetCursor((HCURSOR)CurrentCursor);	// port: a HANDLE used as an HCURSOR; non-STRICT Win32 allowed it
 			break;
 	}
 }

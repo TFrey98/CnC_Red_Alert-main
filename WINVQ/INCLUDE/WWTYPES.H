@@ -47,8 +47,9 @@
 #define	UBYTE unsigned char
 #define	WORD  signed short
 #define	UWORD unsigned short
-#define	LONG  signed long
-#define	ULONG unsigned long
+/* port: Watcom long was 32 bits; on macOS it is 64. Fixed width restores the original. */
+#define	LONG  int32_t
+#define	ULONG uint32_t
 
 #endif /* WWTYPES_H */
 

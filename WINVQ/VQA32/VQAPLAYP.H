@@ -63,9 +63,9 @@ extern HWND MainWindow;
 
 /* Internal library version. */
 #define VQA_VERSION "2.42"
-#define VQA_DATE    __DATE__" "__TIME__
+#define VQA_DATE    __DATE__ " " __TIME__	/* port: C++11 reads "x"IDENT as a literal suffix; spaces keep C++98 meaning */
 
-#define VQA_IDSTRING "VQA32 "VQA_VERSION" ("VQA_DATE")"
+#define VQA_IDSTRING "VQA32 " VQA_VERSION " (" VQA_DATE ")"
 #define VQA_REQUIRES "VQM32 2.12 or better."
 
 /* Block dimensions macro and identifiers. */
@@ -92,10 +92,20 @@ extern HWND MainWindow;
  * id   - 4 Byte chunk id.
  * size - Size of chunk.
  */
+/*
+**	Port: ON-DISK LAYOUT (VQA chunk header (id, big-endian size)). `long` was 32 bits under Watcom and this
+**	struct was packed by the `#ifdef __WATCOMC__ #pragma pack(1)` that clang never
+**	saw. Fixed-width fields and a scoped pack restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct _ChunkHeader {
-	unsigned long id;
-	unsigned long size;
+	uint32_t id;
+	uint32_t size;
 } ChunkHeader;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(ChunkHeader) == 8, "ChunkHeader must match the original 8-byte on-disk layout");
+#endif
 
 
 /* ZAPHeader: ZAP audio compression header. NOTE: If the uncompressed size

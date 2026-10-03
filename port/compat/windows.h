@@ -56,7 +56,15 @@ typedef short               SHORT;
 typedef unsigned short      USHORT;
 typedef char                CHAR;
 typedef unsigned char       UCHAR;
+/*
+**	WIN32LIB's WWSTD.H does `#define BOOL int`, and WINVQ's WWTYPES.H
+**	`#define BOOL short`; when either is seen first, a typedef here would read
+**	`typedef int int`. The macro already names the type its library was built
+**	with, so defer to it.
+*/
+#ifndef BOOL
 typedef int                 BOOL;
+#endif
 
 typedef BYTE *              LPBYTE;
 typedef WORD *              LPWORD;
@@ -461,6 +469,9 @@ void GetLocalTime(LPSYSTEMTIME time);	/* implemented in wwcompat.cpp */
 #define WM_RBUTTONDOWN  0x0204
 #define WM_RBUTTONUP    0x0205
 #define WM_RBUTTONDBLCLK 0x0206
+#define WM_MBUTTONDOWN  0x0207
+#define WM_MBUTTONUP    0x0208
+#define WM_MBUTTONDBLCLK 0x0209
 #define WM_USER         0x0400
 
 #define PM_NOREMOVE     0x0000
@@ -476,7 +487,19 @@ BOOL  SetForegroundWindow(HWND wnd);
 HWND  FindWindowA(LPCSTR classname, LPCSTR windowname);
 HWND  GetFocus(void);
 BOOL  ShowWindow(HWND wnd, int cmdshow);
-int   ShowCursor(BOOL show);		/* hides the OS cursor; the game draws its own (WWMOUSE). Native backend implements it. */
+int   ShowCursor(BOOL show);
+/*
+**	OS cursor and keyboard layout -- implemented by the native input backend.
+**	VkKeyScan is NOT a formality: WIN32LIB/KEYBOARD/KEYBOARD.CPP calls it for
+**	every printable character at startup to build the engine's ASCII <-> key
+**	remap tables, so it needs the real keyboard layout (UCKeyTranslate), or
+**	typed text (save-game names) breaks on non-US layouts.
+*/
+BOOL    ClipCursor(const RECT * rect);
+BOOL    GetCursorPos(LPPOINT point);
+HCURSOR SetCursor(HCURSOR cursor);
+SHORT   VkKeyScanA(char ch);
+#define VkKeyScan VkKeyScanA		/* hides the OS cursor; the game draws its own (WWMOUSE). Native backend implements it. */
 
 /*
 **	Win32's A/W split: <windows.h> defines the unsuffixed name as a macro for
@@ -504,6 +527,23 @@ int   ShowCursor(BOOL show);		/* hides the OS cursor; the game draws its own (WW
 #define INVALID_HANDLE_VALUE ((HANDLE)(LONG_PTR)-1)
 
 UINT SetErrorMode(UINT mode);
+
+/*
+**	Process and thread pseudo-handles. The engine's only use is TIMERINI.CPP
+**	duplicating the timer thread's handle for the profiler (dropped), so these
+**	are faithful in value -- GetCurrentProcess() really is (HANDLE)-1 on Win32 --
+**	and never tagged as file handles, so CloseHandle leaves them alone.
+*/
+#define DUPLICATE_CLOSE_SOURCE  0x00000001
+#define DUPLICATE_SAME_ACCESS   0x00000002
+#define NORMAL_PRIORITY_CLASS   0x00000020
+#define HIGH_PRIORITY_CLASS     0x00000080
+#define REALTIME_PRIORITY_CLASS 0x00000100
+HANDLE GetCurrentProcess(void);
+HANDLE GetCurrentThread(void);
+BOOL   DuplicateHandle(HANDLE srcprocess, HANDLE src, HANDLE dstprocess, LPHANDLE dst, DWORD access, BOOL inherit, DWORD options);
+BOOL   SetPriorityClass(HANDLE process, DWORD priorityclass);
+DWORD  GetPriorityClass(HANDLE process);
 
 /*
 **	Win32 file API, implemented for real on POSIX in wwcompat.cpp. RawFileClass

@@ -46,4 +46,4 @@
 #define DEVNAME "Borland/TNT"
 #endif
 
-char VerTag[] = {"$VER$VQM32 2.12 "DEVNAME" ("__DATE__" "__TIME__")"};
+char VerTag[] = {"$VER$VQM32 2.12 " DEVNAME " (" __DATE__ " " __TIME__ ")"};	/* port: C++11 literal-suffix spacing */

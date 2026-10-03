@@ -137,10 +137,16 @@ equivalent rather than a workaround:
 
 Known and deliberately left as-is:
 
-- **`RawFileClass::Read` retries a failed read forever** (`Error()` is empty and
-  the loop `continue`s). On 1997 Windows that waited for the CD to be
-  reinserted; on macOS a persistent I/O error would hang. Not changed without a
-  decision on what should happen instead.
+- ~~`RawFileClass::Read` retries a failed read forever.~~ **Resolved:** a
+  retryable read error now shows a native **Try Again / Cancel** dialog
+  (`RA_Platform_Disk_Error` in `port/backend/ra_dialog.mm`). Try Again retries the
+  read; Cancel quits -- `exit()` from `RawFileClass`, `Emergency_Exit()` from the
+  game's `CCFileClass`. This restores the contract documented in
+  `CODE/CCFILE.CPP` ("pressing a key will return ... otherwise it will exit").
+  Non-retryable errors, such as a missing file at open time, stay silent, because
+  `Is_Available()` depends on that. Tested with scripted answers
+  (`port/tests/disk_error.cpp`); `port/tests/show-disk-error-dialog.sh` shows the
+  real dialog for a manual check.
 - **The build is a variant that never shipped.** `CODE/MAKEFILE` defined
   `WOLAPI_INTEGRATION` and `WINSOCK_IPX`; this port does not, to keep OLE/COM and
   defunct online code out. 51 files test those symbols. `GAME_VERSION`, which
@@ -212,6 +218,67 @@ Two consequences worth carrying forward:
   `sizeof(CELL)*CHAR_BIT-14`, and `sizeof` is not available to the preprocessor,
   so that branch cannot compile as written. Anyone reviving a big-endian target
   is starting from scratch there, not from working code.
+
+## The libraries (`WIN32LIB/`, `WINVQ/`)
+
+**62 of 77 library translation units compile for arm64** -- `port/probe-libs.sh`,
+over `port/lib-build-set.txt` (generated from each library's makefile by
+`port/gen-lib-set.py`). 9 are DROP (modem, profiler, DOS VESA video, CD
+enumeration, and two files superseded outright by the game's own code), 1 is
+NATIVE (DirectShow MPEG movies -> AVFoundation). The 5 remaining are the two
+batches that belong with the native backend: **audio** (`SOUNDIO`, `SOUNDINT`,
+VQA `AUDIO` -- see below) and **DirectDraw** (`GBUFFER`, `DDRAW`).
+
+Things that are different about the libraries, each found by measurement:
+
+- **They are built with their own flags, not the game's.** Each library was
+  compiled against its own include directory only; `-iquote CODE` would make a
+  library's `#include "keyboard.h"` silently resolve to the game's header. And
+  they are built **without `-DWIN32`**: `WWSTD.H` defines `WIN32` and includes
+  `windows.h` itself only when `WIN32` is *not* already defined, which is how
+  the original library makefiles worked.
+- **Duplicate headers.** 72 headers exist both in a module directory and in the
+  library's `INCLUDE/`. Module sources compile against their own copy, the game
+  against `INCLUDE/` -- so if the two drift, library and game disagree on class
+  layouts. Five had drifted (including one of my own earlier fixes, applied to
+  one copy only). All are identical now, and `port/check-dup-headers.py`, run by
+  `probe-libs.sh`, fails if any drift again.
+- **`#ifdef __WATCOMC__`.** 25 files branch on the compiler, and the port took
+  the side the shipped game never did. 16 of them guard `#pragma pack` -- so the
+  VQA movie format was unpacked. A global `-D__WATCOMC__` would be wrong (it
+  pulls in DOS interrupt code), so each class is handled: file-format regions
+  get scoped `pack(push,1)`/`pack(pop)` (a literal translation of Watcom's
+  `pack()` would have left 1-byte packing on for every later header, system
+  headers included); `pack(4)` regions are in-memory and left natural; the DOS
+  branches are dropped.
+- **The VQA movie format had the 64-bit bug too.** `ChunkHeader` was 16 bytes,
+  not 8 -- and it is read with a literal `8`, so both fields landed in `id` and
+  `size` was never written. `FormHeader` (the IFF `FORM` that opens every VQA),
+  `MIXSubBlock`, `VQHeader`, the WAV headers and the SOS compression header were
+  fixed the same way, each with a `static_assert`. `WWTYPES.H`'s `LONG`/`ULONG`
+  macros are now 32-bit for the whole player.
+- **The library file layer is never used.** `WIN32LIB/RAWFILE/RAWFILE.CPP`
+  (built on `mmio*`) is wholly superseded by the game's `CODE/CCFILE.CPP`, which
+  defines every symbol the game calls. Dropped; no `mmio` port needed.
+
+**Multimedia timers are real** (`timeSetEvent` & co., in `wwcompat.cpp`). They
+drive the game clock (`TIMERINI.CPP`), the mouse, sound maintenance and the VQA
+player. All callbacks run on one serial high-priority GCD queue, so -- as on
+Win32's single timer thread -- they never overlap each other; `timeKillEvent`
+waits for an in-flight callback. Tested under ThreadSanitizer
+(`port/tests/mm_timer.cpp`).
+
+**The audio batch needs reading, not casting.** `SOUNDIO`/`SOUNDINT` keep the
+DirectSound write position (`StreamType::DestPtr`) as an *offset* stored in a
+`void *`, which is truncation-safe -- but the same expressions also mix in real
+buffer pointers (`(unsigned)play_buffer_ptr + (unsigned)st->DestPtr` at
+`SOUNDIO.CPP:1846`). A mechanical fix of every reported cast would leave that
+real pointer truncated: a crash on the first sound.
+
+**Expected at link time.** The original linker resolved duplicate definitions by
+order; a modern one will report them. Known now: `LOAD.CPP` (live library code)
+and `CODE/CCFILE.CPP` both define `Load_Data` / `Load_Alloc_Data`, and
+`Stop_Profiler` needs a stub because the profiler is dropped.
 
 ## A note on searching this tree
 

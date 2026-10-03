@@ -64,13 +64,23 @@ typedef struct _tagCOMPRESS_INFO {
 	} _SOS_COMPRESS_INFO;
 
 /* compressed file type header */
+/*
+**	Port: ON-DISK LAYOUT (SOS compressed-audio header). `long` was 32 bits under Watcom and this
+**	struct was packed by the `#ifdef __WATCOMC__ #pragma pack(1)` that clang never
+**	saw. Fixed-width fields and a scoped pack restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct _tagCOMPRESS_HEADER {
-	unsigned long dwType;              // type of compression
-	unsigned long dwCompressedSize;    // compressed file size
-	unsigned long dwUnCompressedSize;  // uncompressed file size
-	unsigned long dwSourceBitSize;     // original bit size
+	uint32_t dwType;              // type of compression
+	uint32_t dwCompressedSize;    // compressed file size
+	uint32_t dwUnCompressedSize;  // uncompressed file size
+	uint32_t dwSourceBitSize;     // original bit size
 	char          szName[16];          // file type, for error checking
 	} _SOS_COMPRESS_HEADER;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(_SOS_COMPRESS_HEADER) == 32, "_SOS_COMPRESS_HEADER must match the original 32-byte on-disk layout");
+#endif
 
 /* Prototypes */
 

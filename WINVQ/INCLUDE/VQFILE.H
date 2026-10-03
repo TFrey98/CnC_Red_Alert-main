@@ -66,6 +66,12 @@
  * PalDepth    - Depth of palette entries in bits.
  * ColorModel  - Color model of this VQ
  */
+/*
+**	Port: ON-DISK LAYOUT (VQ image header). `long` was 32 bits under Watcom and this
+**	struct was packed by the `#ifdef __WATCOMC__ #pragma pack(1)` that clang never
+**	saw. Fixed-width fields and a scoped pack restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct _VQHeader {
 	short Version;
 	short Flags;
@@ -82,6 +88,10 @@ typedef struct _VQHeader {
 	short PalDepth;
 	short ColorModel;
 } VQHeader;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(VQHeader) == 28, "VQHeader must match the original 28-byte on-disk layout");
+#endif
 
 
 /* VQ file flags */

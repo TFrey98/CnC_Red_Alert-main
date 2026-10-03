@@ -75,11 +75,21 @@ static_assert(sizeof(MIXHeader) == 6, "MIXHeader must match the original 6-byte 
  * Offset - Offset from beginning of data segment to entry.
  * Size   - Size of entry.
  */
+/*
+**	Port: ON-DISK LAYOUT (VQ player mixfile index entry). `long` was 32 bits under Watcom and this
+**	struct was packed by the `#ifdef __WATCOMC__ #pragma pack(1)` that clang never
+**	saw. Fixed-width fields and a scoped pack restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct _MIXSubBlock {
-	long CRC;
-	long Offset;
-	long Size;
+	int32_t CRC;
+	int32_t Offset;
+	int32_t Size;
 } MIXSubBlock;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(MIXSubBlock) == 12, "MIXSubBlock must match the original 12-byte on-disk layout");
+#endif
 
 /* MIXHandle: Mix file handle.
  *

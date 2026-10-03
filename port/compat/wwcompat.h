@@ -78,6 +78,7 @@
 #define strnicmp  strncasecmp
 #define _stricmp  strcasecmp
 #define _strnicmp strncasecmp
+#define strcmpi   strcasecmp
 #define memicmp   wwport_memicmp
 #define _memicmp  wwport_memicmp
 

@@ -38,11 +38,11 @@
 *
 ****************************************************************************/
 
-#ifndef __WATCOMC__
-#include <pharlap.h>
-#else
+/*
+**	Port: the shipped build was Watcom, so it always took the realmode.h branch;
+**	pharlap.h is the PharLap DOS extender, used only by other compilers.
+*/
 #include "realmode.h"
-#endif
 
 /*---------------------------------------------------------------------------
  * VESA Video Modes

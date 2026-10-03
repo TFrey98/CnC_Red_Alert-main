@@ -67,7 +67,7 @@
 #include "memflag.h"
 #include "audio.h"
 
-extern	DebugBuffer[];
+extern	char DebugBuffer[];	// port: implicit int; unused here
 
 /***************************************************************************
 ** All routines past this point must be locked for the sound driver to	  **

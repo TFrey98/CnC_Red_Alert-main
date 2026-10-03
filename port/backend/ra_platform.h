@@ -60,6 +60,20 @@ void RA_Display_SetPalette(RA_Display * d, const unsigned char * rgba);
 */
 void RA_Display_Present(RA_Display * d, const unsigned char * indices);
 
+/*
+**	A file read failed. Ask the player whether to try again.
+**
+**	Returns RA_DISK_ERROR_RETRY or RA_DISK_ERROR_CANCEL. Blocks until answered.
+**	`error_code` is the Win32-style code from GetLastError() (the compat layer
+**	maps errno onto those); it is shown to the player and otherwise ignored.
+**
+**	This restores the original contract in CODE/CCFILE.CPP's header comment: on
+**	a retryable error the game waits and retries; the alternative exits the game.
+**	The engine owns what Cancel means -- this function only asks.
+*/
+enum { RA_DISK_ERROR_CANCEL = 0, RA_DISK_ERROR_RETRY = 1 };
+int RA_Platform_Disk_Error(const char * filename, int error_code);
+
 #ifdef __cplusplus
 }
 #endif

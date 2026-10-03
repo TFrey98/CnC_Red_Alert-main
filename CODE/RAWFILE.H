@@ -166,6 +166,13 @@ class RawFileClass : public FileClass
 		virtual bool Set_Date_Time(unsigned long datetime);
 		virtual void Error(int error, int canretry = false, char const * filename=NULL);
 
+		/*
+		**	Port: asks the player "Try Again / Cancel" for a failed read. True means
+		**	retry. Shared by RawFileClass::Error and CCFileClass::Error, which differ
+		**	only in how they quit on Cancel.
+		*/
+		static bool Ask_Retry(int error, char const * filename);
+
 		void Bias(int start, int length=-1);
 
 		HANDLE_TYPE Get_File_Handle(void) { return (Handle); };

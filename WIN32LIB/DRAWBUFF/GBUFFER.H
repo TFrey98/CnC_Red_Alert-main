@@ -129,9 +129,9 @@
 #include "drawbuff.h"
 #endif
 
-#ifndef BUFFER_H
+//#ifndef BUFFER_H
 #include "buffer.h"
-#endif
+//#endif
 
 #ifndef WINDOWS_H
 #include "ww_win.h"
@@ -369,7 +369,7 @@ class GraphicBufferClass : public GraphicViewPortClass, public BufferClass {
 		void DD_Init(GBC_Enum flags);
 		void Init(int w, int h, void *buffer, long size, GBC_Enum flags);
 		void Un_Init(void);
-		void GraphicBufferClass::Attach_DD_Surface (GraphicBufferClass * attach_buffer);
+		void Attach_DD_Surface (GraphicBufferClass * attach_buffer);
 		BOOL Lock(void);
 		BOOL Unlock(void);
 

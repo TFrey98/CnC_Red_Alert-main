@@ -85,8 +85,14 @@
  * VQVersion       - VQ Version #
  * pad[5]          - Pad out to 40 bytes total
  */
+/*
+**	Port: ON-DISK LAYOUT (VQ image header). `long` was 32 bits under Watcom and this
+**	struct was packed by the `#ifdef __WATCOMC__ #pragma pack(1)` that clang never
+**	saw. Fixed-width fields and a scoped pack restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct _VQHeader {
-	unsigned long  ImageSize;
+	uint32_t  ImageSize;
 	unsigned short ImageWidth;
 	unsigned short ImageHeight;
 	unsigned short BlockWidth;
@@ -102,5 +108,9 @@ typedef struct _VQHeader {
 	unsigned short VQVersion;
 	unsigned short pad[5];
 } VQHeader;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(VQHeader) == 40, "VQHeader must match the original 40-byte on-disk layout");
+#endif
 
 #endif /* VQ_H */

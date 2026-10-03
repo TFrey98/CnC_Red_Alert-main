@@ -73,11 +73,39 @@ RA_INCLUDES=(
   -iquote "${RA_ROOT}/CODE"
 
   -I"${RA_ROOT}/port/compat"
+
+  # The plain-C boundary to the native backend (ra_platform.h). Safe on the
+  # engine side precisely because it contains no Win32 or Cocoa types.
+  -I"${RA_ROOT}/port/backend"
   -I"${RA_ROOT}/WIN32LIB/INCLUDE"
   -I"${RA_ROOT}/WINVQ/INCLUDE"
 )
 
 RA_CXXFLAGS=($RA_TARGET $RA_STD $RA_DEFINES $RA_INCLUDES)
+
+# ---------------------------------------------------------------------------
+# Library flags. NOT $RA_CXXFLAGS: the libraries were compiled against their own
+# include directory only (WIN32LIB\INCLUDE or WINVQ\INCLUDE in their makefiles),
+# never the game's. Several header names exist in both CODE/ and
+# WIN32LIB/INCLUDE/ with different contents (KEYBOARD.H, MOUSE.H, AUDIO.H, ...);
+# with -iquote CODE a library file's #include "keyboard.h" would silently get
+# the game's header. Quoted includes here resolve to the file's own directory,
+# then the library's include directory.
+# ---------------------------------------------------------------------------
+# No -DWIN32 here, deliberately. The library makefiles never defined it:
+# WIN32LIB/INCLUDE/WWSTD.H does `#ifndef WIN32 / #define WIN32 1 / #include
+# <windows.h>`, so each library file gets windows.h from WWSTD.H. Passing -DWIN32
+# makes WWSTD.H skip that include and leaves UINT, WORD, LONG etc. undeclared.
+# TRUE_FALSE_DEFINED stays: game and libraries must agree on what `bool` is.
+RA_LIB_DEFINES=(-DTRUE_FALSE_DEFINED -DENGLISH)
+RA_LIB_COMMON=(
+  $RA_TARGET $RA_STD $RA_LIB_DEFINES
+  -include "${RA_ROOT}/port/compat/wwcompat.h"
+  -I"${RA_ROOT}/port/compat"
+  -I"${RA_ROOT}/port/backend"
+)
+RA_WIN32LIB_CXXFLAGS=($RA_LIB_COMMON -I"${RA_ROOT}/WIN32LIB/INCLUDE")
+RA_WINVQ_CXXFLAGS=($RA_LIB_COMMON -I"${RA_ROOT}/WINVQ/INCLUDE")
 
 # ---------------------------------------------------------------------------
 # Backend (Objective-C++) flags.

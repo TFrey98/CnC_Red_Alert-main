@@ -45,11 +45,21 @@
  * size - Length of IFF in bytes
  * type - Form type (IE: "ILBM")
  */
+/*
+**	Port: ON-DISK LAYOUT (IFF FORM header that opens every VQA file). `long` was 32 bits under Watcom and this
+**	struct was packed by the `#ifdef __WATCOMC__ #pragma pack(1)` that clang never
+**	saw. Fixed-width fields and a scoped pack restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct _FormHeader {
-	long id;
-	long size;
-	long type;
+	int32_t id;
+	int32_t size;
+	int32_t type;
 } FormHeader;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(FormHeader) == 12, "FormHeader must match the original 12-byte on-disk layout");
+#endif
 
 /* Context - Structure associated with chunks.
  *

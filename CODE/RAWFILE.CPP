@@ -61,6 +61,7 @@
 #include	<stddef.h>
 
 #include	"rawfile.h"
+#include	"ra_platform.h"		// port: the native Try Again / Cancel dialog
 
 #ifndef WIN32
 #include	<fcntl.h>
@@ -93,8 +94,28 @@ extern short Hard_Error_Occured;
  * HISTORY:                                                                                    *
  *   10/17/1994 JLB : Created.                                                                 *
  *=============================================================================================*/
-void RawFileClass::Error(int , int , char const * )
+/*
+**	Port: this body was empty, so a failed read retried forever -- harmless on
+**	1997 Windows, where the error was almost always "CD removed", but on macOS a
+**	persistent read error would hang the game. The contract documented on
+**	CCFileClass::Error is restored: when the error is retryable, ask the player;
+**	Try Again returns so the read loop retries, Cancel quits.
+**
+**	Only retryable errors ask. Non-retryable ones -- e.g. a file that simply does
+**	not exist at open time -- stay silent, because Is_Available() and friends
+**	depend on a failed open just returning false.
+*/
+void RawFileClass::Error(int error, int canretry, char const * filename)
 {
+	if (canretry && !Ask_Retry(error, filename)) {
+		exit(EXIT_FAILURE);
+	}
+}
+
+
+bool RawFileClass::Ask_Retry(int error, char const * filename)
+{
+	return RA_Platform_Disk_Error(filename, error) == RA_DISK_ERROR_RETRY;
 }
 
 

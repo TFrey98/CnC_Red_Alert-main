@@ -223,7 +223,7 @@ void Invalidate_Cached_Icons (void)
 
 	memset (&IconCacheLookup[0] , -1 ,MAX_LOOKUP_ENTRIES*sizeof(IconCacheLookup[0]));
 
-	for (i=0 ; i<MAX_ICON_SETS ; i++){
+	for (int i=0 ; i<MAX_ICON_SETS ; i++){	// port: reused the previous loop's leaked counter
 		IconSetList[i].IconSetPtr=NULL;
 	}
 

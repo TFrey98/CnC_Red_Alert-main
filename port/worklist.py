@@ -182,7 +182,46 @@ for f in build:
         tag, note = 'TWEAK', first_error(f)
     code_rows.append({'file': 'CODE/' + f, 'tag': tag, 'note': note})
 
-json.dump({'code': code_rows, 'asm': asm_rows}, open('port/worklist.json', 'w'), indent=1)
+# --------------------------------------------------------------------------
+# Library C/C++ translation units, from the last probe-libs.sh run.
+# --------------------------------------------------------------------------
+LIB_DROP = {
+    'WIN32LIB/WINCOMM/MODEMREG.CPP': 'modem registry -- serial multiplayer',
+    'WIN32LIB/WINCOMM/WINCOMM.CPP':  'serial/modem comms -- multiplayer',
+    'WIN32LIB/PROFILE/WPROFILE.CPP': 'x86 sampling profiler; Instruments replaces it (Stop_Profiler needs a stub at link)',
+    'WINVQ/VQM32/VESAVID.CPP':       'DOS VESA video; the Win32 player never uses it',
+    'WINVQ/VQM32/VIDEO.CPP':         'DOS VGA/VESA mode setting',
+    'WINVQ/VQM32/TESTVB.CPP':        'DOS vertical-blank port test',
+    'WIN32LIB/PLAYCD/GETCD.CPP':     'CD-ROM drive enumeration; nothing in the game calls it',
+    'WIN32LIB/IFF/WRITEPCX.CPP':     'library overload Write_PCX_File(char *, ...) has no callers; the game uses CODE/WRITEPCX.CPP',
+    'WIN32LIB/RAWFILE/RAWFILE.CPP':  'library file layer (mmio*), wholly superseded by CODE/CCFILE.CPP, which defines every symbol the game calls; linking both would duplicate them',
+}
+LIB_NATIVE = {
+    'WIN32LIB/MOVIE/MOVIE.CPP':     'MPEG cutscenes over DirectShow -> AVFoundation (the MPEG DLL was never released)',
+}
+lib_status = {}
+lres = os.path.join(os.environ.get('TMPDIR', '/tmp'), 'ra-probe-libs', 'results.txt')
+if os.path.exists(lres):
+    for line in open(lres):
+        q = line.split()
+        if len(q) == 2:
+            lib_status[q[1]] = q[0]
+lib_rows = []
+for f in [l.strip() for l in open('port/lib-build-set.txt') if l.strip()]:
+    if lib_status.get(f) == 'OK':           tag, note = 'DONE', 'compiles clean for arm64'
+    elif f in LIB_DROP:                      tag, note = 'DROP', LIB_DROP[f]
+    elif f in LIB_NATIVE:                    tag, note = 'NATIVE', LIB_NATIVE[f]
+    else:
+        lg = os.path.join(os.environ.get('TMPDIR', '/tmp'), 'ra-probe-libs', f.replace('/', '_') + '.log')
+        note = ''
+        if os.path.exists(lg):
+            for ln in open(lg, errors='replace'):
+                if 'error:' in ln:
+                    note = re.sub(r'^.*?(fatal )?error: ', '', ln).strip()[:110]; break
+        tag = 'TWEAK'
+    lib_rows.append({'file': f, 'tag': tag, 'note': note})
+
+json.dump({'code': code_rows, 'asm': asm_rows, 'lib': lib_rows}, open('port/worklist.json', 'w'), indent=1)
 json.dump(asm_rows, open('port/asm-inventory.json', 'w'), indent=1)
 
 # --------------------------------------------------------------------------
@@ -233,7 +272,13 @@ out += [f"| `{os.path.basename(r['file'])}` | {r['note']} |" for r in code_rows 
 out.append('')
 out += ['---', '', f"## DROP -- {cc['DROP']} files", '', '| File | Reason |', '|---|---|']
 out += [f"| `{os.path.basename(r['file'])}` | {r['note']} |" for r in code_rows if r['tag'] == 'DROP']
+lc = collections.Counter(r['tag'] for r in lib_rows)
+out += ['', '---', '', f"## Libraries (`port/lib-build-set.txt`) -- {dict(lc)}", '',
+        'Measured by `port/probe-libs.sh`, each library with its own include path.', '',
+        '| File | Tag | Note |', '|---|---|---|']
+out += [f"| `{r['file']}` | {r['tag']} | {r['note']} |" for r in lib_rows if r['tag'] != 'DONE']
 open('port/WORKLIST.md', 'w').write('\n'.join(out) + '\n')
 
 print(f"C++: {dict(cc)}", file=sys.stderr)
+print(f"libs: {dict(collections.Counter(r['tag'] for r in lib_rows))}", file=sys.stderr)
 print(f"asm: " + ', '.join(f"{t} {ac[t]} files/{al[t]:,} lines" for t in ac), file=sys.stderr)

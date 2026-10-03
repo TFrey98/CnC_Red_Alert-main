@@ -118,8 +118,16 @@ CCFileClass::CCFileClass(void) :
  * HISTORY:                                                                                    *
  *   10/17/1994 JLB : Created.                                                                 *
  *=============================================================================================*/
-void CCFileClass::Error(int , int , char const * )
+void CCFileClass::Error(int error, int canretry, char const * filename)
 {
+	/*
+	**	Port: a retryable read error asks Try Again / Cancel, as documented above;
+	**	Cancel leaves through the game's own emergency shutdown.
+	*/
+	if (canretry && !Ask_Retry(error, filename)) {
+		Emergency_Exit(EXIT_FAILURE);
+	}
+
 	if (!Force_CD_Available(RequiredCD)) {
 		//Prog_End();
 		Emergency_Exit(EXIT_FAILURE);

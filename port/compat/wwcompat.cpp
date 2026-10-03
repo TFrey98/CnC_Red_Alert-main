@@ -675,3 +675,110 @@ UINT SetErrorMode(UINT mode)
 	wwport_error_mode = mode;
 	return previous;
 }
+
+
+/*
+**	Multimedia timers on GCD -- see port/compat/mmsystem.h.
+*/
+#include "mmsystem.h"
+#include <dispatch/dispatch.h>
+#include <mach/mach_time.h>
+
+struct wwport_mmtimer {
+	UINT              id;
+	dispatch_source_t source;
+};
+static wwport_mmtimer   wwport_mmtimers[32];
+static UINT             wwport_mmtimer_next_id = 1;
+static pthread_mutex_t  wwport_mmtimer_lock = PTHREAD_MUTEX_INITIALIZER;
+static dispatch_queue_t wwport_mmtimer_queue;
+static int              wwport_mmtimer_queue_key;
+
+/* One serial, high-priority queue for every timer: Win32's single timer thread. */
+static dispatch_queue_t wwport_timer_queue(void)
+{
+	static dispatch_once_t once;
+	dispatch_once(&once, ^{
+		dispatch_queue_attr_t attr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INTERACTIVE, 0);
+		wwport_mmtimer_queue = dispatch_queue_create("com.westwood.redalert.mmtimer", attr);
+		dispatch_queue_set_specific(wwport_mmtimer_queue, &wwport_mmtimer_queue_key, &wwport_mmtimer_queue_key, NULL);
+	});
+	return wwport_mmtimer_queue;
+}
+
+MMRESULT timeBeginPeriod(UINT period) { (void)period; return TIMERR_NOERROR; }	/* GCD timers are already ms-accurate */
+MMRESULT timeEndPeriod(UINT period)   { (void)period; return TIMERR_NOERROR; }
+
+DWORD timeGetTime(void)
+{
+	static mach_timebase_info_data_t tb;
+	if (tb.denom == 0) mach_timebase_info(&tb);
+	return (DWORD)((mach_absolute_time() * tb.numer / tb.denom) / 1000000ULL);
+}
+
+MMRESULT timeSetEvent(UINT delay_ms, UINT resolution_ms, LPTIMECALLBACK callback, DWORD user, UINT flags)
+{
+	if (callback == NULL || delay_ms == 0) return 0;
+	pthread_mutex_lock(&wwport_mmtimer_lock);
+	int slot = -1;
+	for (int i = 0; i < (int)(sizeof(wwport_mmtimers) / sizeof(wwport_mmtimers[0])); i++) {
+		if (wwport_mmtimers[i].id == 0) { slot = i; break; }
+	}
+	if (slot < 0) { pthread_mutex_unlock(&wwport_mmtimer_lock); return 0; }
+	UINT id = wwport_mmtimer_next_id++;
+	if (wwport_mmtimer_next_id == 0) wwport_mmtimer_next_id = 1;
+
+	dispatch_source_t src = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, wwport_timer_queue());
+	uint64_t interval = (uint64_t)delay_ms * NSEC_PER_MSEC;
+	uint64_t leeway   = (uint64_t)(resolution_ms ? resolution_ms : 1) * NSEC_PER_MSEC / 2;
+	bool periodic = (flags & TIME_PERIODIC) != 0;
+	dispatch_source_set_timer(src, dispatch_time(DISPATCH_TIME_NOW, (int64_t)interval),
+	                          periodic ? interval : DISPATCH_TIME_FOREVER, leeway);
+	dispatch_source_set_event_handler(src, ^{
+		callback(id, 0, user, 0, 0);
+		if (!periodic) dispatch_source_cancel(src);
+	});
+	wwport_mmtimers[slot].id = id;
+	wwport_mmtimers[slot].source = src;
+	pthread_mutex_unlock(&wwport_mmtimer_lock);
+	dispatch_resume(src);
+	return id;
+}
+
+MMRESULT timeKillEvent(UINT id)
+{
+	dispatch_source_t src = NULL;
+	pthread_mutex_lock(&wwport_mmtimer_lock);
+	for (int i = 0; i < (int)(sizeof(wwport_mmtimers) / sizeof(wwport_mmtimers[0])); i++) {
+		if (id != 0 && wwport_mmtimers[i].id == id) {
+			src = wwport_mmtimers[i].source;
+			wwport_mmtimers[i].id = 0;
+			wwport_mmtimers[i].source = NULL;
+			break;
+		}
+	}
+	pthread_mutex_unlock(&wwport_mmtimer_lock);
+	if (src == NULL) return TIMERR_NOCANDO;
+	dispatch_source_cancel(src);
+	/*
+	**	Wait for any callback already running to finish, so the caller can free
+	**	what the callback uses -- unless we ARE the timer thread, where waiting on
+	**	our own queue would deadlock.
+	*/
+	if (dispatch_get_specific(&wwport_mmtimer_queue_key) == NULL) {
+		dispatch_sync(wwport_timer_queue(), ^{});
+	}
+	dispatch_release(src);
+	return TIMERR_NOERROR;
+}
+
+HANDLE GetCurrentProcess(void) { return (HANDLE)(intptr_t)-1; }	/* Win32's pseudo-handle values */
+HANDLE GetCurrentThread(void)  { return (HANDLE)(intptr_t)-2; }
+BOOL DuplicateHandle(HANDLE srcprocess, HANDLE src, HANDLE dstprocess, LPHANDLE dst, DWORD access, BOOL inherit, DWORD options)
+{
+	(void)srcprocess; (void)dstprocess; (void)access; (void)inherit; (void)options;
+	if (dst) *dst = src;
+	return TRUE;
+}
+BOOL  SetPriorityClass(HANDLE process, DWORD priorityclass) { (void)process; (void)priorityclass; return TRUE; }
+DWORD GetPriorityClass(HANDLE process) { (void)process; return NORMAL_PRIORITY_CLASS; }

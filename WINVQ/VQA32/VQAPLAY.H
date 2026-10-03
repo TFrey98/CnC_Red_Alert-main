@@ -53,7 +53,7 @@ extern void Debug_Printf( char *format_string, ... );
 #define VQASTANDALONE 0  /* Stand alone player */
 #define VQAVOC_ON     0  /* Enable VOC file override */
 #define	VQAMONO_ON    0  /* Mono display output enable/disable */
-#define VQADIRECT_SOUND 1       /* Use windows direct sound system */
+#define VQADIRECT_SOUND 1	/* Use windows direct sound system */
 #define VQAAUDIO_ON   1  /* Audio playback enable/disable */
 #define VQAVIDEO_ON   0  /* Video manager enable/disable */
 #define VQAMCGA_ON    1  /* MCGA enable/disable */
@@ -84,10 +84,12 @@ extern void Debug_Printf( char *format_string, ... );
 
 
 #if (VQAAUDIO_ON && VQADIRECT_SOUND)
+#ifndef WIN32
 #define WIN32 1
 #ifndef _WIN32 // Denzil 6/2/98 Watcom 11.0 complains without this check
 #define _WIN32
 #endif // _WIN32
+#endif
 #undef WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>

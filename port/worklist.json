@@ -1699,5 +1699,392 @@
    "tag": "TRANSLATE",
    "note": "no C yet for: WaitNoVB, WaitVB"
   }
+ ],
+ "lib": [
+  {
+   "file": "WIN32LIB/AUDIO/SOUNDINT.CPP",
+   "tag": "TWEAK",
+   "note": "cast from pointer to smaller type 'unsigned int' loses information"
+  },
+  {
+   "file": "WIN32LIB/AUDIO/SOUNDIO.CPP",
+   "tag": "TWEAK",
+   "note": "incompatible function pointer types assigning to 'int (*)(short, short *, void **, LONG *)' (aka 'int (*)(shor"
+  },
+  {
+   "file": "WIN32LIB/AUDIO/SOUNDLCK.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/DIPTHONG/DIPTHONG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/DIPTHONG/_DIPTABL.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/BUFFER.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/BUFFGLBL.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/DRAWRECT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/GBUFFER.CPP",
+   "tag": "TWEAK",
+   "note": "no member named 'AddAttachedSurface' in 'IDirectDrawSurface'"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/ICONCACH.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/REGIONSZ.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/FONT/FONT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/FONT/LOADFONT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/FONT/SET_FONT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/IFF/IFF.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/IFF/LOAD.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/IFF/LOADPCX.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/IFF/LOADPICT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/IFF/WRITELBM.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/IFF/WRITEPCX.CPP",
+   "tag": "DROP",
+   "note": "library overload Write_PCX_File(char *, ...) has no callers; the game uses CODE/WRITEPCX.CPP"
+  },
+  {
+   "file": "WIN32LIB/KEYBOARD/KEYBOARD.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/KEYBOARD/MOUSE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/MEM/ALLOC.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/MEM/MEM.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/MEM/NEWDEL.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/MISC/DDRAW.CPP",
+   "tag": "TWEAK",
+   "note": "use of undeclared identifier 'MB_ICONEXCLAMATION'"
+  },
+  {
+   "file": "WIN32LIB/MISC/DELAY.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/MISC/EXIT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/MISC/FINDARGV.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/MISC/IRANDOM.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/MISC/LIB.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/MISC/VERSION.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/MONO/MONO.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/MOVIE/MOVIE.CPP",
+   "tag": "NATIVE",
+   "note": "MPEG cutscenes over DirectShow -> AVFoundation (the MPEG DLL was never released)"
+  },
+  {
+   "file": "WIN32LIB/PALETTE/LOADPAL.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/PALETTE/MORPHPAL.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/PALETTE/PALETTE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/PLAYCD/GETCD.CPP",
+   "tag": "DROP",
+   "note": "CD-ROM drive enumeration; nothing in the game calls it"
+  },
+  {
+   "file": "WIN32LIB/PROFILE/WPROFILE.CPP",
+   "tag": "DROP",
+   "note": "x86 sampling profiler; Instruments replaces it (Stop_Profiler needs a stub at link)"
+  },
+  {
+   "file": "WIN32LIB/RAWFILE/RAWFILE.CPP",
+   "tag": "DROP",
+   "note": "library file layer (mmio*), wholly superseded by CODE/CCFILE.CPP, which defines every symbol the game calls; linking both would duplicate them"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/GETSHAPE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/PRIOINIT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/TILE/ICONSET.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/TIMER/TIMER.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/TIMER/TIMERDWN.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/TIMER/TIMERINI.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/WINCOMM/MODEMREG.CPP",
+   "tag": "DROP",
+   "note": "modem registry -- serial multiplayer"
+  },
+  {
+   "file": "WIN32LIB/WINCOMM/WINCOMM.CPP",
+   "tag": "DROP",
+   "note": "serial/modem comms -- multiplayer"
+  },
+  {
+   "file": "WIN32LIB/WSA/WSA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/WW_WIN/WINDOWS.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/WW_WIN/WINHIDE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQA32/AUDIO.CPP",
+   "tag": "TWEAK",
+   "note": "cast from pointer to smaller type 'unsigned int' loses information"
+  },
+  {
+   "file": "WINVQ/VQA32/CAPTION.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQA32/CONFIG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQA32/DRAWER.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQA32/DSTREAM.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQA32/LOADER.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQA32/MONODISP.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQA32/TASK.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQA32/VERTAG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/AUDZAP.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/CAPTOKEN.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/CHRWIDTH.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/FONT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/HUFFCMP.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/IFF.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/MEM.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/MIXFILE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/PROFILE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/SORTPAL.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/TARGA.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/TESTVB.CPP",
+   "tag": "DROP",
+   "note": "DOS vertical-blank port test"
+  },
+  {
+   "file": "WINVQ/VQM32/VERTAG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/VESABLIT.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WINVQ/VQM32/VESAVID.CPP",
+   "tag": "DROP",
+   "note": "DOS VESA video; the Win32 player never uses it"
+  },
+  {
+   "file": "WINVQ/VQM32/VIDEO.CPP",
+   "tag": "DROP",
+   "note": "DOS VGA/VESA mode setting"
+  },
+  {
+   "file": "WINVQ/VQM32/XMODEPG.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  }
  ]
 }

@@ -344,6 +344,8 @@ void VQA_Close(VQAHandle *vqa);
 long VQA_Play(VQAHandle *vqa, long mode);
 long VQA_SeekFrame(VQAHandle *vqa, long frame, long fromwhere);
 long VQA_SetStop(VQAHandle *vqa, long stop);
+void VQA_PauseAudio(void);
+void VQA_ResumeAudio(void);
 
 /* Information/statistics access routines. */
 void VQA_GetInfo(VQAHandle *vqa, VQAInfo *info);

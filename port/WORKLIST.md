@@ -178,3 +178,27 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 | `WSPIPX.CPP` | multiplayer / online / serial |
 | `WSPROTO.CPP` | multiplayer / online / serial |
 | `WSPUDP.CPP` | multiplayer / online / serial |
+
+---
+
+## Libraries (`port/lib-build-set.txt`) -- {'TWEAK': 5, 'DONE': 62, 'DROP': 9, 'NATIVE': 1}
+
+Measured by `port/probe-libs.sh`, each library with its own include path.
+
+| File | Tag | Note |
+|---|---|---|
+| `WIN32LIB/AUDIO/SOUNDINT.CPP` | TWEAK | cast from pointer to smaller type 'unsigned int' loses information |
+| `WIN32LIB/AUDIO/SOUNDIO.CPP` | TWEAK | incompatible function pointer types assigning to 'int (*)(short, short *, void **, LONG *)' (aka 'int (*)(shor |
+| `WIN32LIB/DRAWBUFF/GBUFFER.CPP` | TWEAK | no member named 'AddAttachedSurface' in 'IDirectDrawSurface' |
+| `WIN32LIB/IFF/WRITEPCX.CPP` | DROP | library overload Write_PCX_File(char *, ...) has no callers; the game uses CODE/WRITEPCX.CPP |
+| `WIN32LIB/MISC/DDRAW.CPP` | TWEAK | use of undeclared identifier 'MB_ICONEXCLAMATION' |
+| `WIN32LIB/MOVIE/MOVIE.CPP` | NATIVE | MPEG cutscenes over DirectShow -> AVFoundation (the MPEG DLL was never released) |
+| `WIN32LIB/PLAYCD/GETCD.CPP` | DROP | CD-ROM drive enumeration; nothing in the game calls it |
+| `WIN32LIB/PROFILE/WPROFILE.CPP` | DROP | x86 sampling profiler; Instruments replaces it (Stop_Profiler needs a stub at link) |
+| `WIN32LIB/RAWFILE/RAWFILE.CPP` | DROP | library file layer (mmio*), wholly superseded by CODE/CCFILE.CPP, which defines every symbol the game calls; linking both would duplicate them |
+| `WIN32LIB/WINCOMM/MODEMREG.CPP` | DROP | modem registry -- serial multiplayer |
+| `WIN32LIB/WINCOMM/WINCOMM.CPP` | DROP | serial/modem comms -- multiplayer |
+| `WINVQ/VQA32/AUDIO.CPP` | TWEAK | cast from pointer to smaller type 'unsigned int' loses information |
+| `WINVQ/VQM32/TESTVB.CPP` | DROP | DOS vertical-blank port test |
+| `WINVQ/VQM32/VESAVID.CPP` | DROP | DOS VESA video; the Win32 player never uses it |
+| `WINVQ/VQM32/VIDEO.CPP` | DROP | DOS VGA/VESA mode setting |

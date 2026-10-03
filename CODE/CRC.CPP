@@ -62,7 +62,7 @@ void CRCEngine::operator() (char datum)
 {
 	StagingBuffer.Buffer[Index++] = datum;
 
-	if (Index == sizeof(long))  {
+	if (Index == sizeof(int32_t))  {
 		CRC = Value();
 		StagingBuffer.Composite = 0;
 		Index = 0;
@@ -110,18 +110,20 @@ long CRCEngine::operator() (void const * buffer, int length)
 		**	Perform the fast 'bulk' processing by reading long word sized
 		**	data blocks.
 		*/
-		long const * longptr = (long const *)dataptr;
-		int longcount = bytes_left / sizeof(long);		// Whole 'long' elements remaining.
+		int32_t element;	// port: was `long const * longptr` -- see CRC.H; memcpy because the buffer need not be aligned
+		int longcount = bytes_left / sizeof(int32_t);		// Whole 'long' elements remaining.
 		while (longcount--) {
-			CRC = _lrotl(CRC, 1) + *longptr++;
-			bytes_left -= sizeof(long);
+			memcpy(&element, dataptr, sizeof(element));
+			dataptr += sizeof(element);
+			CRC = (int32_t)(_lrotl(CRC, 1) + element);
+			bytes_left -= sizeof(int32_t);
 		}
 
 		/*
 		**	If there are remainder bytes, then process these by adding them
 		**	to the staging buffer.
 		*/
-		dataptr = (char const *)longptr;
+		/* port: dataptr already advanced in the loop above */
 		while (bytes_left) {
 			operator()(*dataptr);
 			dataptr++;

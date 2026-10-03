@@ -65,7 +65,7 @@ class CRCEngine {
 	public:
 
 		// Constructor for CRC engine (it can have an override initial CRC value).
-		CRCEngine(long initial=0) : CRC(initial), Index(0) {
+		CRCEngine(long initial=0) : CRC((int32_t)initial), Index(0) {
 			StagingBuffer.Composite = 0;
 		};
 
@@ -87,9 +87,18 @@ class CRCEngine {
 			return(Index != 0);
 		};
 
+		/*
+		**	Port: this engine was written in terms of `long` -- 32 bits on Win32, 64
+		**	on macOS. That changed the algorithm, not just the storage: an 8-byte
+		**	staging buffer summed tails as 64-bit values that were then truncated,
+		**	silently dropping bytes 5-8 of every tail. MIXFILE hashes filenames with
+		**	this (via Calculate_CRC in INIT.CPP, which the linker picks over the
+		**	library's CRC.ASM), so no asset could be found. The state is int32_t; the
+		**	public interface still returns `long`, sign-extended as before.
+		*/
 		long Value(void) const {
 			if (Buffer_Needs_Data()) {
-				return(_lrotl(CRC, 1) + StagingBuffer.Composite);
+				return((int32_t)(_lrotl(CRC, 1) + StagingBuffer.Composite));
 			}
 			return(CRC);
 		};
@@ -98,7 +107,7 @@ class CRCEngine {
 		**	Current accumulator of the CRC value. This value doesn't take into
 		**	consideration any pending data in the staging buffer.
 		*/
-		long CRC;
+		int32_t CRC;
 
 		/*
 		**	This is the sub index into the staging buffer used to keep track of
@@ -112,8 +121,8 @@ class CRCEngine {
 		**	in preparation for additional data.
 		*/
 		union {
-			long Composite;
-			char Buffer[sizeof(long)];
+			int32_t Composite;
+			char Buffer[sizeof(int32_t)];
 		} StagingBuffer;
 };
 

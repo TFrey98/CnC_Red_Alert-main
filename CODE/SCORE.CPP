@@ -759,6 +759,7 @@ Keyboard->Clear();
 	*/
 	if (hallfame[NUMFAMENAMES-1].score >= total)
 								hallfame[NUMFAMENAMES-1].score = 0;
+	int index;	// port: read after the loop below (hall-of-fame slot); Watcom leaked for-scope, so declare it here
 	for (index = 0; index < NUMFAMENAMES; index++) {
 		if (total > hallfame[index].score) {
 			if (index < (NUMFAMENAMES-1)) for (i = (NUMFAMENAMES-1); i > index; i--) hallfame[i] = hallfame[i-1];

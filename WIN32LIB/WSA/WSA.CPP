@@ -118,7 +118,8 @@ typedef struct {
 // NOTE:"THIS IS A BAD THING. SINCE sizeof(SysAnimHeaderType) CHANGED, THE ANIMATE.EXE
 // UTILITY DID NOT KNOW I UPDATED IT, IT ADDS IT TO largest_frame_size BEFORE SAVING
 // IT TO THE FILE.  THIS MEANS I HAVE TO ADD THESE charS ON NOW FOR IT TO WORK.
-#define EXTRA_charS_ANIMATE_NOT_KNOW_ABOUT	(sizeof(short) + sizeof(unsigned long))
+// port: the on-disk offset is 4 bytes; sizeof(unsigned long) is 8 on macOS
+#define EXTRA_charS_ANIMATE_NOT_KNOW_ABOUT	(sizeof(short) + sizeof(uint32_t))
 
 
 //
@@ -126,6 +127,11 @@ typedef struct {
 // NOTE:  The 'total_frames' field is used to differentiate between Amiga and IBM
 // animations.  Amiga animations have the HIGH bit set.
 //
+/*
+**	Port: ON-DISK LAYOUT (.WSA animation file header). Watcom built this with /zp1 and a
+**	32-bit long; pack(1) plus fixed-width fields restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct {
 	unsigned short total_frames;
 	unsigned short pixel_x;
@@ -134,12 +140,17 @@ typedef struct {
 	unsigned short pixel_height;
 	unsigned short largest_frame_size;
 	short	flags;
-	unsigned long frame0_offset;
-	unsigned long frame0_end;
-	/* unsigned long data_seek_offset, unsigned short frame_size ... */
+	uint32_t frame0_offset;
+	uint32_t frame0_end;
+	/* uint32_t data_seek_offset, unsigned short frame_size ... */
 } WSA_FileHeaderType;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(WSA_FileHeaderType) == 22, "WSA_FileHeaderType must match the original 22-byte on-disk layout");
+#endif
 
-#define WSA_FILE_HEADER_SIZE	( sizeof(WSA_FileHeaderType) - (2 * sizeof(unsigned long)) )
+// port: header minus its two 4-byte offsets = 14. With 8-byte longs this was 22-16 = 6.
+#define WSA_FILE_HEADER_SIZE	( sizeof(WSA_FileHeaderType) - (2 * sizeof(uint32_t)) )
 
 /*=========================================================================*/
 /* The following PRIVATE functions are in this file:                       */
@@ -200,7 +211,7 @@ void * __cdecl Open_Animation(char const *file_name, char *user_buffer, long use
 		palette_adjust	 = 768;
 
 		if (palette != NULL) {
-			Seek_File(fh, sizeof(unsigned long) * (file_header.total_frames), SEEK_CUR);
+			Seek_File(fh, sizeof(uint32_t) * (file_header.total_frames), SEEK_CUR);	// port: 4-byte on-disk offsets
 			Read_File(fh, palette, 768L);
 		}
 
@@ -1023,10 +1034,10 @@ unsigned long __cdecl Get_Animation_Size(void const *handle)
 PRIVATE unsigned long Get_Resident_Frame_Offset( char *file_buffer, int frame )
 {
 	unsigned long frame0_size;
-	unsigned long *lptr;
+	uint32_t *lptr;		// port: walks the on-disk 4-byte offset table; was unsigned long (8-byte stride)
 
 	// If there is a frame 0, the calculate its size.
-	lptr = (unsigned long *) file_buffer;
+	lptr = (uint32_t *) file_buffer;
 
 	if (*lptr) {
 		frame0_size = lptr[1] - *lptr;
@@ -1058,11 +1069,11 @@ PRIVATE unsigned long Get_Resident_Frame_Offset( char *file_buffer, int frame )
  *=========================================================================*/
 PRIVATE unsigned long Get_File_Frame_Offset( int file_handle, int frame, int palette_adjust)
 {
-	unsigned long offset;
+	uint32_t offset;	// port: 4-byte on-disk field, matching the (frame << 2) stride below
 
 	Seek_File(file_handle, (frame << 2) + WSA_FILE_HEADER_SIZE, SEEK_SET);
 
-	if (Read_File(file_handle, (char *) &offset, sizeof(unsigned long)) != sizeof(unsigned long)) {
+	if (Read_File(file_handle, (char *) &offset, sizeof(offset)) != sizeof(offset)) {
 		offset = 0L;
 	}
 	offset += palette_adjust;

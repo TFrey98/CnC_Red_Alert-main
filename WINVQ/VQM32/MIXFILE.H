@@ -55,10 +55,19 @@
  * Count - Number of entries contained in this mix file.
  * Size  - Size of Mix file.
  */
+/*
+**	Port: ON-DISK LAYOUT (VQ player mixfile header). Watcom built this with /zp1 and a
+**	32-bit long; pack(1) plus fixed-width fields restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct _MIXHeader {
 	short Count;
-	long  Size;
+	int32_t  Size;
 } MIXHeader;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(MIXHeader) == 6, "MIXHeader must match the original 6-byte on-disk layout");
+#endif
 
 /* MIXSubBlock: Mix file entry descriptor.
  *

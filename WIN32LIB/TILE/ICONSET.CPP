@@ -125,7 +125,7 @@ void *  Load_Icon_Set(char const *filename, void *iconsetptr, long buffsize)
 	void	*returnptr=NULL;	// Iconset pointer returned by routine.
 	BOOL	allocated=FALSE;	// Was the iconset block allocated?
 	IControl_Type	*idata=NULL;	// Icon data loaded.
-	long	id;				// ID of file openned.
+	int32_t	id;				// ID of file openned.  port: 4-byte IFF form ID; was long (8 bytes on macOS)
 	struct {
 		char	Width;		// Width of icon in bytes.
 		char	Height;		// Height of icon in bytes.
@@ -140,7 +140,7 @@ void *  Load_Icon_Set(char const *filename, void *iconsetptr, long buffsize)
 	*/
 	fh = Open_Iff_File(filename);
 	if (fh != WW_ERROR) {
-		Read_File(fh, &id, sizeof(long));
+		Read_File(fh, &id, sizeof(id));
 		if (id == FORM_ICON) {
 
 			/*

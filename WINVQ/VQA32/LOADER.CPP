@@ -1625,7 +1625,7 @@ static VQAData *AllocBuffers(VQAHeader *header, VQAConfig *config)
 	/*-------------------------------------------------------------------------
 	 * ALLOCATE THE FRAME INFORMATION TABLE IF REQUESTED.
 	 *-----------------------------------------------------------------------*/
-	vqa->Foff = (long *)malloc(header->Frames * sizeof(long));
+	vqa->Foff = (int32_t *)malloc(header->Frames * sizeof(int32_t));	// port: 4-byte FINF entries
 
 	if (vqa->Foff == NULL) {
 		FreeBuffers(vqa, config, header);
@@ -1634,14 +1634,14 @@ static VQAData *AllocBuffers(VQAHeader *header, VQAConfig *config)
 
 	/* Lock to prevent page swapping. */
 #if (!VQADIRECT_SOUND)
-	DPMI_Lock(vqa->Foff, header->Frames * sizeof(long));
+	DPMI_Lock(vqa->Foff, header->Frames * sizeof(int32_t));
 #else	//!VQADIRECT_SOUND
 	/* Make sure the allocated memory is paged in */
-	Force_VM_Page_In(vqa->Foff, header->Frames * sizeof(long));
+	Force_VM_Page_In(vqa->Foff, header->Frames * sizeof(int32_t));
 #endif	//(!VQADIRECT_SOUND)
 
 	/* Keep a running total of memory usage. */
-	vqa->MemUsed += (header->Frames * sizeof(long));
+	vqa->MemUsed += (header->Frames * sizeof(int32_t));
 
 	return (vqa);
 }
@@ -1683,7 +1683,7 @@ static void FreeBuffers(VQAData *vqa, VQAConfig *config, VQAHeader *header)
 	 *-----------------------------------------------------------------------*/
 	if (vqa->Foff) {
 #if (!VQADIRECT_SOUND)
-		DPMI_Unlock(vqa->Foff, header->Frames * sizeof(long));
+		DPMI_Unlock(vqa->Foff, header->Frames * sizeof(int32_t));
 #endif	//(!VQADIRECT_SOUND)
 		free(vqa->Foff);
 	}

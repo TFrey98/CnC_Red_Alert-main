@@ -65,6 +65,14 @@ typedef int bool;
 **	secure hash with no known weaknesses. It generates a 160 bit hash
 **	result given an arbitrary length data source.
 */
+/*
+**	Port: SHA-1 operates on 32-bit words, and this engine was written with
+**	`long` meaning exactly that. On macOS long is 64 bits, which doubled the block
+**	sizes (16*sizeof(long)), widened the state, and made Result() write a 40-byte
+**	digest -- an overflow of any 20-byte buffer. Every `long` here is now
+**	int32_t/uint32_t; only the public Hash() length parameter stays `long`, as its
+**	callers expect. Verified against the FIPS 180 test vectors.
+*/
 class SHAEngine
 {
 	public:
@@ -90,7 +98,7 @@ class SHAEngine
 	private:
 
 		typedef union {
-			unsigned long Long[5];
+			uint32_t Long[5];
 			unsigned char Char[20];
 		} SHADigest;
 
@@ -117,13 +125,13 @@ class SHAEngine
 			K4=0xca62c1d6L,		// t=60..79		10^(1/2)/4
 
 			// Source data is grouped into blocks of this size.
-			SRC_BLOCK_SIZE=16*sizeof(long),
+			SRC_BLOCK_SIZE=16*sizeof(int32_t),
 
 			// Internal processing data is grouped into blocks this size.
-			PROC_BLOCK_SIZE=80*sizeof(long)
+			PROC_BLOCK_SIZE=80*sizeof(int32_t)
 		};
 
-		long Get_Constant(int index) const {
+		int32_t Get_Constant(int index) const {
 			if (index < 20) return K1;
 			if (index < 40) return K2;
 			if (index < 60) return K3;
@@ -131,26 +139,26 @@ class SHAEngine
 		};
 
 		// Used for 0..19
-		long Function1(long X, long Y, long Z) const {
+		int32_t Function1(int32_t X, int32_t Y, int32_t Z) const {
 			return(Z ^ ( X & ( Y ^ Z ) ) );
 		};
 
 		// Used for 20..39
-		long Function2(long X, long Y, long Z) const {
+		int32_t Function2(int32_t X, int32_t Y, int32_t Z) const {
 			return( X ^ Y ^ Z );
 		};
 
 		// Used for 40..59
-		long Function3(long X, long Y, long Z) const {
+		int32_t Function3(int32_t X, int32_t Y, int32_t Z) const {
 			return( (X & Y) | (Z & (X | Y) ) );
 		};
 
 		// Used for 60..79
-		long Function4(long X, long Y, long Z) const {
+		int32_t Function4(int32_t X, int32_t Y, int32_t Z) const {
 			return( X ^ Y ^ Z );
 		};
 
-		long Do_Function(int index, long X, long Y, long Z) const {
+		int32_t Do_Function(int index, int32_t X, int32_t Y, int32_t Z) const {
 			if (index < 20) return Function1(X, Y, Z);
 			if (index < 40) return Function2(X, Y, Z);
 			if (index < 60) return Function3(X, Y, Z);
@@ -161,7 +169,7 @@ class SHAEngine
 		void Process_Block(void const * source, SHADigest & acc) const;
 
 		// Processes a partially filled source accumulator buffer.
-		void Process_Partial(void const * & data, long & length);
+		void Process_Partial(void const * & data, int32_t & length);
 
 		/*
 		**	This is the running accumulator values. These values
@@ -176,7 +184,7 @@ class SHAEngine
 		**	resulting hash value as if it were appended to the end
 		**	of the source data.
 		*/
-		long Length;
+		int32_t Length;
 
 		/*
 		**	This holds any partial source block. Partial source blocks are

@@ -78,6 +78,11 @@ typedef enum {
 /*
 ------------------------------- Shape header --------------------------------
 */
+/*
+**	Port: ON-DISK LAYOUT (.SHP per-shape header). Watcom built this with /zp1 and a
+**	32-bit long; pack(1) plus fixed-width fields restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct {
 	unsigned short		ShapeType;			// 0 = normal, 1 = 16 colors,
 										//  2 = uncompressed, 4 = 	<16 colors
@@ -88,17 +93,30 @@ typedef struct {
 	unsigned short		DataLength;			// Size of the uncompressed shape (just data)
 	unsigned char		Colortable[16];	// Optional color table for compact shape
 } Shape_Type;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(Shape_Type) == 26, "Shape_Type must match the original 26-byte on-disk layout");
+#endif
 
 /*
 ------------------------------- Shape block ---------------------------------
 */
+/*
+**	Port: ON-DISK LAYOUT (.SHP shape block header (offset table follows)). Watcom built this with /zp1 and a
+**	32-bit long; pack(1) plus fixed-width fields restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct {
 	unsigned short		NumShapes;			// number of shapes in the block
-	long		Offsets[];			// array of offsets to shape data
+	int32_t		Offsets[];			// array of offsets to shape data
 										//  (offsets within the shape block, with
 										//  0 being the first offset value, not the
 										//  start of the shape block)
 } ShapeBlock_Type;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(ShapeBlock_Type) == 2, "ShapeBlock_Type must match the original 2-byte on-disk layout");
+#endif
 
 
 /*

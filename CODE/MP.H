@@ -61,8 +61,14 @@ typedef int bool;
 extern unsigned short primeTable[3511];
 
 
-#define	digit	unsigned long
-#define	signeddigit	signed long
+/*
+**	Port: digits are 32 bits, as they were on Win32. As `unsigned long` they
+**	became 64 bits on macOS, changing the arithmetic (products are built from
+**	16-bit MULTUNITs sized against a 32-bit digit) and the layout keys are
+**	decoded into. Verified against Python's pow() -- see port/PORTING.md.
+*/
+#define	digit	uint32_t
+#define	signeddigit	int32_t
 #define	LOG_UNITSIZE			5
 #define	UNITSIZE					32
 #define	UPPER_MOST_BIT			0x80000000L

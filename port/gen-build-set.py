@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+"""
+gen-build-set.py -- derive the translation units the shipped WIN32 game was
+built from, straight from CODE/MAKEFILE, and write port/build-set.txt.
+
+ra95.exe links OBJECTS plus two libraries built from TECHFILES (tech.lib) and
+LIBFILES (jshell.lib). All three lists are read, honouring !ifdef WIN32 /
+!else / !endif, so DOS-only objects (KEYFRAME, KEYFBUFF, ...) drop out.
+
+The makefile is NOT a complete record of what the shipped game linked: UNIT.CPP
+calls Fixed_To_Cardinal, defined only in COORDA.ASM, which no makefile list
+names. RA95.PJT (the IDE project) is no better -- it lists BOTH halves of every
+DOS/Win32 pair. So the set is the makefile's, plus files live code demonstrably
+depends on (it calls something defined only there):
+
+  + PALETTE   PaletteClass, reconstructed by the port (never released)
+  + ADPCM     C implementation of SOSCODEC.ASM's exports, already in the tree
+  + LCWUNCMP  C implementation of LCW_Uncompress (LCWUNCMP.ASM), already in the tree
+  + CSTRAW    CacheStraw, used by live code
+  + RAND      Sim_IRandom, called from MPLAYER.CPP
+"""
+import os, re, sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+EXTRA = ['PALETTE', 'ADPCM', 'LCWUNCMP', 'CSTRAW', 'RAND']
+
+objs, stack, cur = set(), [], None
+for raw in open(os.path.join(ROOT, 'CODE', 'MAKEFILE'), encoding='latin-1'):
+    ln = raw.strip()
+    if ln.startswith('!ifdef'):  stack.append(ln.split()[1].upper() == 'WIN32'); cur = None; continue
+    if ln.startswith('!ifndef'): stack.append(ln.split()[1].upper() != 'WIN32'); cur = None; continue
+    if ln.startswith('!else'):   stack[-1] = not stack[-1]; cur = None; continue
+    if ln.startswith('!endif'):  stack.pop(); cur = None; continue
+    m = re.match(r'(OBJECTS|LIBFILES|TECHFILES)\s*\+?=(.*)', ln)
+    if m: cur, ln = m.group(1), m.group(2)
+    if cur:
+        if all(stack):
+            objs.update(o.upper() for o in re.findall(r'([A-Za-z0-9_]+)\.OBJ', ln, re.I))
+        if not ln.rstrip().endswith('&'): cur = None
+
+objs.update(EXTRA)
+code = {os.path.splitext(f)[0].upper(): f for f in os.listdir(os.path.join(ROOT, 'CODE'))
+        if f.upper().endswith('.CPP')}
+tus = sorted(code[o] for o in objs if o in code)
+with open(os.path.join(ROOT, 'port', 'build-set.txt'), 'w') as fp:
+    fp.write('\n'.join(tus) + '\n')
+print(f"{len(tus)} translation units -> port/build-set.txt "
+      f"({len(objs - set(code))} objects are assembly or absent: {', '.join(sorted(objs - set(code)))})",
+      file=sys.stderr)

@@ -110,11 +110,6 @@
   "reason": "DOS IPX protected mode. Multiplayer, out of scope."
  },
  {
-  "path": "CODE/WINASM.ASM",
-  "files": 1,
-  "reason": "Greenleaf serial + HMI modem + IPX + 8259 PIC + ModeX blit. Its one game-relevant export, Asm_Create_Palette_Interpolation_Table, is ALREADY SUPERSEDED: CODE/INTERPAL.CPP:147 has a full C implementation and the asm call at :150 is commented out."
- },
- {
   "path": "WINVQ/VQM32/XMODE.ASM",
   "files": 1,
   "reason": "VGA Mode X. No such path under Metal."
@@ -158,5 +153,120 @@
   "path": "WIN32LIB/MEM/VMPAGEIN.ASM",
   "files": 1,
   "reason": "DOS virtual-memory paging helper."
+ },
+ {
+  "path": "CODE/ALLOC.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/BMP8.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/CLASS.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/COMQUEUE.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/CONFDLG.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/DESCDLG.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/DPMI.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/FILE.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/INIBIN.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/INICODE.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/KEYBOARD.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/KEYFRAME.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/LZWOTRAW.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/MPLIB.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/MPLPC.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/NOSEQCON.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/NUMBER.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/SEQCONN.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/STUB.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/SURFACE.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/TARCOM.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/TEMP.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
+ },
+ {
+  "path": "CODE/TURRET.CPP",
+  "files": 1,
+  "reason": "Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32."
  }
 ]

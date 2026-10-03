@@ -31,11 +31,6 @@
    "note": "use of undeclared identifier 'face'"
   },
   {
-   "file": "CODE/ALLOC.CPP",
-   "tag": "TWEAK",
-   "note": "variable has incomplete type 'union REGS'"
-  },
-  {
    "file": "CODE/ANIM.CPP",
    "tag": "TWEAK",
    "note": "cannot assign to non-static data member within const member function 'Render'"
@@ -111,11 +106,6 @@
    "note": "compiles clean for arm64"
   },
   {
-   "file": "CODE/BMP8.CPP",
-   "tag": "TWEAK",
-   "note": "unknown type name 'HWND'"
-  },
-  {
    "file": "CODE/BUFF.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
@@ -127,8 +117,8 @@
   },
   {
    "file": "CODE/BULLET.CPP",
-   "tag": "TWEAK",
-   "note": "cannot decrement expression of type bool"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/CARGO.CPP",
@@ -156,17 +146,7 @@
    "note": "no matching member function for call to 'Load'"
   },
   {
-   "file": "CODE/CCMPATH.CPP",
-   "tag": "DONE",
-   "note": "compiles clean for arm64"
-  },
-  {
    "file": "CODE/CCPTR.CPP",
-   "tag": "DONE",
-   "note": "compiles clean for arm64"
-  },
-  {
-   "file": "CODE/CCTEN.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
   },
@@ -182,8 +162,8 @@
   },
   {
    "file": "CODE/CELL.CPP",
-   "tag": "TWEAK",
-   "note": "non-object type 'char *(const char *, int)' is not assignable"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/CHECKBOX.CPP",
@@ -192,11 +172,6 @@
   },
   {
    "file": "CODE/CHEKLIST.CPP",
-   "tag": "DONE",
-   "note": "compiles clean for arm64"
-  },
-  {
-   "file": "CODE/CLASS.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
   },
@@ -221,24 +196,14 @@
    "note": "use of undeclared identifier 'OleInitialize'"
   },
   {
-   "file": "CODE/COMQUEUE.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'CommQueueClass'; did you mean 'CommBufferClass'?"
-  },
-  {
-   "file": "CODE/CONFDLG.CPP",
-   "tag": "TWEAK",
-   "note": "no matching function for call to 'Fancy_Text_Print'"
-  },
-  {
    "file": "CODE/CONNECT.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/CONQUER.CPP",
    "tag": "TWEAK",
-   "note": "member access into incomplete type 'PaletteClass'"
+   "note": "no matching function for call to 'Write_PCX_File'"
   },
   {
    "file": "CODE/CONST.CPP",
@@ -252,8 +217,8 @@
   },
   {
    "file": "CODE/COORD.CPP",
-   "tag": "TWEAK",
-   "note": "constant expression evaluates to 253 which cannot be narrowed to type 'char' [-Wc++11-narrowing]"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/CRATE.CPP",
@@ -292,16 +257,11 @@
   },
   {
    "file": "CODE/DDE.CPP",
-   "tag": "TWEAK",
-   "note": "'static' can only be specified inside the class definition"
+   "tag": "DROP",
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/DEBUG.CPP",
-   "tag": "DONE",
-   "note": "compiles clean for arm64"
-  },
-  {
-   "file": "CODE/DESCDLG.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
   },
@@ -317,28 +277,23 @@
   },
   {
    "file": "CODE/DIBFILE.CPP",
-   "tag": "TWEAK",
-   "note": "unknown type name 'OFSTRUCT'"
+   "tag": "DROP",
+   "note": "Win32 GDI bitmap files; only caller is DIBUTIL"
   },
   {
    "file": "CODE/DIBUTIL.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'GHND'"
+   "tag": "DROP",
+   "note": "Win32 GDI bitmaps; only callers are WOLAPIOB.CPP and ICONLIST.CPP"
   },
   {
    "file": "CODE/DISPLAY.CPP",
-   "tag": "TWEAK",
-   "note": "no viable overloaded '='"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/DOOR.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
-  },
-  {
-   "file": "CODE/DPMI.CPP",
-   "tag": "TWEAK",
-   "note": "expected 'volatile', 'inline', 'goto', or '('"
   },
   {
    "file": "CODE/DRIVE.CPP",
@@ -347,11 +302,6 @@
   },
   {
    "file": "CODE/DROP.CPP",
-   "tag": "DONE",
-   "note": "compiles clean for arm64"
-  },
-  {
-   "file": "CODE/DTABLE.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
   },
@@ -367,8 +317,8 @@
   },
   {
    "file": "CODE/EGOS.CPP",
-   "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/ENDING.CPP",
@@ -382,8 +332,8 @@
   },
   {
    "file": "CODE/EXPAND.CPP",
-   "tag": "TWEAK",
-   "note": "member access into incomplete type 'PaletteClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/FACE.CPP",
@@ -397,16 +347,11 @@
   },
   {
    "file": "CODE/FACTORY.CPP",
-   "tag": "TWEAK",
-   "note": "cannot decrement expression of type bool"
-  },
-  {
-   "file": "CODE/FIELD.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
   },
   {
-   "file": "CODE/FILE.CPP",
+   "file": "CODE/FIELD.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
   },
@@ -467,8 +412,8 @@
   },
   {
    "file": "CODE/GOPTIONS.CPP",
-   "tag": "TWEAK",
-   "note": "member access into incomplete type 'PaletteClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/GSCREEN.CPP",
@@ -521,29 +466,19 @@
    "note": "no matching member function for call to 'Load'"
   },
   {
-   "file": "CODE/INIBIN.CPP",
-   "tag": "DONE",
-   "note": "compiles clean for arm64"
-  },
-  {
-   "file": "CODE/INICODE.CPP",
-   "tag": "DONE",
-   "note": "compiles clean for arm64"
-  },
-  {
    "file": "CODE/INIT.CPP",
    "tag": "TWEAK",
-   "note": "no matching function for call to 'Load_Title_Screen'"
+   "note": "no matching member function for call to 'Load'"
   },
   {
    "file": "CODE/INT.CPP",
-   "tag": "TWEAK",
-   "note": "template specialization requires 'template<>'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/INTERNET.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/INTERPAL.CPP",
@@ -552,8 +487,8 @@
   },
   {
    "file": "CODE/INTRO.CPP",
-   "tag": "TWEAK",
-   "note": "no viable overloaded '='"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/IOMAP.CPP",
@@ -568,12 +503,12 @@
   {
    "file": "CODE/IPX.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/IPX95.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/IPXADDR.CPP",
@@ -593,32 +528,17 @@
   {
    "file": "CODE/IPXMGR.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
-  },
-  {
-   "file": "CODE/ITABLE.CPP",
-   "tag": "DONE",
-   "note": "compiles clean for arm64"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/JSHELL.CPP",
-   "tag": "TWEAK",
-   "note": "value of type 'const PaletteClass' is not contextually convertible to 'bool'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/KEY.CPP",
    "tag": "TWEAK",
    "note": "use of undeclared identifier 'ToAscii'"
-  },
-  {
-   "file": "CODE/KEYBOARD.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'ToAscii'"
-  },
-  {
-   "file": "CODE/KEYFRAME.CPP",
-   "tag": "TWEAK",
-   "note": "cast from pointer to smaller type 'unsigned int' loses information"
   },
   {
    "file": "CODE/LAYER.CPP",
@@ -627,8 +547,8 @@
   },
   {
    "file": "CODE/LCW.CPP",
-   "tag": "TWEAK",
-   "note": "cast from pointer to smaller type 'unsigned int' loses information"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/LCWPIPE.CPP",
@@ -642,8 +562,8 @@
   },
   {
    "file": "CODE/LCWUNCMP.CPP",
-   "tag": "TWEAK",
-   "note": "cast from pointer to smaller type 'unsigned int' loses information"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/LINK.CPP",
@@ -658,7 +578,7 @@
   {
    "file": "CODE/LOADDLG.CPP",
    "tag": "TWEAK",
-   "note": "member access into incomplete type 'PaletteClass'"
+   "note": "variable has incomplete type 'struct find_t'"
   },
   {
    "file": "CODE/LOGIC.CPP",
@@ -691,11 +611,6 @@
    "note": "compiles clean for arm64"
   },
   {
-   "file": "CODE/LZWOTRAW.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'LZWStraw'; did you mean 'LZOStraw'?"
-  },
-  {
    "file": "CODE/LZWPIPE.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
@@ -726,19 +641,14 @@
    "note": "compiles clean for arm64"
   },
   {
-   "file": "CODE/MAPEDSEL.CPP",
-   "tag": "DONE",
-   "note": "compiles clean for arm64"
-  },
-  {
    "file": "CODE/MAPEDTM.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/MAPSEL.CPP",
-   "tag": "TWEAK",
-   "note": "variable has incomplete type 'PaletteClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/MCI.CPP",
@@ -753,7 +663,7 @@
   {
    "file": "CODE/MENUS.CPP",
    "tag": "TWEAK",
-   "note": "member access into incomplete type 'PaletteClass'"
+   "note": "unknown type name 'SYSTEMTIME'"
   },
   {
    "file": "CODE/MISSION.CPP",
@@ -762,13 +672,13 @@
   },
   {
    "file": "CODE/MIXFILE.CPP",
-   "tag": "TWEAK",
-   "note": "conflicting types for 'Offset'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/MONOC.CPP",
-   "tag": "TWEAK",
-   "note": "constant expression evaluates to 218 which cannot be narrowed to type 'char' [-Wc++11-narrowing]"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/MOUSE.CPP",
@@ -782,33 +692,13 @@
   },
   {
    "file": "CODE/MPGSET.CPP",
-   "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/MPLAYER.CPP",
-   "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
-  },
-  {
-   "file": "CODE/MPLIB.CPP",
-   "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
-  },
-  {
-   "file": "CODE/MPLPC.CPP",
-   "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
-  },
-  {
-   "file": "CODE/MPMGRD.CPP",
-   "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
-  },
-  {
-   "file": "CODE/MPMGRW.CPP",
-   "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/MPU.CPP",
@@ -827,13 +717,8 @@
   },
   {
    "file": "CODE/NETDLG.CPP",
-   "tag": "TWEAK",
-   "note": "member access into incomplete type 'PaletteClass'"
-  },
-  {
-   "file": "CODE/NOSEQCON.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'NonSequencedConnClass'"
+   "tag": "DROP",
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/NULLCONN.CPP",
@@ -843,17 +728,12 @@
   {
    "file": "CODE/NULLDLG.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/NULLMGR.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
-  },
-  {
-   "file": "CODE/NUMBER.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'g'"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/OBJECT.CPP",
@@ -867,8 +747,8 @@
   },
   {
    "file": "CODE/OPTIONS.CPP",
-   "tag": "TWEAK",
-   "note": "member access into incomplete type 'PaletteClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/OVERLAY.CPP",
@@ -878,7 +758,12 @@
   {
    "file": "CODE/PACKET.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "multiplayer / online / serial"
+  },
+  {
+   "file": "CODE/PALETTE.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/PIPE.CPP",
@@ -913,7 +798,7 @@
   {
    "file": "CODE/QUEUE.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/RADAR.CPP",
@@ -963,12 +848,12 @@
   {
    "file": "CODE/REINF.CPP",
    "tag": "TWEAK",
-   "note": "cannot decrement expression of type bool"
+   "note": "use of undeclared identifier 'adj'"
   },
   {
    "file": "CODE/RGB.CPP",
-   "tag": "TWEAK",
-   "note": "incomplete type 'PaletteClass' named in nested name specifier"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/RNDSTRAW.CPP",
@@ -993,12 +878,12 @@
   {
    "file": "CODE/SCENARIO.CPP",
    "tag": "TWEAK",
-   "note": "member access into incomplete type 'PaletteClass'"
+   "note": "no matching member function for call to 'Load'"
   },
   {
    "file": "CODE/SCORE.CPP",
    "tag": "TWEAK",
-   "note": "constant expression evaluates to 192 which cannot be narrowed to type 'char' [-Wc++11-narrowing]"
+   "note": "use of undeclared identifier 'i'"
   },
   {
    "file": "CODE/SCROLL.CPP",
@@ -1017,18 +902,13 @@
   },
   {
    "file": "CODE/SENDFILE.CPP",
-   "tag": "TWEAK",
-   "note": "no matching function for call to 'Set_Palette'"
-  },
-  {
-   "file": "CODE/SEQCONN.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'SequencedConnClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/SESSION.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/SHA.CPP",
@@ -1052,8 +932,8 @@
   },
   {
    "file": "CODE/SIDEBAR.CPP",
-   "tag": "TWEAK",
-   "note": "variable has incomplete type 'PaletteClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/SLIDER.CPP",
@@ -1073,7 +953,7 @@
   {
    "file": "CODE/SPECIAL.CPP",
    "tag": "TWEAK",
-   "note": "non-object type 'char *(const char *, int)' is not assignable"
+   "note": "no matching function for call to 'Fancy_Text_Print'"
   },
   {
    "file": "CODE/SPRITE.CPP",
@@ -1083,7 +963,7 @@
   {
    "file": "CODE/STARTUP.CPP",
    "tag": "TWEAK",
-   "note": "use of undeclared identifier 'WINDOW_NAME'; did you mean 'WINDOW_MAIN'?"
+   "note": "use of undeclared identifier 'SW_RESTORE'"
   },
   {
    "file": "CODE/STATBTN.CPP",
@@ -1092,8 +972,8 @@
   },
   {
    "file": "CODE/STATS.CPP",
-   "tag": "TWEAK",
-   "note": "no matching member function for call to 'Add_Field'"
+   "tag": "DROP",
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/STRAW.CPP",
@@ -1101,19 +981,9 @@
    "note": "compiles clean for arm64"
   },
   {
-   "file": "CODE/STUB.CPP",
-   "tag": "TWEAK",
-   "note": "'main' must return 'int'"
-  },
-  {
    "file": "CODE/SUPER.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
-  },
-  {
-   "file": "CODE/SURFACE.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'Logical_Size'"
   },
   {
    "file": "CODE/TAB.CPP",
@@ -1122,13 +992,8 @@
   },
   {
    "file": "CODE/TACTION.CPP",
-   "tag": "TWEAK",
-   "note": "member access into incomplete type 'PaletteClass'"
-  },
-  {
-   "file": "CODE/TARCOM.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'TarComClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/TARGET.CPP",
@@ -1138,7 +1003,7 @@
   {
    "file": "CODE/TCPIP.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/TDATA.CPP",
@@ -1161,17 +1026,7 @@
    "note": "out-of-line definition of 'Take_Damage' does not match any declaration in 'TechnoClass'"
   },
   {
-   "file": "CODE/TEMP.CPP",
-   "tag": "TWEAK",
-   "note": "unknown type name 'THIS'"
-  },
-  {
    "file": "CODE/TEMPLATE.CPP",
-   "tag": "DONE",
-   "note": "compiles clean for arm64"
-  },
-  {
-   "file": "CODE/TENMGR.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
   },
@@ -1202,8 +1057,8 @@
   },
   {
    "file": "CODE/TOOLTIP.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'ToolTipClass'"
+   "tag": "DROP",
+   "note": "ToolTipClass; used only by WOL_* and ICONLIST"
   },
   {
    "file": "CODE/TRACKER.CPP",
@@ -1219,11 +1074,6 @@
    "file": "CODE/TRIGTYPE.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
-  },
-  {
-   "file": "CODE/TURRET.CPP",
-   "tag": "TWEAK",
-   "note": "constructor for 'TurretClass' must explicitly initialize the base class 'DriveClass' which does not have a def"
   },
   {
    "file": "CODE/TXTLABEL.CPP",
@@ -1267,8 +1117,8 @@
   },
   {
    "file": "CODE/VESSEL.CPP",
-   "tag": "TWEAK",
-   "note": "cannot decrement expression of type bool"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/VISUDLG.CPP",
@@ -1277,8 +1127,8 @@
   },
   {
    "file": "CODE/VORTEX.CPP",
-   "tag": "TWEAK",
-   "note": "incomplete type 'PaletteClass' named in nested name specifier"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/W95TRACE.CPP",
@@ -1333,7 +1183,7 @@
   {
    "file": "CODE/WOL_GSUP.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "Westwood Online (service defunct)"
   },
   {
    "file": "CODE/WOL_LOGN.CPP",
@@ -1352,23 +1202,23 @@
   },
   {
    "file": "CODE/WRITEPCX.CPP",
-   "tag": "TWEAK",
-   "note": "invalid application of 'sizeof' to an incomplete type 'PaletteClass'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/WSPIPX.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/WSPROTO.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/WSPUDP.CPP",
    "tag": "DROP",
-   "note": "multiplayer / online / serial - out of scope"
+   "note": "multiplayer / online / serial"
   },
   {
    "file": "CODE/XPIPE.CPP",
@@ -1389,388 +1239,465 @@
  "asm": [
   {
    "file": "CODE/2KEYFBUF.ASM",
+   "lines": 4848,
    "tag": "TRANSLATE",
-   "lines": 4848
-  },
-  {
-   "file": "WINVQ/VQM32/SOSCODEC.ASM",
-   "tag": "NATIVE",
-   "lines": 1271
-  },
-  {
-   "file": "WINVQ/VQA32/UNVQBUFF.ASM",
-   "tag": "TRANSLATE",
-   "lines": 1153
-  },
-  {
-   "file": "WIN32LIB/SHAPE/DRAWSHP.ASM",
-   "tag": "TRANSLATE",
-   "lines": 1128
-  },
-  {
-   "file": "WIN32LIB/AUDIO/OLSOSDEC.ASM",
-   "tag": "NATIVE",
-   "lines": 755
-  },
-  {
-   "file": "WIN32LIB/AUDIO/SOSCODEC.ASM",
-   "tag": "NATIVE",
-   "lines": 724
-  },
-  {
-   "file": "WIN32LIB/WSA/XORDELTA.ASM",
-   "tag": "TRANSLATE",
-   "lines": 669
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/FILLQUAD.ASM",
-   "tag": "TRANSLATE",
-   "lines": 669
-  },
-  {
-   "file": "WIN32LIB/KEYBOARD/WWMOUSE.ASM",
-   "tag": "NATIVE",
-   "lines": 662
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/STAMP.ASM",
-   "tag": "TRANSLATE",
-   "lines": 600
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/SCALE.ASM",
-   "tag": "TRANSLATE",
-   "lines": 570
+   "note": "no C yet for: Buffer_Frame_To_Page"
   },
   {
    "file": "CODE/2SUPPORT.ASM",
-   "tag": "TRANSLATE",
-   "lines": 564
+   "lines": 564,
+   "tag": "SUPERSEDED",
+   "note": "C already defines: Conquer_Build_Fading_Table, strtrim"
   },
   {
    "file": "CODE/2TXTPRNT.ASM",
+   "lines": 507,
    "tag": "TRANSLATE",
-   "lines": 507
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/TXTPRNT.ASM",
-   "tag": "TRANSLATE",
-   "lines": 502
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/DRAWLINE.ASM",
-   "tag": "TRANSLATE",
-   "lines": 464
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/BITBLIT.ASM",
-   "tag": "TRANSLATE",
-   "lines": 462
-  },
-  {
-   "file": "WIN32LIB/FONT/TEXTPRNT.ASM",
-   "tag": "TRANSLATE",
-   "lines": 436
-  },
-  {
-   "file": "WIN32LIB/PALETTE/PAL.ASM",
-   "tag": "TRANSLATE",
-   "lines": 410
-  },
-  {
-   "file": "WINVQ/VQM32/DRAWCHAR.ASM",
-   "tag": "TRANSLATE",
-   "lines": 395
-  },
-  {
-   "file": "WINVQ/VQM32/HUFFDCMP.ASM",
-   "tag": "TRANSLATE",
-   "lines": 391
-  },
-  {
-   "file": "WINVQ/VQM32/AUDUNZAP.ASM",
-   "tag": "TRANSLATE",
-   "lines": 375
-  },
-  {
-   "file": "WIN32LIB/AUDIO/AUDUNCMP.ASM",
-   "tag": "TRANSLATE",
-   "lines": 374
-  },
-  {
-   "file": "WIN32LIB/SHAPE/DS_DSR.ASM",
-   "tag": "TRANSLATE",
-   "lines": 341
-  },
-  {
-   "file": "WIN32LIB/SHAPE/DS_DS.ASM",
-   "tag": "TRANSLATE",
-   "lines": 341
-  },
-  {
-   "file": "WINVQ/VQM32/PALETTE.ASM",
-   "tag": "TRANSLATE",
-   "lines": 319
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/TOPAGE.ASM",
-   "tag": "TRANSLATE",
-   "lines": 294
-  },
-  {
-   "file": "WIN32LIB/IFF/LCWUNCMP.ASM",
-   "tag": "TRANSLATE",
-   "lines": 292
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/TOBUFF.ASM",
-   "tag": "TRANSLATE",
-   "lines": 292
-  },
-  {
-   "file": "WIN32LIB/PLAYCD/PLAYCD.ASM",
-   "tag": "NATIVE",
-   "lines": 289
-  },
-  {
-   "file": "WIN32LIB/IFF/LCWCOMP.ASM",
-   "tag": "TRANSLATE",
-   "lines": 286
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/STMPCACH.ASM",
-   "tag": "TRANSLATE",
-   "lines": 284
-  },
-  {
-   "file": "CODE/LCWCOMP.ASM",
-   "tag": "TRANSLATE",
-   "lines": 284
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/FILLRECT.ASM",
-   "tag": "TRANSLATE",
-   "lines": 275
-  },
-  {
-   "file": "WIN32LIB/MISC/CLIPRECT.ASM",
-   "tag": "TRANSLATE",
-   "lines": 269
-  },
-  {
-   "file": "WINVQ/VQM32/LCWCOMP.ASM",
-   "tag": "TRANSLATE",
-   "lines": 266
-  },
-  {
-   "file": "WIN32LIB/SHAPE/DS_DR.ASM",
-   "tag": "TRANSLATE",
-   "lines": 257
-  },
-  {
-   "file": "WIN32LIB/SHAPE/DS_DN.ASM",
-   "tag": "TRANSLATE",
-   "lines": 257
-  },
-  {
-   "file": "WINVQ/VQM32/LCWUNCMP.ASM",
-   "tag": "TRANSLATE",
-   "lines": 221
-  },
-  {
-   "file": "WINVQ/VQM32/FILLRECT.ASM",
-   "tag": "TRANSLATE",
-   "lines": 216
-  },
-  {
-   "file": "WIN32LIB/MISC/FADING.ASM",
-   "tag": "TRANSLATE",
-   "lines": 215
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/SHADOW.ASM",
-   "tag": "TRANSLATE",
-   "lines": 210
-  },
-  {
-   "file": "WIN32LIB/SHAPE/DS_TABLE.ASM",
-   "tag": "TRANSLATE",
-   "lines": 187
-  },
-  {
-   "file": "CODE/CPUID.ASM",
-   "tag": "REBUILD",
-   "lines": 185
-  },
-  {
-   "file": "WIN32LIB/MEM/MEM_COPY.ASM",
-   "tag": "TRANSLATE",
-   "lines": 184
-  },
-  {
-   "file": "WINVQ/VQM32/TEXTPRNT.ASM",
-   "tag": "TRANSLATE",
-   "lines": 178
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/REMAP.ASM",
-   "tag": "TRANSLATE",
-   "lines": 175
-  },
-  {
-   "file": "WIN32LIB/MISC/FACINGFF.ASM",
-   "tag": "TRANSLATE",
-   "lines": 165
-  },
-  {
-   "file": "WINVQ/VQAVIEW/INTERPAL.ASM",
-   "tag": "TRANSLATE",
-   "lines": 162
-  },
-  {
-   "file": "WIN32LIB/SHAPE/DS_LSS.ASM",
-   "tag": "TRANSLATE",
-   "lines": 159
-  },
-  {
-   "file": "WIN32LIB/SHAPE/DS_LSRS.ASM",
-   "tag": "TRANSLATE",
-   "lines": 159
-  },
-  {
-   "file": "WIN32LIB/MISC/SHAKESCR.ASM",
-   "tag": "TRANSLATE",
-   "lines": 158
-  },
-  {
-   "file": "WIN32LIB/MISC/OPSYS.ASM",
-   "tag": "REBUILD",
-   "lines": 150
-  },
-  {
-   "file": "WIN32LIB/MISC/FACING16.ASM",
-   "tag": "TRANSLATE",
-   "lines": 148
-  },
-  {
-   "file": "WIN32LIB/MISC/FACING8.ASM",
-   "tag": "TRANSLATE",
-   "lines": 140
-  },
-  {
-   "file": "WIN32LIB/MISC/REVERSE.ASM",
-   "tag": "TRANSLATE",
-   "lines": 139
-  },
-  {
-   "file": "WINVQ/VQM32/VB.ASM",
-   "tag": "TRANSLATE",
-   "lines": 137
+   "note": "no C yet for: Buffer_Print, Get_Font_Palette_Ptr"
   },
   {
    "file": "CODE/COORDA.ASM",
+   "lines": 134,
    "tag": "TRANSLATE",
-   "lines": 134
+   "note": "no C yet for: Cardinal_To_Fixed, Fixed_To_Cardinal"
   },
   {
-   "file": "WINVQ/VQM32/CRC.ASM",
-   "tag": "TRANSLATE",
-   "lines": 133
+   "file": "CODE/CPUID.ASM",
+   "lines": 185,
+   "tag": "REBUILD",
+   "note": "x86 CPUID; no arm64 equivalent"
   },
   {
-   "file": "WIN32LIB/IFF/PACK2PLN.ASM",
+   "file": "CODE/LCWCOMP.ASM",
+   "lines": 283,
    "tag": "TRANSLATE",
-   "lines": 132
+   "note": "no C yet for: LCW_Comp"
+  },
+  {
+   "file": "CODE/WINASM.ASM",
+   "lines": 890,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Asm_Create_Palette_Interpolation_Table, Asm_Interpolate, Asm_Interpolate_Line_Double, Asm_Interpolate_Line_Interpolate, Change8259Priority, FastGetPortHardware, FastSetPortHardware, HMAnswer, HMDial, HMInputLine, HMSendString, HMSendStringNoWait, HMSetDialingMethod, HMSetUpAbortKey, HMSetUpEchoRoutine, HMWaitForOK, IPX_Initialise, Int3, ModeX_Blit, MouseQX, MouseQY, PortKillTime, PortOpenGreenleafFast, SetAbortModemFunctionPtr, Set_Palette_Register, Stop_Execution"
+  },
+  {
+   "file": "WIN32LIB/AUDIO/AUDUNCMP.ASM",
+   "lines": 373,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Decompress_Frame"
+  },
+  {
+   "file": "WIN32LIB/AUDIO/OLSOSDEC.ASM",
+   "lines": 755,
+   "tag": "TRANSLATE",
+   "note": "General_sosCODECDecompressData is live (SOUNDINT.CPP): adapt CODE/ADPCM.CPP rather than translate from scratch"
+  },
+  {
+   "file": "WIN32LIB/AUDIO/SOSCODEC.ASM",
+   "lines": 724,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: sosCODEC_Lock, sosCODEC_Unlock"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/BITBLIT.ASM",
+   "lines": 461,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Linear_Blit_To_Linear"
   },
   {
    "file": "WIN32LIB/DRAWBUFF/CLEAR.ASM",
+   "lines": 129,
    "tag": "TRANSLATE",
-   "lines": 130
+   "note": "no C yet for: Buffer_Clear"
   },
   {
-   "file": "WIN32LIB/SHAPE/DS_LS.ASM",
+   "file": "WIN32LIB/DRAWBUFF/DRAWLINE.ASM",
+   "lines": 464,
    "tag": "TRANSLATE",
-   "lines": 118
+   "note": "no C yet for: Buffer_Draw_Line"
   },
   {
-   "file": "WIN32LIB/SHAPE/DS_LRS.ASM",
+   "file": "WIN32LIB/DRAWBUFF/FILLQUAD.ASM",
+   "lines": 669,
    "tag": "TRANSLATE",
-   "lines": 118
+   "note": "no C yet for: Buffer_Fill_Quad"
   },
   {
-   "file": "WIN32LIB/MISC/RANDOM.ASM",
+   "file": "WIN32LIB/DRAWBUFF/FILLRECT.ASM",
+   "lines": 274,
    "tag": "TRANSLATE",
-   "lines": 118
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/GETCLIP.ASM",
-   "tag": "TRANSLATE",
-   "lines": 115
-  },
-  {
-   "file": "WIN32LIB/MISC/DETPROC.ASM",
-   "tag": "REBUILD",
-   "lines": 115
-  },
-  {
-   "file": "WIN32LIB/MISC/CRC.ASM",
-   "tag": "TRANSLATE",
-   "lines": 114
-  },
-  {
-   "file": "WIN32LIB/SHAPE/DS_RSS.ASM",
-   "tag": "TRANSLATE",
-   "lines": 110
-  },
-  {
-   "file": "WIN32LIB/SHAPE/DS_RSRS.ASM",
-   "tag": "TRANSLATE",
-   "lines": 110
-  },
-  {
-   "file": "WIN32LIB/SHAPE/DS_RS.ASM",
-   "tag": "TRANSLATE",
-   "lines": 110
-  },
-  {
-   "file": "WIN32LIB/SHAPE/DS_RRS.ASM",
-   "tag": "TRANSLATE",
-   "lines": 110
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/PUTPIX.ASM",
-   "tag": "TRANSLATE",
-   "lines": 110
-  },
-  {
-   "file": "WIN32LIB/FONT/SETFPAL.ASM",
-   "tag": "TRANSLATE",
-   "lines": 106
-  },
-  {
-   "file": "WIN32LIB/DRAWBUFF/GETPIX.ASM",
-   "tag": "TRANSLATE",
-   "lines": 106
+   "note": "no C yet for: Buffer_Fill_Rect"
   },
   {
    "file": "WIN32LIB/DRAWBUFF/FTPUTPIX.ASM",
+   "lines": 106,
    "tag": "TRANSLATE",
-   "lines": 106
+   "note": "no C yet for: Buffer_Get_Pixel"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/GETCLIP.ASM",
+   "lines": 114,
+   "tag": "DEAD",
+   "note": "no live caller"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/GETPIX.ASM",
+   "lines": 105,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Buffer_Get_Pixel"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/PUTPIX.ASM",
+   "lines": 109,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Buffer_Put_Pixel"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/REMAP.ASM",
+   "lines": 175,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Buffer_Remap"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/SCALE.ASM",
+   "lines": 569,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Linear_Scale_To_Linear"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/SHADOW.ASM",
+   "lines": 209,
+   "tag": "DEAD",
+   "note": "Shadow_Blit is only called in the DOS #else branch of GSCREEN.CPP; Hide/Show_Mouse have C versions in MOUSE.CPP"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/STAMP.ASM",
+   "lines": 600,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Buffer_Draw_Stamp, Buffer_Draw_Stamp_Clip"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/STMPCACH.ASM",
+   "lines": 284,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Cache_Copy_Icon, Clear_Icon_Pointers, Get_Free_Index, Get_Icon_Index, Is_Icon_Cached"
   },
   {
    "file": "WIN32LIB/DRAWBUFF/SZREGION.ASM",
+   "lines": 100,
    "tag": "TRANSLATE",
-   "lines": 101
+   "note": "no C yet for: Buffer_Size_Of_Region"
   },
   {
-   "file": "WIN32LIB/SHAPE/SHAPE.ASM",
+   "file": "WIN32LIB/DRAWBUFF/TOBUFF.ASM",
+   "lines": 291,
    "tag": "TRANSLATE",
-   "lines": 94
+   "note": "no C yet for: Buffer_To_Buffer"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/TOPAGE.ASM",
+   "lines": 293,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Buffer_To_Page"
+  },
+  {
+   "file": "WIN32LIB/DRAWBUFF/TXTPRNT.ASM",
+   "lines": 501,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Buffer_Print, Get_Font_Palette_Ptr"
+  },
+  {
+   "file": "WIN32LIB/FONT/SETFPAL.ASM",
+   "lines": 105,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Set_Font_Palette_Range"
+  },
+  {
+   "file": "WIN32LIB/FONT/TEXTPRNT.ASM",
+   "lines": 436,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Text_Print"
+  },
+  {
+   "file": "WIN32LIB/IFF/LCWCOMP.ASM",
+   "lines": 285,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: LCW_Compress"
+  },
+  {
+   "file": "WIN32LIB/IFF/LCWUNCMP.ASM",
+   "lines": 292,
+   "tag": "SUPERSEDED",
+   "note": "C already defines: LCW_Uncompress"
+  },
+  {
+   "file": "WIN32LIB/IFF/PACK2PLN.ASM",
+   "lines": 131,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Pack_2_Plane"
+  },
+  {
+   "file": "WIN32LIB/KEYBOARD/WWMOUSE.ASM",
+   "lines": 662,
+   "tag": "NATIVE",
+   "note": "software cursor; NSCursor or composite in the Metal shader"
+  },
+  {
+   "file": "WIN32LIB/MEM/MEM_COPY.ASM",
+   "lines": 184,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Largest_Mem_Block, Mem_Copy"
+  },
+  {
+   "file": "WIN32LIB/MISC/CLIPRECT.ASM",
+   "lines": 269,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Clip_Rect, Confine_Rect"
+  },
+  {
+   "file": "WIN32LIB/MISC/CRC.ASM",
+   "lines": 113,
+   "tag": "SUPERSEDED",
+   "note": "C already defines: Calculate_CRC"
+  },
+  {
+   "file": "WIN32LIB/MISC/DETPROC.ASM",
+   "lines": 114,
+   "tag": "REBUILD",
+   "note": "x86 processor detection"
+  },
+  {
+   "file": "WIN32LIB/MISC/FACING16.ASM",
+   "lines": 147,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Desired_Facing16"
+  },
+  {
+   "file": "WIN32LIB/MISC/FACING8.ASM",
+   "lines": 140,
+   "tag": "SUPERSEDED",
+   "note": "C already defines: Desired_Facing8"
+  },
+  {
+   "file": "WIN32LIB/MISC/FACINGFF.ASM",
+   "lines": 164,
+   "tag": "SUPERSEDED",
+   "note": "C already defines: Desired_Facing256"
+  },
+  {
+   "file": "WIN32LIB/MISC/FADING.ASM",
+   "lines": 214,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Build_Fading_Table"
+  },
+  {
+   "file": "WIN32LIB/MISC/OPSYS.ASM",
+   "lines": 149,
+   "tag": "REBUILD",
+   "note": "x86/DOS OS detection"
+  },
+  {
+   "file": "WIN32LIB/MISC/RANDOM.ASM",
+   "lines": 118,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Get_Random_Mask, Random"
+  },
+  {
+   "file": "WIN32LIB/MISC/REVERSE.ASM",
+   "lines": 139,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Reverse_Long, Reverse_Short, Swap_Long"
+  },
+  {
+   "file": "WIN32LIB/MISC/SHAKESCR.ASM",
+   "lines": 158,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Shake_Screen"
+  },
+  {
+   "file": "WIN32LIB/PALETTE/PAL.ASM",
+   "lines": 410,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Bump_Color, Set_Palette_Range"
+  },
+  {
+   "file": "WIN32LIB/PLAYCD/PLAYCD.ASM",
+   "lines": 289,
+   "tag": "NATIVE",
+   "note": "DOS DPMI real-mode CD access; Redbook music becomes AVFoundation"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DRAWSHP.ASM",
+   "lines": 1128,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Draw_Shape"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_DN.ASM",
+   "lines": 257,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_DR.ASM",
+   "lines": 257,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_DS.ASM",
+   "lines": 341,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_DSR.ASM",
+   "lines": 341,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_LRS.ASM",
+   "lines": 117,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_LS.ASM",
+   "lines": 117,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_LSRS.ASM",
+   "lines": 158,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_LSS.ASM",
+   "lines": 158,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_RRS.ASM",
+   "lines": 109,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_RS.ASM",
+   "lines": 109,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_RSRS.ASM",
+   "lines": 109,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_RSS.ASM",
+   "lines": 109,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/DS_TABLE.ASM",
+   "lines": 187,
+   "tag": "TRANSLATE",
+   "note": "called from other assembly"
   },
   {
    "file": "WIN32LIB/SHAPE/SETSHAPE.ASM",
+   "lines": 81,
    "tag": "TRANSLATE",
-   "lines": 81
+   "note": "no C yet for: Set_Shape_Buffer"
+  },
+  {
+   "file": "WIN32LIB/SHAPE/SHAPE.ASM",
+   "lines": 94,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Set_Shape_Buffer"
+  },
+  {
+   "file": "WIN32LIB/WSA/XORDELTA.ASM",
+   "lines": 669,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Apply_XOR_Delta, Apply_XOR_Delta_To_Page_Or_Viewport"
+  },
+  {
+   "file": "WINVQ/VQA32/UNVQBUFF.ASM",
+   "lines": 1153,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: UnVQ_2x2, UnVQ_2x3, UnVQ_4x2, UnVQ_4x2_Woofer, UnVQ_4x4"
+  },
+  {
+   "file": "WINVQ/VQM32/AUDUNZAP.ASM",
+   "lines": 375,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: AudioUnzap"
+  },
+  {
+   "file": "WINVQ/VQM32/CRC.ASM",
+   "lines": 133,
+   "tag": "SUPERSEDED",
+   "note": "C already defines: Calculate_CRC"
+  },
+  {
+   "file": "WINVQ/VQM32/DRAWCHAR.ASM",
+   "lines": 395,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Draw_Char, Set_Font_Palette_Range"
+  },
+  {
+   "file": "WINVQ/VQM32/FILLRECT.ASM",
+   "lines": 216,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Eor_Region, Fill_Rect"
+  },
+  {
+   "file": "WINVQ/VQM32/HUFFDCMP.ASM",
+   "lines": 391,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: BuildHuffTree, HuffDecompress"
+  },
+  {
+   "file": "WINVQ/VQM32/LCWCOMP.ASM",
+   "lines": 266,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: LCW_Compress"
+  },
+  {
+   "file": "WINVQ/VQM32/LCWUNCMP.ASM",
+   "lines": 221,
+   "tag": "SUPERSEDED",
+   "note": "C already defines: LCW_Uncompress"
+  },
+  {
+   "file": "WINVQ/VQM32/PALETTE.ASM",
+   "lines": 319,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: ReadPalette, SetDAC, TranslatePalette"
+  },
+  {
+   "file": "WINVQ/VQM32/SOSCODEC.ASM",
+   "lines": 1271,
+   "tag": "SUPERSEDED",
+   "note": "VQA_-prefixed copy of the SOS ADPCM codec; wrap CODE/ADPCM.CPP"
+  },
+  {
+   "file": "WINVQ/VQM32/TEXTPRNT.ASM",
+   "lines": 178,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: Text_Print"
+  },
+  {
+   "file": "WINVQ/VQM32/VB.ASM",
+   "lines": 137,
+   "tag": "TRANSLATE",
+   "note": "no C yet for: WaitNoVB, WaitVB"
   }
  ]
 }

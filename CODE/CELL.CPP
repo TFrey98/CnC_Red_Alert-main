@@ -2549,7 +2549,7 @@ crate_money:
 				break;
 
 			case CRATE_ARMOR:
-				for (index = 0; index < DisplayClass::Layer[LAYER_GROUND].Count(); index++) {
+				for (int index = 0; index < DisplayClass::Layer[LAYER_GROUND].Count(); index++) {
 					ObjectClass * obj = DisplayClass::Layer[LAYER_GROUND][index];
 
 					if (obj != NULL && obj->Is_Techno() && Distance(Cell_Coord(), obj->Center_Coord()) < Rule.CrateRadius && ((TechnoClass *)obj)->ArmorBias == 1) {
@@ -2562,7 +2562,7 @@ crate_money:
 				break;
 
 			case CRATE_SPEED:
-				for (index = 0; index < DisplayClass::Layer[LAYER_GROUND].Count(); index++) {
+				for (int index = 0; index < DisplayClass::Layer[LAYER_GROUND].Count(); index++) {
 					ObjectClass * obj = DisplayClass::Layer[LAYER_GROUND][index];
 
 					if (obj && obj->Is_Foot() && Distance(Cell_Coord(), obj->Center_Coord()) < Rule.CrateRadius && ((FootClass *)obj)->SpeedBias == 1 && obj->What_Am_I() != RTTI_AIRCRAFT) {
@@ -2577,7 +2577,7 @@ crate_money:
 				break;
 
 			case CRATE_FIREPOWER:
-				for (index = 0; index < DisplayClass::Layer[LAYER_GROUND].Count(); index++) {
+				for (int index = 0; index < DisplayClass::Layer[LAYER_GROUND].Count(); index++) {
 					ObjectClass * obj = DisplayClass::Layer[LAYER_GROUND][index];
 
 					if (obj && obj->Is_Techno() && Distance(Cell_Coord(), obj->Center_Coord()) < Rule.CrateRadius && ((TechnoClass *)obj)->FirepowerBias == 1) {
@@ -2591,7 +2591,7 @@ crate_money:
 				break;
 
 			case CRATE_INVULN:
-				for (index = 0; index < DisplayClass::Layer[LAYER_GROUND].Count(); index++) {
+				for (int index = 0; index < DisplayClass::Layer[LAYER_GROUND].Count(); index++) {
 					ObjectClass * obj = DisplayClass::Layer[LAYER_GROUND][index];
 
 					if (obj && obj->Is_Techno() && Distance(Cell_Coord(), obj->Center_Coord()) < Rule.CrateRadius) {

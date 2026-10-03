@@ -454,7 +454,7 @@ typedef struct _VQAData {
 	VQADrawer     Drawer;
 	VQAFlipper    Flipper;
 	unsigned long Flags;
-	long          *Foff;
+	int32_t       *Foff;	// port: filled raw from the FINF chunk's 4-byte entries; was long *
 	long          VBIBit;
 	long          Max_CB_Size;
 	long          Max_Pal_Size;

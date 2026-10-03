@@ -10,10 +10,17 @@ RA_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="${TMPDIR:-/tmp}/ra-probe"
 rm -rf "$OUT"; mkdir -p "$OUT"
 
+# Compile exactly the translation units the shipped WIN32 game was built from,
+# not every .CPP that happens to be in CODE/. The list is derived from
+# CODE/MAKEFILE by port/gen-build-set.py; regenerate it if the makefile or the
+# set of reconstructed files changes. Files outside it were never part of the
+# game (see archive/README.md), and a few (ITABLE.CPP, DTABLE.CPP,
+# MAPEDSEL.CPP) are fragments that are only valid when #included elsewhere.
+SET="${RA_ROOT}/port/build-set.txt"
 cd "${RA_ROOT}/CODE"
-ls *.CPP | xargs -P 8 -I{} "${RA_ROOT}/port/probe-one.sh" "$OUT" "{}" > "$OUT/results.txt"
+xargs -P 8 -I{} "${RA_ROOT}/port/probe-one.sh" "$OUT" "{}" < "$SET" > "$OUT/results.txt"
 
-total=$(ls *.CPP | wc -l | tr -d ' ')
+total=$(wc -l < "$SET" | tr -d ' ')
 ok=$(grep -c '^OK' "$OUT/results.txt")
 print ""
 print "=== arm64 clean: ${ok} / ${total} ==="

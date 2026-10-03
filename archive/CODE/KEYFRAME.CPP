@@ -47,6 +47,11 @@
 
 #define	Apply_Delta(buffer, delta)		Apply_XOR_Delta((char*)(buffer), (char*)(delta))
 
+/*
+**	Port: ON-DISK LAYOUT (keyframe animation header). Watcom built this with /zp1 and a
+**	32-bit long; pack(1) plus fixed-width fields restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct {
 	unsigned short frames;
 	unsigned short x;
@@ -56,6 +61,10 @@ typedef struct {
 	unsigned short largest_frame_size;
 	short				flags;
 } KeyFrameHeaderType;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(KeyFrameHeaderType) == 14, "KeyFrameHeaderType must match the original 14-byte on-disk layout");
+#endif
 
 
 

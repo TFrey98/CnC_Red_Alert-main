@@ -734,7 +734,7 @@ void Show_Who_Was_Responsible (void)
 	/*
 	** Loop through and load up all the slideshow pictures
 	*/
-	for (index = 0 ; index < NUM_SLIDES ; index++){
+	for (int index = 0 ; index < NUM_SLIDES ; index++){
 #ifdef WIN32
 		SlideBuffers[index] = new GraphicBufferClass;
 		SlideBuffers[index]->Init (SeenBuff.Get_Width(), SeenBuff.Get_Height(), NULL , 0 , (GBC_Enum)0);
@@ -962,7 +962,7 @@ void Show_Who_Was_Responsible (void)
 	Theme.Stop();
 	Options.Set_Score_Volume(oldvolume, false);
 
-	for (index = 0 ; index < NUM_SLIDES ; index++){
+	for (int index = 0 ; index < NUM_SLIDES ; index++){
 		delete SlideBuffers[index];
 	}
 

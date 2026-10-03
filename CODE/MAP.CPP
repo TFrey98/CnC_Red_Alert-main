@@ -1244,6 +1244,15 @@ bool MapClass::Remove_Crate(CELL cell)
  * HISTORY:                                                                *
  *   07/08/1995 BRR : Created.                                             *
  *=========================================================================*/
+/*
+**	Port note: this debug check (enabled by Debug_Check_Map) used to reject any
+**	object pointer whose high byte was set -- `(unsigned int)ptr & 0xff000000` -- as
+**	evidence of a memory trasher. That was a heuristic about the 1997 Win32 address
+**	space. On 64-bit macOS heap pointers routinely sit far above 4GB, so with the
+**	cast fixed it would have flagged every valid object as corrupt. Valid pointers
+**	always passed it on Win32, so removing only that heuristic keeps the original
+**	behaviour; the IsInLimbo and cell-range checks remain.
+*/
 int MapClass::Validate(void)
 {
 	CELL cell;
@@ -1325,8 +1334,8 @@ if (BlubCell->Overlapper[1]) {
 		obj = (*this)[cell].Cell_Occupier();
 		if (obj) {
 			if (
-				((unsigned int)obj & 0xff000000) ||
-				((unsigned int)obj->Next & 0xff000000) ||
+				/* port: removed `((unsigned int)obj & 0xff000000) ||` -- see note above Validate */
+				/* port: removed `((unsigned int)obj->Next & 0xff000000) ||` -- see note above Validate */
 //				((unsigned int)obj->Trigger & 0xff000000) ||
 				obj->IsInLimbo ||
 				((unsigned int)Coord_Cell(obj->Coord) >= MAP_CELL_TOTAL)) {
@@ -1342,8 +1351,8 @@ if (BlubCell->Overlapper[1]) {
 			obj = (*this)[cell].Overlapper[i];
 			if (obj) {
 				if (
-					((unsigned int)obj & 0xff000000) ||
-					((unsigned int)obj->Next & 0xff000000) ||
+					/* port: removed `((unsigned int)obj & 0xff000000) ||` -- see note above Validate */
+					/* port: removed `((unsigned int)obj->Next & 0xff000000) ||` -- see note above Validate */
 //					((unsigned int)obj->Trigger & 0xff000000) ||
 					obj->IsInLimbo ||
 					((unsigned int)Coord_Cell(obj->Coord) >= MAP_CELL_TOTAL)) {

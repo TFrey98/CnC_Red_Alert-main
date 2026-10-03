@@ -34,23 +34,93 @@ every file that needs them is in the multiplayer path.
 
 ## Current state
 
-**156 of 277 game translation units in `CODE/` compile cleanly for arm64.**
+**176 of 247 translation units compile cleanly for arm64.** 50 more are in scope
+and still failing; 21 are multiplayer/online and tagged DROP. With no per-file
+error cap, the remaining error count is 635 (from 1,465 at the start of the
+session that introduced the uncapped measurement -- clang stops at 20 errors per
+file by default, which hid ~40% of the real total).
 
-Run `port/probe.sh` to reproduce that number and see the current blocker list.
-It compiles every TU in parallel and buckets the first error from each, so the
-largest remaining obstacle is always at the top.
+The denominator changed from 277 to 247, and that is a correction, not a
+regression. `probe.sh` used to compile every `.CPP` in `CODE/`; it now compiles
+exactly the game's build set (`port/build-set.txt`, generated from
+`CODE/MAKEFILE` by `port/gen-build-set.py`). 31 files that were never part of
+the shipped Win32 game were archived, and three source fragments that are only
+valid when `#include`d (`ITABLE.CPP`, `DTABLE.CPP`, `MAPEDSEL.CPP`) are no longer
+counted as failures.
 
-The character of the work has now changed, and this is the single most useful
-thing to know before continuing. Every previous session was a hunt for the one
-header defect blocking ~185 files at once. **Those are gone.** `probe.sh` now
-reports a flat list of 1- and 2-file entries with no shared-header wall behind
-them. Expect the count to climb steadily from here rather than in jumps, and do
-not go looking for another single high-leverage fix -- there isn't one left.
+Tools, in the order to run them:
 
-Of the 121 still failing, about 22 are multiplayer, Westwood Online or serial
-files (`WOL_*`, `WSP*`, `MP*`, `NULL*`, `IPX*`, `TCPIP.CPP`, `CONNECT.CPP`,
-`QUEUE.CPP`, `SESSION.CPP`) and are out of scope for the first playable build.
-The genuine in-scope remainder is roughly 99 files.
+| Command | What it tells you |
+|---|---|
+| `port/probe.sh` | clean / total for the build set, and the biggest blockers |
+| `port/worklist.py` | regenerates `WORKLIST.md`: every file tagged, assembly classified by liveness |
+| `port/tests/run.sh` | **the data-path tests** -- CRC, SHA-1, RSA against independent references |
+| `port/build-backend.sh` | the Metal backend builds, and the engine/Cocoa boundary holds |
+
+**The compile count is not the measure that matters most.** Read the next
+section before trusting any number in this file.
+
+## Silent data corruption -- the class of bug that compiles cleanly
+
+The most damaging defects in this port produce no compiler error at all. Each
+one below would have let the game compile, link and launch, then fail to read a
+single asset, with nothing pointing at the cause. All are fixed and verified.
+
+The root causes are two facts about the original build that `flags.sh` did not
+reproduce:
+
+- **`long` was 32 bits on Win32 and is 64 bits on macOS** (LP64). The engine uses
+  `long` to mean "32-bit integer" everywhere, including in file formats and
+  algorithms.
+- **Watcom compiled with `/zp1` -- one-byte struct packing.** (Found in
+  `CODE/MAKEFILE`'s `CC_CFG`. The same block shows `/j`, signed `char`, which
+  Apple arm64 happens to match.)
+
+What they broke, and how each fix is proven:
+
+| What | Effect before the fix | Proof it is fixed |
+|---|---|---|
+| MIX archive header and index (`MIXFILE.H`) | 16- and 24-byte records instead of 6 and 12: every archive misread | `static_assert` on the shipped sizes |
+| MIX index binary search (`compfunc`) | compared 8 bytes of a 4-byte CRC | same |
+| 8 asset-format headers -- `.SHP`, `.AUD`, `.WSA`, `.VQA`, icon sets, keyframes, VQ mix | padding and `long` fields misparse every file | `static_assert` on each original size, evaluated through the real include path |
+| `CRCEngine` (`CRC.H/.CPP`) -- hashes MIX filenames | silently dropped bytes 5-8 of each tail: **no file could be found** | 311/311 vs a line-by-line model of `CRC.ASM`; 2000/2000 chunked |
+| SHA-1 (`SHA.H/.CPP`) -- MIX digests | wrong hash; `Result()` overflowed a 40-byte digest into 20-byte buffers | FIPS 180 vectors incl. 1,000,000 x 'a' in chunks, ASan-clean |
+| RSA (`MP.H`: `#define digit unsigned long`) -- decrypts MIX headers | **0/60** modular exponentiations correct | **56/56** vs Python `pow()` for every valid input |
+| WSA animation offsets, icon-set IFF ID, VQA frame table | 8-byte reads of 4-byte fields; `WSA_FILE_HEADER_SIZE` computed as 6, not 14 | the `sizeof(long)` sweep below |
+
+Two details worth knowing before changing any of this:
+
+- **The shipped game used the C `CRCEngine`, not `CRC.ASM`.** `INIT.CPP` defines
+  `Calculate_CRC` in C and object files are linked before libraries, so the
+  library's assembly version was never pulled in. The fix had to make the C
+  version match the assembly the MIX files were built against -- and the test
+  checks exactly that.
+- **`MP.H` declares `UNITSIZE 32` itself.** The multi-precision library always
+  assumed 32-bit digits; the `unsigned long` macro contradicted the library's own
+  definition, not just Win32's.
+
+Remaining known instances are listed under "What remains". The sweep that found
+the algorithmic ones was simply: every `sizeof(long)` in live code is a place
+that reasons about `long`'s width, and on macOS that reasoning is wrong.
+
+### Related: bool, narrowing, and for-scope
+
+- **Watcom 10.6 had no native `bool`; the engine's polyfill was
+  `typedef int bool`.** So in the shipped game `bool` was a 4-byte int. Only one
+  variable relied on that -- `ScenarioInit`, a nesting counter (41 `++`, 55 `--`)
+  that a real `bool` would collapse. Confirmed exhaustively with clang's
+  `-Wdeprecated-increment-bool`, which flags every `++` on a `bool`: it is the
+  only one. It is now an `int`.
+- **581 brace-initialisers narrow constants 128-255 into `char`** (508 in
+  `COORD.CPP`'s tables). C++98 wrapped them; C++11 rejects them.
+  `-Wno-c++11-narrowing` restores the wrap, and it was verified on the target
+  that `{200}` stores as -56 -- the same bits Watcom produced.
+- **74 pre-standard `for`-scope leaks** fixed in total. Each was checked for reads
+  of the variable after its loop; exactly one exists (`SCORE.CPP`'s hall-of-fame
+  slot), and that one is declared before its loop instead, reproducing Watcom's
+  scoping. Note that `index` collides with POSIX `index()` from `<strings.h>`,
+  so those leaks report as `non-object type ... is not assignable` rather than
+  "undeclared identifier".
 
 ## The endianness bug — read this before touching CODE/DEFINES.H
 
@@ -332,11 +402,25 @@ palettes in places, and silently rescaling both would corrupt one of them.
 
 ## What remains, roughly in order
 
-1. **Finish the header grind** — ~99 in-scope files. Keep running `probe.sh`
-   and clearing the top entry. Unlike previous sessions, expect this to climb
-   steadily rather than in jumps: the shared-header walls are gone and what
-   remains is genuinely per-file. Budget accordingly; this is now a grind
-   measured in files, not in insights.
+1. **Finish the compile grind -- 50 in-scope files in `CODE/`.** `WORKLIST.md`
+   groups them by first error. Remaining classes are now mostly per-file: Win32
+   API surface (stub in `compat/` only where the engine needs it to compile;
+   anything GDI-shaped has turned out to be online-only so far), dependent-base
+   `this->`, signature mismatches (`Take_Damage` in five files), and 18 pointer
+   truncations in `2KEYFRAM.CPP` that store pointers as integer offsets and need
+   reading, not casting.
+
+   **The libraries are not measured yet.** `probe.sh` covers `CODE/` only. The
+   ~200 C++ files in `WIN32LIB/` and `WINVQ/` have had their on-disk structs
+   fixed but have not been through the grind, and several fail on shared header
+   conflicts (e.g. a library header defining `BOOL` before `windows.h` typedefs
+   it). Extending `probe.sh` to them is the natural next step after `CODE/`.
+
+   **Finish the `long` audit.** Done for everything that reads asset data. Still
+   open: `2KEYFRAM.CPP` (keyframe offsets), and a broader review of `long` in
+   fixed-point and overflow-sensitive arithmetic, which the `sizeof(long)` sweep
+   would not catch.
+
 2. ~~Install the toolchain.~~ **Done — nothing to install.** This machine has
    full Xcode 27.0, the Metal toolchain (`metal`/`metallib`, shipped as a
    MobileAsset cryptex), and the macOS 27.0 SDK with Metal, MetalKit,
@@ -345,11 +429,38 @@ palettes in places, and silently rescaling both would corrupt one of them.
    Command Line Tools were available and treated Homebrew/CMake/SDL2 as
    prerequisites; that was wrong on both counts, and irrelevant now that the
    backend is native.
-3. **Rewrite the assembly in C.** The bulk of the work: ~29,000 lines across
-   `WIN32LIB/DRAWBUFF/` (blitters, `STAMP.ASM`, `SCALE.ASM`, `FILLQUAD.ASM`),
-   `WIN32LIB/SHAPE/` (`DRAWSHP.ASM`, 1,128 lines), `WIN32LIB/IFF/` (the LCW
-   codec), `WIN32LIB/AUDIO/` (`SOSCODEC.ASM`), `WIN32LIB/KEYBOARD/WWMOUSE.ASM`,
-   and `CODE/2KEYFBUF.ASM` (4,848 lines).
+3. **Rewrite the assembly in C** -- now measured, see `WORKLIST.md`.
+   `port/worklist.py` classifies every file by *liveness*: a file is live if live
+   code calls something it exports (as a closure, since assembly calls assembly).
+   Result: **62 files / ~24,000 lines to translate**, 8 SUPERSEDED (a C version
+   already exists in the tree -- CRC, both facing routines, `LCW_Uncompress`, the
+   SOS ADPCM decoder), 2 NATIVE, 3 REBUILD, 2 DEAD.
+
+   Lessons from building that classification, each learned by getting it wrong:
+   - **Neither `CODE/MAKEFILE` nor `RA95.PJT` says what the game linked.**
+     `UNIT.CPP` calls `Fixed_To_Cardinal`, defined only in `COORDA.ASM`, which
+     the makefile never names; the `.PJT` lists both halves of every DOS/Win32
+     pair. Liveness has to come from references.
+   - **Scan headers, and treat `::Name(` as a global call.** The first automated
+     pass marked most of the renderer (`DRAWSHP`, the `DRAWBUFF` blitters) as
+     dead, because they are reached through inline wrappers in `GBUFFER.H` that
+     call `::Buffer_Fill_Rect(this, ...)`. It was caught because the result
+     looked too good.
+   - **A name match is not equivalence.** Every SUPERSEDED entry needs the C
+     version proven to compute the same thing -- which is how the `CRCEngine`
+     defect above was found.
+   - Already-translated C turned up three times (`INTERPAL.CPP`, `ADPCM.CPP`,
+     `LCWUNCMP.CPP`). Westwood did some of this work themselves and left both
+     versions in the tree.
+
+   Original guidance for the translation itself still applies:
+
+   The largest live files are `CODE/2KEYFBUF.ASM` (4,848 lines -- frame-buffer
+   blitters despite the name), `WINVQ/VQA32/UNVQBUFF.ASM` (the VQ movie decoder),
+   `WIN32LIB/SHAPE/DRAWSHP.ASM` and the `WIN32LIB/DRAWBUFF/` blitters. LCW
+   decompression and the SOS ADPCM decoder are **not** on the list -- C versions
+   already exist (`OLSOSDEC.ASM`'s `General_` variant should be adapted from
+   `ADPCM.CPP`, not translated from scratch).
 
    These are well-understood algorithms — run-length blits, palette remaps,
    LCW/format80 decompression — and are worth writing as straightforward C and

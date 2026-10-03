@@ -56,19 +56,28 @@ void * Get_Icon_Set_Map(void const *iconset);
 ** This is the control structure at the start of a loaded icon set.  It must match
 ** the structure in WWLIB.I!  This structure MUST be a multiple of 16 bytes long.
 */
+/*
+**	Port: ON-DISK LAYOUT (terrain icon-set (template) header). Watcom built this with /zp1 and a
+**	32-bit long; pack(1) plus fixed-width fields restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct {
 	short	Width;			// Width of icons (pixels).
 	short	Height;			// Height of icons (pixels).
 	short	Count;			// Number of (logical) icons in this set.
 //	BOOL	Allocated;		// Was this iconset allocated?
 	short	Allocated;		// Was this iconset allocated?
-	long	Size;				// Size of entire iconset memory block.
+	int32_t	Size;				// Size of entire iconset memory block.
 	unsigned char *Icons;			// Offset from buffer start to icon data.
-	long	Palettes;		// Offset from buffer start to palette data.
-	long	Remaps;			// Offset from buffer start to remap index data.
-	long	TransFlag;		// Offset for transparency flag table.
+	int32_t	Palettes;		// Offset from buffer start to palette data.
+	int32_t	Remaps;			// Offset from buffer start to remap index data.
+	int32_t	TransFlag;		// Offset for transparency flag table.
 	unsigned char *Map;				// Icon map offset (if present).
 } IControl_Type;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(IControl_Type) == 40, "IControl_Type must match the original 40-byte on-disk layout");
+#endif
 #endif	//(0)
 
 typedef struct {

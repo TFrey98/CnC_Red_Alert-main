@@ -204,7 +204,7 @@ void Special_Dialog(bool simple)
 				break;
 
 			default:
-				index = (input & ~KN_BUTTON) - 100;
+				int index = (input & ~KN_BUTTON) - 100;	// port: relied on a for-loop's leaked `index`; last label, so no jump crosses this
 				if ((unsigned)index < sizeof(_options)/sizeof(_options[0])) {
 					_options[index].Setting = _options[index].Button->IsOn;
 				}

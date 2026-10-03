@@ -484,10 +484,15 @@ void MixFileClass<T>::Free(void)
 }
 
 
+/*
+**	Port note: compared `*(long const *)`, which on macOS reads 8 bytes from a
+**	4-byte CRC field -- the search key would include the neighbouring Offset.
+**	The CRC is the first member of SubBlock and is int32_t; compare exactly that.
+*/
 int compfunc(void const * ptr1, void const * ptr2)
 {
-	if (*(long const *)ptr1 < *(long const *)ptr2) return(-1);
-	if (*(long const *)ptr1 > *(long const *)ptr2) return(1);
+	if (*(int32_t const *)ptr1 < *(int32_t const *)ptr2) return(-1);
+	if (*(int32_t const *)ptr1 > *(int32_t const *)ptr2) return(1);
 	return(0);
 }
 
@@ -523,7 +528,7 @@ int compfunc(void const * ptr1, void const * ptr2)
  *   10/17/1994 JLB : Created.                                                                 *
  *=============================================================================================*/
 template<class T>
-bool MixFileClass<T>::Offset(char const * filename, void ** realptr, MixFileClass ** mixfile, long * offset, long * size) const
+bool MixFileClass<T>::Offset(char const * filename, void ** realptr, MixFileClass ** mixfile, long * offset, long * size)
 {
 	MixFileClass<T> * ptr;
 

@@ -25,6 +25,15 @@ RA_STD=(
   # construct needed, without the rest of the MSVC dialect.
   -fdeclspec
 
+  # Brace-initialiser narrowing. Watcom compiled C++98, where `char t[] = {200}`
+  # is legal and stores the value modulo 256; C++11 made it an error. 581 sites,
+  # 508 of them in COORD.CPP's lookup tables, put constants 128-255 into char /
+  # signed char. Watcom used signed char (/j), as does Apple arm64, so 200 was
+  # stored as 0xC8 (-56) -- exactly the conversion clang performs with this
+  # check off. Identical bits, so this restores the original rather than masking
+  # a difference.
+  -Wno-c++11-narrowing
+
   # Watcom used one-phase template lookup, so the engine refers to inherited
   # members of dependent base classes without `this->` (see CODE/ftimer.h).
   # This restores that behaviour instead of editing every template.
@@ -37,8 +46,14 @@ RA_DEFINES=(
   -DTRUE_FALSE_DEFINED
 
   # Selects the Win32 code paths over the DOS ones. The Win32 paths are much
-  # closer to what a modern SDL2 backend needs.
+  # closer to what a native Cocoa/Metal backend needs.
   -DWIN32
+
+  # Build language. CODE/MAKEFILE defaults LANGUAGE=ENGLISH, and CODE/LANGUAGE.H
+  # defines every TEXT_* UI string only inside #ifdef ENGLISH / GERMAN / FRENCH,
+  # so without one of these no dialog in the game has any text. Some sites test
+  # it by value -- `#if (ENGLISH ...)` -- which -D's implicit value of 1 covers.
+  -DENGLISH
 )
 
 RA_INCLUDES=(

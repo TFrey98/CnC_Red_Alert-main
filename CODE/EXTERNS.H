@@ -313,7 +313,7 @@ extern long							SidebarRedraws;
 extern DMonoType					MonoPage;
 extern bool							GameActive;
 extern bool							SpecialFlag;
-extern bool							ScenarioInit;
+extern int							ScenarioInit;	// port: a nesting COUNTER (41 ++ / 55 --), not a flag. Watcom had no native bool and the engine used `typedef int bool`, so in the shipped game this was an int. A real C++ bool would let an inner `--` clear it while an outer scenario-load section is still active.
 extern HouseClass *				PlayerPtr;
 extern PaletteClass 				CCPalette;
 extern PaletteClass 				BlackPalette;

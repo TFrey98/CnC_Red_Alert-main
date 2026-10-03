@@ -470,7 +470,7 @@ bool PassedProximity;	// used in display.cpp
 ** These variables should all be set together.
 */
 HousesType Whom;							// Initial command line house choice.
-bool ScenarioInit;
+int ScenarioInit;	// port: a nesting COUNTER (41 ++ / 55 --), not a flag. Watcom had no native bool and the engine used `typedef int bool`, so in the shipped game this was an int. A real C++ bool would let an inner `--` clear it while an outer scenario-load section is still active.
 bool SpecialFlag = false;
 
 

@@ -46,15 +46,24 @@
 //   and Bits.  These were removed because watcom packs them into a 32 bit
 //   flag entry even though they could have fit in a 8 bit entry.
 #pragma pack(1);
+/*
+**	Port: ON-DISK LAYOUT (.AUD sound and music header). Watcom built this with /zp1 and a
+**	32-bit long; pack(1) plus fixed-width fields restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct {
 	unsigned short int	Rate;				// Playback rate (hertz).
-	long	Size;				// Size of data (bytes).
-	long	UncompSize;				// Size of data (bytes).
+	int32_t	Size;				// Size of data (bytes).
+	int32_t	UncompSize;				// Size of data (bytes).
 	unsigned char Flags;	// Holds flags for info
 								//  1: Is the sample stereo?
 								//  2: Is the sample 16 bits?
 	unsigned char Compression;	// What kind of compression for this sample?
 } AUDHeaderType;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(AUDHeaderType) == 12, "AUDHeaderType must match the original 12-byte on-disk layout");
+#endif
 
 
 /*=========================================================================*/

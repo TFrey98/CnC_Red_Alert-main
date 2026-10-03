@@ -1,7 +1,7 @@
 # archive/
 
 **Nothing here is deleted, and nothing here is gone.** This directory holds the
-1,032 files that the native arm64 / Metal port does not build, moved out of the
+1,054 files that the native arm64 / Metal port does not build, moved out of the
 way so the working tree shows only what is actually in play.
 
 The original paths are preserved exactly. `archive/WWFLAT32/...` was
@@ -60,9 +60,7 @@ still builds.
 | `WIN32LIB/WW_WIN/OLD` | 6 | Superseded windowing sources. |
 | `LAUNCH` | 2 | Windows launcher support, not the game. |
 
-### Individual assembly files (15)
-
-Dead under `-DWIN32`, or targeting hardware that no longer exists.
+### Individual files (37)
 
 | Path | Reason |
 |---|---|
@@ -71,7 +69,6 @@ Dead under `-DWIN32`, or targeting hardware that no longer exists.
 | `CODE/SUPPORT.ASM` | DOS variant; 2SUPPORT.ASM is the Win32 one. |
 | `CODE/IPXREAL.ASM` | DOS IPX real mode. Multiplayer, out of scope. |
 | `CODE/IPXPROT.ASM` | DOS IPX protected mode. Multiplayer, out of scope. |
-| `CODE/WINASM.ASM` | Greenleaf serial + HMI modem + IPX + 8259 PIC + ModeX blit. Its one game-relevant export, Asm_Create_Palette_Interpolation_Table, is ALREADY SUPERSEDED: CODE/INTERPAL.CPP:147 has a full C implementation and the asm call at :150 is commented out. |
 | `WINVQ/VQM32/XMODE.ASM` | VGA Mode X. No such path under Metal. |
 | `WINVQ/VQM32/VESABUF.ASM` | VESA banked framebuffer. |
 | `WINVQ/VQM32/MCGABUF.ASM` | MCGA framebuffer. |
@@ -81,6 +78,51 @@ Dead under `-DWIN32`, or targeting hardware that no longer exists.
 | `WINVQ/VQA32/UNVQVESA.ASM` | VQ decode straight to VESA. |
 | `WIN32LIB/PROFILE/APROFILE.ASM` | x86 cycle-counter profiler; Instruments replaces it. |
 | `WIN32LIB/MEM/VMPAGEIN.ASM` | DOS virtual-memory paging helper. |
+| `CODE/ALLOC.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/BMP8.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/CLASS.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/COMQUEUE.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/CONFDLG.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/DESCDLG.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/DPMI.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/FILE.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/INIBIN.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/INICODE.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/KEYBOARD.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/KEYFRAME.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/LZWOTRAW.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/MPLIB.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/MPLPC.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/NOSEQCON.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/NUMBER.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/SEQCONN.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/STUB.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/SURFACE.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/TARCOM.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/TEMP.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+| `CODE/TURRET.CPP` | Not in the original WIN32 link set: CODE/MAKEFILE builds ra95.exe from OBJECTS + TECHFILES (tech.lib) + LIBFILES (jshell.lib), and this object is in none of them under !ifdef WIN32. |
+
+## Corrections, and the rule this archive now follows
+
+**The archive holds only files that nothing live depends on.** "Not in the
+makefile" turned out not to be a safe test on its own -- neither `CODE/MAKEFILE`
+nor the IDE project `RA95.PJT` is a complete record of what the shipped game
+linked. Every candidate is now checked by reference: if live code calls
+something defined only in that file, it stays in `CODE/`.
+
+Nine files were archived and later **restored** under that rule:
+
+| File | Why it came back |
+|---|---|
+| `CODE/WINASM.ASM` | Archived earlier as fully dead. Wrong: its `Asm_Interpolate` is called by `INTERPAL.CPP`, and `WINASM.OBJ` is in the makefile's Win32 link set. Only its *other* game export had a C replacement. |
+| `CODE/LCWUNCMP.CPP` | A C implementation of `LCW_Uncompress` -- it replaces two copies of `LCWUNCMP.ASM` |
+| `CODE/CSTRAW.CPP` | `CacheStraw`, used by live code |
+| `CODE/RAND.CPP` | `Sim_IRandom`, called from `MPLAYER.CPP` |
+| `CODE/CCMPATH.CPP`, `CCTEN.CPP`, `MPMGRD.CPP`, `MPMGRW.CPP`, `TENMGR.CPP` | multiplayer, but referenced by live code -- kept in `CODE/` tagged DROP, like the other multiplayer files |
+
+Also kept out of the archive although the makefile never builds them:
+`MAPEDSEL.CPP` (`#include`d as source by `MAPEDIT.CPP`), and `ADPCM.CPP` with its
+`ITABLE.CPP`/`DTABLE.CPP` fragments -- a C version of the SOS ADPCM decoder.
 
 ## Why this is worth keeping rather than deleting
 
@@ -99,8 +141,8 @@ Three concrete reasons, not just caution:
    `XMODE.ASM` or `MONO.ASM` turns out to have been doing something load-bearing
    that nothing else does, the source is right here.
 
-A caution learned during this pass: `CODE/WINASM.ASM` looked like pure modem and
-DOS-video code, but also exported `Asm_Create_Palette_Interpolation_Table`. It
-was only safe to archive because `CODE/INTERPAL.CPP:147` turned out to already
-contain a C implementation, with the assembly call commented out on line 150.
-**Check exported symbols before assuming a mixed file is dead.**
+A caution learned the hard way: `CODE/WINASM.ASM` was archived because its one
+*obvious* game export, `Asm_Create_Palette_Interpolation_Table`, turned out to be
+superseded by C in `INTERPAL.CPP`. Its other exports were not all checked, and
+`Asm_Interpolate` is live -- so it was restored. **Check every exported symbol
+before calling a mixed file dead, not just the first interesting one.**

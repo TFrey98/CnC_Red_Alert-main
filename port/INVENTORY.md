@@ -10,6 +10,16 @@ worth carrying forward versus rebuilding.
 Every number here was measured from the tree, not estimated. Where something is
 genuinely undetermined it says so rather than guessing.
 
+> **Superseded numbers.** This inventory was compiled before the port measured
+> liveness. For current per-file status and assembly totals use `WORKLIST.md`,
+> which `port/worklist.py` regenerates from the tree. Since this was written:
+> the shipped build set was derived from `CODE/MAKEFILE` (247 translation units,
+> not 277); the assembly was reclassified by reference (62 files / ~24,000 lines
+> to translate, with 8 already superseded by C in the tree); and a whole class of
+> silent data-corruption bugs (64-bit `long`, missing `/zp1` packing) was found
+> and fixed -- see "Silent data corruption" in `PORTING.md`. The narrative below
+> is kept for its reasoning, which still holds.
+
 ## The four categories
 
 | Category | Meaning |

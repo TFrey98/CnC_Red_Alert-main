@@ -72,6 +72,11 @@
  * BitsPerSample - Sample bit size in primary audio stream.
  * FutureUse     - Reserved for future expansion.
  */
+/*
+**	Port: ON-DISK LAYOUT (.VQA movie header). Watcom built this with /zp1 and a
+**	32-bit long; pack(1) plus fixed-width fields restore the shipped layout.
+*/
+#pragma pack(push, 1)
 typedef struct _VQAHeader {
 	unsigned short Version;
 	unsigned short Flags;
@@ -95,6 +100,10 @@ typedef struct _VQAHeader {
 	unsigned char  AltBitsPerSample;
 	unsigned short FutureUse[5];
 } VQAHeader;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(VQAHeader) == 42, "VQAHeader must match the original 42-byte on-disk layout");
+#endif
 
 /* Version type. */
 #define VQAHD_VER1 1

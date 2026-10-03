@@ -57,10 +57,18 @@ class MixFileClass : public Node<MixFileClass<T> >
 		static bool Offset(char const *filename, void ** realptr = 0, MixFileClass ** mixfile = 0, long * offset = 0, long * size = 0);
 		static void const * Retrieve(char const *filename);
 
+		/*
+		**	ON-DISK LAYOUT -- read straight from the mixfile with
+		**	`Get(HeaderBuffer, Count * sizeof(SubBlock))`. Port note: these were
+		**	`long`, which was 32 bits on Win32 but is 64 bits on macOS, doubling
+		**	the record to 24 bytes and misreading every mixfile -- i.e. every
+		**	asset in the game. int32_t restores the 12-byte record. Kept signed:
+		**	the CRCs are sorted and binary-searched as signed 32-bit values.
+		*/
 		struct SubBlock {
-			long CRC;				// CRC code for embedded file.
-			long Offset;			// Offset from start of data section.
-			long Size;				// Size of data subfile.
+			int32_t CRC;			// CRC code for embedded file.
+			int32_t Offset;			// Offset from start of data section.
+			int32_t Size;			// Size of data subfile.
 
 			int operator < (SubBlock & two) const {return (CRC < two.CRC);};
 			int operator > (SubBlock & two) const {return (CRC > two.CRC);};
@@ -95,10 +103,19 @@ class MixFileClass : public Node<MixFileClass<T> >
 		**	This is the initial file header. It tells how many files are embedded
 		**	within this mixfile and the total size of all embedded files.
 		*/
+		/*
+		**	ON-DISK LAYOUT, 6 bytes. The original was built with Watcom /zp1
+		**	(1-byte packing) and a 32-bit long; under natural alignment and a
+		**	64-bit long this became 16 bytes. Both causes are fixed here: pack(1)
+		**	and int32_t. MIXFILE.CPP also reads it in two pieces, relying on
+		**	`sizeof(fileheader) - sizeof(alternate)` being exactly 2.
+		*/
+#pragma pack(push, 1)
 		typedef struct {
 			short	count;
-			long	size;
+			int32_t	size;
 		} FileHeader;
+#pragma pack(pop)
 
 		/*
 		**	The number of files within the mixfile.
@@ -128,6 +145,13 @@ class MixFileClass : public Node<MixFileClass<T> >
 		void * Data;						// Pointer to raw data.
 
 		static List<MixFileClass> List;
+
+	/*
+	**	Port: pin the on-disk records to the sizes the shipped mixfiles were
+	**	written with. If either fails, no asset in the game will load.
+	*/
+	static_assert(sizeof(SubBlock) == 12, "mixfile SubBlock must be the 12-byte on-disk record");
+	static_assert(sizeof(FileHeader) == 6, "mixfile FileHeader must be the packed 6-byte on-disk record");
 };
 
 #endif

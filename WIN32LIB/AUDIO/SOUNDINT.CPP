@@ -67,7 +67,12 @@
 #include "memflag.h"
 #include "audio.h"
 
-extern	char DebugBuffer[];	// port: implicit int; unused here
+extern	char DebugBuffer[];
+/*
+**	Port: StreamType::DestPtr holds an OFFSET into the DirectSound buffer in a
+**	void *, so casting it through uintptr_t is exact. (Real buffer pointers are a
+**	different matter -- see SOUNDIO.CPP's play_buffer_ptr.)
+*/	// port: implicit int; unused here
 
 /***************************************************************************
 ** All routines past this point must be locked for the sound driver to	  **
@@ -90,7 +95,7 @@ extern	char DebugBuffer[];	// port: implicit int; unused here
  * HISTORY:                                                                *
  *   06/23/1995 PWG : Created.                                             *
  *=========================================================================*/
-long Simple_Copy(void ** source, long * ssize, void ** alternate, long * altsize, void **dest, long size)
+long Simple_Copy(void ** source, LONG * ssize, void ** alternate, LONG * altsize, void **dest, long size)
 {
 
 
@@ -162,7 +167,7 @@ long Simple_Copy(void ** source, long * ssize, void ** alternate, long * altsize
  *   09/04/1994 JLB : Revamped entirely.                                                       *
  *=============================================================================================*/
 #pragma argsused
-long Sample_Copy(SampleTrackerType *st, void ** source, long * ssize, void ** alternate, long * altsize, void * dest, long size, SCompressType scomp, void * , short int *)
+long Sample_Copy(SampleTrackerType *st, void ** source, LONG * ssize, void ** alternate, LONG * altsize, void * dest, long size, SCompressType scomp, void * , short int *)
 {
 
 	long	s;
@@ -338,8 +343,8 @@ VOID far __cdecl maintenance_callback(VOID)
 				 	*/
 					write_more = FALSE;
 
-					if ( play_cursor < (unsigned)st->DestPtr ){
-						if ( (unsigned)st->DestPtr - (unsigned)play_cursor <= SECONDARY_BUFFER_SIZE/4 ){
+					if ( play_cursor < (unsigned)(uintptr_t)st->DestPtr ){
+						if ( (unsigned)(uintptr_t)st->DestPtr - (unsigned)play_cursor <= SECONDARY_BUFFER_SIZE/4 ){
 							write_more=TRUE;
 						}
 					} else {
@@ -359,7 +364,7 @@ VOID far __cdecl maintenance_callback(VOID)
 						/*
 						** Lock a 1/2 of the direct sound buffer so we can write to it
 						*/
-						if ( DS_OK== st->PlayBuffer->Lock (	(DWORD)st->DestPtr ,
+						if ( DS_OK== st->PlayBuffer->Lock (	(DWORD)(uintptr_t)st->DestPtr ,
 															(DWORD)SECONDARY_BUFFER_SIZE/2,
 															&play_buffer_ptr,
 															&lock_length1,
@@ -392,7 +397,7 @@ VOID far __cdecl maintenance_callback(VOID)
 								** Clear out an extra area in the buffer ahead of the play cursor
 								** to give us a quiet period of grace in which to stop the buffer playing
 								*/
-								if ( (unsigned)st->DestPtr == SECONDARY_BUFFER_SIZE*3/4 ){
+								if ( (unsigned)(uintptr_t)st->DestPtr == SECONDARY_BUFFER_SIZE*3/4 ){
 									if ( dummy_buffer_ptr && lock_length2 ){
 										memset (dummy_buffer_ptr , 0 , lock_length2);
 									}
@@ -407,7 +412,7 @@ VOID far __cdecl maintenance_callback(VOID)
 							*/
 							st->DestPtr = Audio_Add_Long_To_Pointer (st->DestPtr,bytes_copied);
 
-							if ( (unsigned)st->DestPtr >= (unsigned)SECONDARY_BUFFER_SIZE ){
+							if ( (unsigned)(uintptr_t)st->DestPtr >= (unsigned)SECONDARY_BUFFER_SIZE ){
 								st->DestPtr = Audio_Add_Long_To_Pointer (st->DestPtr,(long)-SECONDARY_BUFFER_SIZE);
 							}
 
@@ -429,8 +434,8 @@ VOID far __cdecl maintenance_callback(VOID)
 					** no more source to write - check if the buffer play
 					** has overrun the end of the sample and stop it if it has
 					*/
-					if ( ( (play_cursor >= (unsigned)st->DestPtr) && ( ((unsigned)play_cursor - (unsigned)st->DestPtr) <SECONDARY_BUFFER_SIZE/4) ) ||
-						(!st->OneShot &&( (play_cursor < (unsigned)st->DestPtr) && ( ((unsigned)st->DestPtr - (unsigned)play_cursor) >(SECONDARY_BUFFER_SIZE*3/4) ) ))	 ){
+					if ( ( (play_cursor >= (unsigned)(uintptr_t)st->DestPtr) && ( ((unsigned)play_cursor - (unsigned)(uintptr_t)st->DestPtr) <SECONDARY_BUFFER_SIZE/4) ) ||
+						(!st->OneShot &&( (play_cursor < (unsigned)(uintptr_t)st->DestPtr) && ( ((unsigned)(uintptr_t)st->DestPtr - (unsigned)play_cursor) >(SECONDARY_BUFFER_SIZE*3/4) ) ))	 ){
 							st->PlayBuffer->Stop();
 							st->Service = FALSE;
 							Stop_Sample( index );

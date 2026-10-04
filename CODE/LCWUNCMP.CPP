@@ -120,22 +120,17 @@ unsigned long __cdecl LCW_Uncompress (void * source, void * dest, unsigned long 
 					word_data  = (word_data << 24) + (word_data << 16) + (word_data << 8) + word_data;
 					source_ptr += 3;
 
-					copy_ptr = dest_ptr + 4 - ((uintptr_t) dest_ptr & 0x3);	// port: low 2 bits only; was (unsigned), which truncates a 64-bit pointer
-					count -= (copy_ptr - dest_ptr);
-					while (dest_ptr < copy_ptr) *dest_ptr++ = data;
-
-					word_dest_ptr = (unsigned*) dest_ptr;
-
-					dest_ptr += (count & 0xfffffffc);
-
-					while (word_dest_ptr < (unsigned*) dest_ptr) {
-						*word_dest_ptr		= word_data;
-						*(word_dest_ptr + 1) = word_data;
-						word_dest_ptr += 2;
-					}
-
-					copy_ptr = dest_ptr + (count & 0x3);
-					while (dest_ptr < copy_ptr) *dest_ptr++ = data;
+					/*
+					**	Port: fill exactly `count` bytes. The original aligned with up to four byte
+					**	stores regardless of count, then did `count -= gap` on an unsigned count.
+					**	A fill shorter than the gap wrapped count to ~4GB: on 32-bit Win32 the
+					**	pointer wrapped too and ended up right, but one byte before the fill was
+					**	clobbered; on arm64 it ran 4GB forward and crashed. Westwood's compressor
+					**	evidently only emitted long fills, so real data never hit it -- and for any
+					**	stream it did produce, memset gives byte-identical output.
+					*/
+					memset(dest_ptr, data, count);
+					dest_ptr += count;
 
 				} else {
 

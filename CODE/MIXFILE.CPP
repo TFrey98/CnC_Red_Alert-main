@@ -143,7 +143,7 @@ MixFileClass<T>::~MixFileClass(void)
 	/*
 	**	Unlink this mixfile object from the chain.
 	*/
-	Unlink();
+	this->Unlink();
 }
 
 
@@ -583,3 +583,14 @@ assert(1);//BG
 	return(false);
 }
 
+
+/*
+**	Port: explicit instantiation. These template members are defined in this .CPP,
+**	so standard C++ instantiates them only for uses inside this file; every use
+**	elsewhere was an undefined symbol at link time. Watcom instantiated them
+**	automatically (FUNCTION.H's dummy externs -- y002, xxx1, whatever -- were
+**	Westwood's way of forcing it). This list is exactly the set of
+**	specialisations the linker reported missing; regenerate it from a link if
+**	the set of types changes.
+*/
+template class MixFileClass<CCFileClass>;

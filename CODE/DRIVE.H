@@ -202,10 +202,17 @@ class DriveClass : public FootClass
 		static TrackType const Track2[];
 		static TrackType const Track1[24];
 };
+/*
+**	Port: the enum operators in this file were declared `inline` with no body.
+**	Watcom gave enums C-style integer arithmetic and accepted that; standard C++
+**	needs the body. Each now does exactly the integer operation on the enum's
+**	value and converts back -- postfix ++ advances by one and returns the old
+**	value -- which is what the original code relied on.
+*/
 
-inline DriveClass::TrackControlType operator |(DriveClass::TrackControlType, DriveClass::TrackControlType);
-inline DriveClass::TrackControlType operator &(DriveClass::TrackControlType, DriveClass::TrackControlType);
-inline DriveClass::TrackControlType operator ~(DriveClass::TrackControlType);
+inline DriveClass::TrackControlType operator|(DriveClass::TrackControlType a, DriveClass::TrackControlType b) { return (DriveClass::TrackControlType)((int)a | (int)b); }
+inline DriveClass::TrackControlType operator&(DriveClass::TrackControlType a, DriveClass::TrackControlType b) { return (DriveClass::TrackControlType)((int)a & (int)b); }
+inline DriveClass::TrackControlType operator~(DriveClass::TrackControlType value) { return (DriveClass::TrackControlType)(~(int)value); }
 
 
 #endif

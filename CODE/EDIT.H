@@ -99,9 +99,16 @@ class EditClass : public ControlClass
 	private:
 		int IsReadOnly;
 };
+/*
+**	Port: the enum operators in this file were declared `inline` with no body.
+**	Watcom gave enums C-style integer arithmetic and accepted that; standard C++
+**	needs the body. Each now does exactly the integer operation on the enum's
+**	value and converts back -- postfix ++ advances by one and returns the old
+**	value -- which is what the original code relied on.
+*/
 
-inline EditClass::EditStyle operator |(EditClass::EditStyle, EditClass::EditStyle);
-inline EditClass::EditStyle operator &(EditClass::EditStyle, EditClass::EditStyle);
-inline EditClass::EditStyle operator ~(EditClass::EditStyle);
+inline EditClass::EditStyle operator|(EditClass::EditStyle a, EditClass::EditStyle b) { return (EditClass::EditStyle)((int)a | (int)b); }
+inline EditClass::EditStyle operator&(EditClass::EditStyle a, EditClass::EditStyle b) { return (EditClass::EditStyle)((int)a & (int)b); }
+inline EditClass::EditStyle operator~(EditClass::EditStyle value) { return (EditClass::EditStyle)(~(int)value); }
 
 #endif

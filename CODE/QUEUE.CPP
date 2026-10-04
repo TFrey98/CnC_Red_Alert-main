@@ -179,13 +179,13 @@ static void Stop_Game(void);
 //...........................................................................
 static int Build_Send_Packet(void *buf, int bufsize, int frame_delay,
 	int num_cmds, int cap);
-int Add_Uncompressed_Events(void *buf, int bufsize, int frame_delay, int size,
+static int Add_Uncompressed_Events(void *buf, int bufsize, int frame_delay, int size,
 	int cap);
-int Add_Compressed_Events(void *buf, int bufsize, int frame_delay, int size,
+static int Add_Compressed_Events(void *buf, int bufsize, int frame_delay, int size,
 	int cap);
 static int Breakup_Receive_Packet(void *buf, int bufsize );
-int Extract_Uncompressed_Events(void *buf, int bufsize);
-int Extract_Compressed_Events(void *buf, int bufsize);
+static int Extract_Uncompressed_Events(void *buf, int bufsize);
+static int Extract_Compressed_Events(void *buf, int bufsize);
 
 //...........................................................................
 // DoList management:
@@ -803,10 +803,12 @@ static void Queue_AI_Multiplayer(void)
 	//------------------------------------------------------------------------
 #ifdef FIXIT_VERSION_3
 	int iFramesyncTimeout;
+#ifdef WOLAPI_INTEGRATION	// port: pWolapi exists only with Westwood Online compiled in; otherwise the standard timeout
 	if( Session.Type == GAME_INTERNET && pWolapi && pWolapi->GameInfoCurrent.iPlayerCount > 2 )
 		//	Shortened resync timeout for non-2 player games.
 		iFramesyncTimeout = 5 * 60;		//	One minute.
 	else
+#endif
 		iFramesyncTimeout = FRAMESYNC_TIMEOUT;
 
 	rc = Wait_For_Players (0, net,

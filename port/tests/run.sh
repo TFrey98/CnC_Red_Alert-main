@@ -64,5 +64,21 @@ clang++ $RA_CXXFLAGS -w -g -fsanitize=thread "$T/mm_timer.cpp" "${RA_ROOT}/port/
 "$OUT/mm_timer" > "$OUT/mm_timer.out" 2>&1; mt=$?
 if (( mt == 0 )) && ! grep -q "WARNING: ThreadSanitizer" "$OUT/mm_timer.out"; then tail -1 "$OUT/mm_timer.out"; else cat "$OUT/mm_timer.out"; fail=1; fi
 
+print "VQA movie structures vs an independent format description (multimedia.cx)"
+clang++ $RA_WINVQ_CXXFLAGS -w -I"${RA_ROOT}/WINVQ/VQA32" "$T/vqa_format.cpp" -o "$OUT/vqa_format"
+"$OUT/vqa_format" | tail -1 | grep -q "all pass" && "$OUT/vqa_format" | tail -1 || { "$OUT/vqa_format"; fail=1 }
+
+print "LCW / Format80 decoders vs the independent format description (3000 random streams)"
+clang++ $RA_CXXFLAGS -w -g -fsanitize=address -iquote "${RA_ROOT}/CODE" "$T/lcw_format80.cpp" "${RA_ROOT}/CODE/LCWUNCMP.CPP" "${RA_ROOT}/CODE/LCW.CPP" -o "$OUT/lcw_format80"
+"$OUT/lcw_format80" | tail -1 | grep -q "all pass" && "$OUT/lcw_format80" | tail -1 || { "$OUT/lcw_format80"; fail=1 }
+
+print "ADPCM audio decoder vs an independent IMA reference (chunked, 1.6M samples)"
+clang++ $RA_CXXFLAGS -w -g -fsanitize=address -iquote "${RA_ROOT}/CODE" "$T/adpcm_ima.cpp" "${RA_ROOT}/CODE/ADPCM.CPP" -o "$OUT/adpcm_ima"
+"$OUT/adpcm_ima" | tail -1 | grep -q "all pass" && "$OUT/adpcm_ima" | tail -1 || { "$OUT/adpcm_ima"; fail=1 }
+
+print "#pragma aux C bodies vs register-level models of the original x86"
+clang++ $RA_CXXFLAGS -w -O1 -iquote "${RA_ROOT}/CODE" "$T/pragma_aux.cpp" "${RA_ROOT}/CODE/PRAGMAUX.CPP" -o "$OUT/pragma_aux"
+"$OUT/pragma_aux" | tail -1 | grep -q "all pass" && "$OUT/pragma_aux" | tail -1 || { "$OUT/pragma_aux"; fail=1 }
+
 print ""
 (( fail )) && { print "FAILED"; exit 1 } || print "all data-path tests pass"

@@ -782,3 +782,119 @@ BOOL DuplicateHandle(HANDLE srcprocess, HANDLE src, HANDLE dstprocess, LPHANDLE 
 }
 BOOL  SetPriorityClass(HANDLE process, DWORD priorityclass) { (void)process; (void)priorityclass; return TRUE; }
 DWORD GetPriorityClass(HANDLE process) { (void)process; return NORMAL_PRIORITY_CLASS; }
+
+/* See windows.h: the timer queue already runs at the highest QoS class. */
+BOOL SetThreadPriority(HANDLE thread, int priority) { (void)thread; (void)priority; return TRUE; }
+int  GetThreadPriority(HANDLE thread) { (void)thread; return THREAD_PRIORITY_NORMAL; }
+
+/* CD volume label: see windows.h -- a Mac has no drive letters. */
+BOOL GetVolumeInformationA(LPCSTR root, char * volname, DWORD volnamesize, LPDWORD serial, LPDWORD maxcomponent, LPDWORD flags, char * fsname, DWORD fsnamesize)
+{
+	(void)root; (void)volname; (void)volnamesize; (void)serial; (void)maxcomponent; (void)flags; (void)fsname; (void)fsnamesize;
+	SetLastError(ERROR_PATH_NOT_FOUND);
+	return FALSE;
+}
+
+/* Disk free space: see wwcompat.h for why it is capped. */
+#include <sys/statvfs.h>
+extern "C" {
+unsigned _dos_getdiskfree(unsigned drive, struct diskfree_t * result)
+{
+	(void)drive;
+	if (result == NULL) return EINVAL;
+	struct statvfs fs;
+	uint64_t avail = (statvfs(".", &fs) == 0) ? (uint64_t)fs.f_bavail * fs.f_frsize : 0;
+	const uint64_t cap = 0x7FFFF000ull;				/* < 2GB, a whole number of 4K clusters */
+	if (avail > cap) avail = cap;
+	result->bytes_per_sector    = 512;
+	result->sectors_per_cluster = 8;				/* 4K clusters */
+	result->avail_clusters      = (unsigned)(avail / 4096);
+	result->total_clusters      = result->avail_clusters;
+	return 0;
+}
+void _dos_getdrive(unsigned * drive) { if (drive) *drive = 3; }
+void _dos_setdrive(unsigned drive, unsigned * total) { (void)drive; if (total) *total = 26; }
+} /* extern "C" */
+
+/*
+**	FindFirstFile / FindNextFile / FindClose -- see windows.h. A search handle is
+**	a heap object (never a tagged file descriptor, so CloseHandle ignores it);
+**	FindClose frees it.
+*/
+struct wwport_findfile {
+	DIR * dir;
+	char  dirpath[1024];
+	char  pattern[256];
+};
+
+static BOOL wwport_findfile_next(wwport_findfile * f, LPWIN32_FIND_DATAA data)
+{
+	struct dirent * entry;
+	while ((entry = readdir(f->dir)) != NULL) {
+		const char * name = entry->d_name;
+		if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0) continue;
+		if (strlen(name) >= sizeof(data->cFileName)) continue;
+		if (!wwport_dos_match(f->pattern, name)) continue;
+		char full[1400];
+		snprintf(full, sizeof(full), "%s/%s", f->dirpath, name);
+		struct stat st;
+		if (stat(full, &st) != 0) continue;
+		memset(data, 0, sizeof(*data));
+		DWORD attr = 0;
+		if (S_ISDIR(st.st_mode))      attr |= FILE_ATTRIBUTE_DIRECTORY;
+		if (name[0] == '.')           attr |= FILE_ATTRIBUTE_HIDDEN;
+		if (access(full, W_OK) != 0)  attr |= FILE_ATTRIBUTE_READONLY;
+		data->dwFileAttributes = attr ? attr : FILE_ATTRIBUTE_NORMAL;
+		data->ftCreationTime   = wwport_to_filetime(st.st_birthtimespec);
+		data->ftLastAccessTime = wwport_to_filetime(st.st_atimespec);
+		data->ftLastWriteTime  = wwport_to_filetime(st.st_mtimespec);
+		data->nFileSizeHigh    = (DWORD)((uint64_t)st.st_size >> 32);
+		data->nFileSizeLow     = (DWORD)st.st_size;
+		strcpy(data->cFileName, name);
+		return TRUE;
+	}
+	SetLastError(ERROR_FILE_NOT_FOUND);			/* ERROR_NO_MORE_FILES on Win32; the engine only tests the BOOL */
+	return FALSE;
+}
+
+HANDLE FindFirstFileA(LPCSTR pattern, LPWIN32_FIND_DATAA data)
+{
+	if (pattern == NULL || data == NULL) { SetLastError(ERROR_FILE_NOT_FOUND); return INVALID_HANDLE_VALUE; }
+	wwport_findfile * f = (wwport_findfile *)calloc(1, sizeof(wwport_findfile));
+	if (f == NULL) return INVALID_HANDLE_VALUE;
+	char path[1024];
+	wwport_posix_path(pattern, path, sizeof(path));
+	const char * slash = strrchr(path, '/');
+	if (slash) {
+		size_t n = (size_t)(slash - path);
+		memcpy(f->dirpath, path, n); f->dirpath[n] = '\0';
+		if (n == 0) strcpy(f->dirpath, "/");
+		snprintf(f->pattern, sizeof(f->pattern), "%s", slash + 1);
+	} else {
+		strcpy(f->dirpath, ".");
+		snprintf(f->pattern, sizeof(f->pattern), "%s", path);
+	}
+	f->dir = opendir(f->dirpath);
+	if (f->dir == NULL || !wwport_findfile_next(f, data)) {
+		if (f->dir) closedir(f->dir);
+		free(f);
+		SetLastError(ERROR_FILE_NOT_FOUND);
+		return INVALID_HANDLE_VALUE;
+	}
+	return (HANDLE)f;
+}
+
+BOOL FindNextFileA(HANDLE search, LPWIN32_FIND_DATAA data)
+{
+	if (search == INVALID_HANDLE_VALUE || search == NULL || data == NULL) return FALSE;
+	return wwport_findfile_next((wwport_findfile *)search, data);
+}
+
+BOOL FindClose(HANDLE search)
+{
+	if (search == INVALID_HANDLE_VALUE || search == NULL) return FALSE;
+	wwport_findfile * f = (wwport_findfile *)search;
+	if (f->dir) closedir(f->dir);
+	free(f);
+	return TRUE;
+}

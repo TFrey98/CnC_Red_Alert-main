@@ -79,6 +79,8 @@
 #define _stricmp  strcasecmp
 #define _strnicmp strncasecmp
 #define strcmpi   strcasecmp
+#define _strlwr   strlwr
+#define _strupr   strupr
 #define memicmp   wwport_memicmp
 #define _memicmp  wwport_memicmp
 
@@ -228,6 +230,25 @@ struct find_t {
 };
 
 unsigned _dos_findfirst(const char * pattern, unsigned attributes, struct find_t * result);
+
+/*
+**	Free disk space (CONQUER.CPP's Disk_Space_Available, checked before saving).
+**	The caller multiplies avail_clusters * sectors_per_cluster * bytes_per_sector
+**	in 32-bit unsigned arithmetic, so a literal report of a modern disk's free
+**	space would wrap -- sometimes to a small number, refusing a save on an empty
+**	disk. Real free space is reported, capped at 2GB so that product can't
+**	overflow; that is far more than a save game needs. Drives are reported as 3
+**	(C:), the only drive a Mac path layout has.
+*/
+struct diskfree_t {
+	unsigned total_clusters;
+	unsigned avail_clusters;
+	unsigned sectors_per_cluster;
+	unsigned bytes_per_sector;
+};
+unsigned _dos_getdiskfree(unsigned drive, struct diskfree_t * result);
+void     _dos_getdrive(unsigned * drive);
+void     _dos_setdrive(unsigned drive, unsigned * total);
 unsigned _dos_findnext(struct find_t * result);
 unsigned _dos_findclose(struct find_t * result);
 

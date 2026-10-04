@@ -901,8 +901,15 @@ typedef enum ThemeType {
 	THEME_LAST=(int)THEME_COUNT-1,
 	THEME_FIRST=0
 } ThemeType;
+/*
+**	Port: the enum operators in this file were declared `inline` with no body.
+**	Watcom gave enums C-style integer arithmetic and accepted that; standard C++
+**	needs the body. Each now does exactly the integer operation on the enum's
+**	value and converts back -- postfix ++ advances by one and returns the old
+**	value -- which is what the original code relied on.
+*/
 
-inline ThemeType operator++(ThemeType &, int);
+inline ThemeType operator++(ThemeType & value, int) { ThemeType old = value; value = (ThemeType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -926,9 +933,9 @@ typedef enum ThreatType {
 	THREAT_FACTORIES=0x1000,	// Consider factories a greater target?
 	THREAT_BASE_DEFENSE=0x2000	// Consider base defense buildings a greater target?
 } ThreatType;
-inline ThreatType operator |(ThreatType, ThreatType);
-inline ThreatType operator &(ThreatType, ThreatType);
-inline ThreatType operator ~(ThreatType);
+inline ThreatType operator|(ThreatType a, ThreatType b) { return (ThreatType)((int)a | (int)b); }
+inline ThreatType operator&(ThreatType a, ThreatType b) { return (ThreatType)((int)a & (int)b); }
+inline ThreatType operator~(ThreatType value) { return (ThreatType)(~(int)value); }
 
 #define THREAT_GROUND	(THREAT_VEHICLES|THREAT_BUILDINGS|THREAT_INFANTRY)
 
@@ -1172,7 +1179,7 @@ typedef enum HousesType {
 	HOUSE_FIRST=0
 } HousesType;
 
-inline HousesType operator++(HousesType &, int);
+inline HousesType operator++(HousesType & value, int) { HousesType old = value; value = (HousesType)((int)value + 1); return old; }
 
 #define	HOUSEF_ALLIES	(HOUSEF_ENGLAND|HOUSEF_SPAIN|HOUSEF_GREECE|HOUSEF_GERMANY|HOUSEF_FRANCE|HOUSEF_TURKEY|HOUSEF_GOOD)
 #define	HOUSEF_SOVIET	(HOUSEF_USSR|HOUSEF_UKRAINE|HOUSEF_BAD)
@@ -1249,7 +1256,7 @@ typedef enum ScenarioPlayerEnum
 	SCEN_PLAYER_FIRST = 0
 } ScenarioPlayerType;
 
-inline ScenarioPlayerType operator++(ScenarioPlayerType &, int);
+inline ScenarioPlayerType operator++(ScenarioPlayerType & value, int) { ScenarioPlayerType old = value; value = (ScenarioPlayerType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -1264,7 +1271,7 @@ typedef enum ScenarioDirEnum
 	SCEN_DIR_FIRST = 0
 } ScenarioDirType;
 
-inline ScenarioDirType operator++(ScenarioDirType &, int);
+inline ScenarioDirType operator++(ScenarioDirType & value, int) { ScenarioDirType old = value; value = (ScenarioDirType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -1282,7 +1289,7 @@ typedef enum ScenarioVarEnum
 	SCEN_VAR_FIRST = 0
 } ScenarioVarType;
 
-inline ScenarioVarType operator++(ScenarioVarType &, int);
+inline ScenarioVarType operator++(ScenarioVarType & value, int) { ScenarioVarType old = value; value = (ScenarioVarType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -1301,7 +1308,7 @@ typedef enum LayerType {
 	LAYER_FIRST=0
 } LayerType;
 
-inline LayerType operator++(LayerType &, int);
+inline LayerType operator++(LayerType & value, int) { LayerType old = value; value = (LayerType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -1334,7 +1341,7 @@ typedef enum BulletType {
 	BULLET_FIRST=0
 } BulletType;
 
-inline BulletType operator++(BulletType &, int);
+inline BulletType operator++(BulletType & value, int) { BulletType old = value; value = (BulletType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -1450,7 +1457,7 @@ typedef enum StructType {
 	STRUCT_FIRST=0
 } StructType;
 
-inline StructType operator++(StructType &, int);
+inline StructType operator++(StructType & value, int) { StructType old = value; value = (StructType)((int)value + 1); return old; }
 
 #define	STRUCTF_NONE				0L
 #define	STRUCTF_ADVANCED_TECH	(1L << STRUCT_ADVANCED_TECH)
@@ -1524,7 +1531,7 @@ typedef enum OverlayType {
 	OVERLAY_FIRST=0
 } OverlayType;
 
-inline OverlayType operator++(OverlayType &, int);
+inline OverlayType operator++(OverlayType & value, int) { OverlayType old = value; value = (OverlayType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -1575,7 +1582,7 @@ typedef enum InfantryType{
 
 #define INFANTRYF_DOG	(1L << INFANTRY_DOG)
 
-inline InfantryType operator++(InfantryType &, int);
+inline InfantryType operator++(InfantryType & value, int) { InfantryType old = value; value = (InfantryType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -1624,7 +1631,7 @@ typedef enum UnitType{
 #endif
 } UnitType;
 
-inline UnitType operator++(UnitType &, int);
+inline UnitType operator++(UnitType & value, int) { UnitType old = value; value = (UnitType)((int)value + 1); return old; }
 
 #define	UNITF_HTANK			(1L<<UNIT_HTANK)
 #define	UNITF_MTANK			(1L<<UNIT_MTANK)
@@ -1666,7 +1673,7 @@ typedef enum VesselType{
 #endif
 } VesselType;
 
-inline VesselType operator++(VesselType &, int);
+inline VesselType operator++(VesselType & value, int) { VesselType old = value; value = (VesselType)((int)value + 1); return old; }
 
 #define	VESSELF_SS			(1L<<VESSEL_SS)
 #define	VESSELF_DD			(1L<<VESSEL_DD)
@@ -1701,7 +1708,7 @@ typedef enum AircraftType {
 #define	AIRCRAFTF_LONGBOW		(1L << AIRCRAFT_LONGBOW)
 #define	AIRCRAFTF_HIND			(1L << AIRCRAFT_HIND)
 
-inline AircraftType operator++(AircraftType &, int);
+inline AircraftType operator++(AircraftType & value, int) { AircraftType old = value; value = (AircraftType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -2125,7 +2132,7 @@ typedef enum TemplateType {
 	TEMPLATE_FIRST=0
 } TemplateType;
 
-inline TemplateType operator++(TemplateType &, int);
+inline TemplateType operator++(TemplateType & value, int) { TemplateType old = value; value = (TemplateType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -2178,7 +2185,7 @@ typedef enum TerrainType {
 	TERRAIN_FIRST=0
 } TerrainType;
 
-inline TerrainType operator++(TerrainType &, int);
+inline TerrainType operator++(TerrainType & value, int) { TerrainType old = value; value = (TerrainType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -2208,7 +2215,7 @@ typedef enum SmudgeType {
 	SMUDGE_FIRST=0
 } SmudgeType;
 
-inline SmudgeType operator++(SmudgeType &, int);
+inline SmudgeType operator++(SmudgeType & value, int) { SmudgeType old = value; value = (SmudgeType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -2307,7 +2314,7 @@ typedef enum AnimType {
 } AnimType;
 
 
-inline AnimType operator++(AnimType &, int);
+inline AnimType operator++(AnimType & value, int) { AnimType old = value; value = (AnimType)((int)value + 1); return old; }
 
 
 /****************************************************************************
@@ -2342,7 +2349,7 @@ typedef enum DoType {
 	DO_FIRST=0
 } DoType;
 
-inline DoType operator++(DoType &, int);
+inline DoType operator++(DoType & value, int) { DoType old = value; value = (DoType)((int)value + 1); return old; }
 
 /*
 **	This structure is associated with each maneuver type. It tells whether the
@@ -2827,9 +2834,9 @@ typedef enum TextPrintType {
 	TPF_USE_GRAD_PAL	=0x4000		// Use a gradient palette based on fore color
 } TextPrintType;
 
-inline TextPrintType operator |(TextPrintType, TextPrintType);
-inline TextPrintType operator &(TextPrintType, TextPrintType);
-inline TextPrintType operator ~(TextPrintType);
+inline TextPrintType operator|(TextPrintType a, TextPrintType b) { return (TextPrintType)((int)a | (int)b); }
+inline TextPrintType operator&(TextPrintType a, TextPrintType b) { return (TextPrintType)((int)a & (int)b); }
+inline TextPrintType operator~(TextPrintType value) { return (TextPrintType)(~(int)value); }
 
 // Standard button text print flags.
 #define TPF_BUTTON	(TPF_CENTER|TPF_6PT_GRAD|TPF_NOSHADOW)
@@ -2895,7 +2902,7 @@ typedef enum TheaterType {
 	THEATER_FIRST=0
 } TheaterType;
 
-inline TheaterType operator++(TheaterType &, int);
+inline TheaterType operator++(TheaterType & value, int) { TheaterType old = value; value = (TheaterType)((int)value + 1); return old; }
 
 #define	THEATERF_TEMPERATE		(1<<THEATER_TEMPERATE)
 #define	THEATERF_SNOW				(1<<THEATER_SNOW)
@@ -2928,7 +2935,7 @@ typedef enum BSizeType {
 	BSIZE_COUNT
 } BSizeType;
 
-inline BSizeType operator++(BSizeType &, int);
+inline BSizeType operator++(BSizeType & value, int) { BSizeType old = value; value = (BSizeType)((int)value + 1); return old; }
 
 
 /**********************************************************************
@@ -2983,7 +2990,7 @@ typedef enum FacingType {
 	FACING_FIRST=0
 } FacingType;
 
-inline FacingType operator++(FacingType &, int);
+inline FacingType operator++(FacingType & value, int) { FacingType old = value; value = (FacingType)((int)value + 1); return old; }
 inline FacingType operator + (FacingType f1, FacingType f2)
 {
 	return (FacingType)(((int)f1 + (int)f2) & 0x07);

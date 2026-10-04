@@ -1884,7 +1884,7 @@ BOOL Move_HMI_Audio_Block_To_Direct_Sound_Buffer (void)
 	/*
 	** Copy the HMI audio buffer to the direct sound buffer
 	*/
-	memcpy ((char*)play_buffer_ptr , (char*)((unsigned)audio->Buffer + (unsigned)audio->PlayPosition) , config->HMIBufSize);
+	memcpy ((char*)play_buffer_ptr , (char*)audio->Buffer + audio->PlayPosition , config->HMIBufSize);	/* port: a real pointer plus an offset; was (unsigned)Buffer + (unsigned)PlayPosition, which truncated the pointer */
 
 	/*
 	** Unlock the direct sound buffer

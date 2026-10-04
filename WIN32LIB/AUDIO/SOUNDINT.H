@@ -273,8 +273,14 @@ extern LockedDataType LockedData;
 #pragma pack(4);
 
 void Init_Locked_Data(void);
-long Simple_Copy(void ** source, long * ssize, void ** alternate, long * altsize, void **dest, long size);
-long Sample_Copy(SampleTrackerType *st, void ** source, long * ssize, void ** alternate, long * altsize, void * dest, long size, SCompressType scomp, void * trailer, short int *trailersize);
+long Simple_Copy(void ** source, LONG * ssize, void ** alternate, LONG * altsize, void **dest, long size);
+/*
+**	Port: these took `long *` while the storage they write through -- Remainder,
+**	QueueSize, and the Callback member's size -- is LONG. Under Watcom both were
+**	32 bits; on macOS `long` is 64, so writing *ssize would overrun the 4-byte
+**	field into its neighbour. The parameters now match their storage.
+*/
+long Sample_Copy(SampleTrackerType *st, void ** source, LONG * ssize, void ** alternate, LONG * altsize, void * dest, long size, SCompressType scomp, void * trailer, short int *trailersize);
 VOID far __cdecl maintenance_callback(VOID);
 VOID __cdecl far DigiCallback(unsigned int driverhandle, unsigned int callsource, unsigned int sampleid);
 void far HMI_TimerCallback(void);

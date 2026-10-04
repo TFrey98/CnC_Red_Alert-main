@@ -74,3 +74,32 @@ bool CCPtr<T>::operator > (CCPtr<T> const & rvalue) const
 {
 	return (stricmp((*this)->Name(), rvalue->Name()) > 0);
 }
+
+
+/*
+**	Port: explicit instantiation. These template members are defined in this .CPP,
+**	so standard C++ instantiates them only for uses inside this file; every use
+**	elsewhere was an undefined symbol at link time. Watcom instantiated them
+**	automatically (FUNCTION.H's dummy externs -- y002, xxx1, whatever -- were
+**	Westwood's way of forcing it). This list is exactly the set of
+**	specialisations the linker reported missing; regenerate it from a link if
+**	the set of types changes.
+*/
+template class CCPtr<AircraftTypeClass>;
+template class CCPtr<AnimTypeClass>;
+template class CCPtr<BuildingTypeClass>;
+template class CCPtr<BulletTypeClass>;
+template class CCPtr<FactoryClass>;
+template class CCPtr<HouseClass>;
+template class CCPtr<HouseTypeClass>;
+template class CCPtr<InfantryTypeClass>;
+template class CCPtr<OverlayTypeClass>;
+template class CCPtr<SmudgeTypeClass>;
+template class CCPtr<TeamClass>;
+template class CCPtr<TeamTypeClass>;
+template class CCPtr<TemplateTypeClass>;
+template class CCPtr<TerrainTypeClass>;
+template class CCPtr<TriggerClass>;
+template class CCPtr<TriggerTypeClass>;
+template class CCPtr<UnitTypeClass>;
+template class CCPtr<VesselTypeClass>;

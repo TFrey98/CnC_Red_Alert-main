@@ -7,17 +7,17 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 | Tag | Meaning | Files |
 |---|---|---|
-| DONE | compiles clean for arm64 | 220 |
+| DONE | compiles clean for arm64 | 225 |
 | TWEAK | needs source or compat fixes | 0 |
-| DROP | out of scope for single-player; left in place because live code includes its headers | 22 |
-| NATIVE | the Win32 platform layer: reimplement over port/backend/ | 5 |
+| DROP | out of scope for single-player; left in place because live code includes its headers | 20 |
+| NATIVE | the Win32 platform layer: reimplement over port/backend/ | 4 |
 
 ## Assembly
 
 | Tag | Meaning | Files | Lines |
 |---|---|---|---|
-| TRANSLATE | live, no C yet: rewrite as portable C | 62 | 24,011 |
-| SUPERSEDED | live, but a C/C++ definition already exists in the tree | 8 | 2,898 |
+| TRANSLATE | live, no C yet: rewrite as portable C | 61 | 23,877 |
+| SUPERSEDED | live, but a C/C++ definition already exists in the tree | 9 | 3,032 |
 | NATIVE | needed, reimplemented on a macOS framework | 2 | 951 |
 | REBUILD | no arm64 equivalent; new logic | 3 | 448 |
 | DEAD | nothing live calls it | 2 | 323 |
@@ -28,7 +28,7 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## TRANSLATE -- 62 files, 24,011 lines
+## TRANSLATE -- 61 files, 23,877 lines
 
 | File | Lines | Note |
 |---|---|---|
@@ -77,7 +77,6 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 | `WIN32LIB/MISC/FACING16.ASM` | 147 | no C yet for: Desired_Facing16 |
 | `WIN32LIB/MISC/REVERSE.ASM` | 139 | no C yet for: Reverse_Long, Reverse_Short, Swap_Long |
 | `WINVQ/VQM32/VB.ASM` | 137 | no C yet for: WaitNoVB, WaitVB |
-| `CODE/COORDA.ASM` | 134 | no C yet for: Cardinal_To_Fixed, Fixed_To_Cardinal |
 | `WIN32LIB/IFF/PACK2PLN.ASM` | 131 | no C yet for: Pack_2_Plane |
 | `WIN32LIB/DRAWBUFF/CLEAR.ASM` | 129 | no C yet for: Buffer_Clear |
 | `WIN32LIB/MISC/RANDOM.ASM` | 118 | no C yet for: Get_Random_Mask, Random |
@@ -97,7 +96,7 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## SUPERSEDED -- 8 files, 2,898 lines
+## SUPERSEDED -- 9 files, 3,032 lines
 
 | File | Lines | Note |
 |---|---|---|
@@ -107,6 +106,7 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 | `WINVQ/VQM32/LCWUNCMP.ASM` | 221 | C already defines: LCW_Uncompress |
 | `WIN32LIB/MISC/FACINGFF.ASM` | 164 | C already defines: Desired_Facing256 |
 | `WIN32LIB/MISC/FACING8.ASM` | 140 | C already defines: Desired_Facing8 |
+| `CODE/COORDA.ASM` | 134 | C already defines: Cardinal_To_Fixed, Fixed_To_Cardinal |
 | `WINVQ/VQM32/CRC.ASM` | 133 | C already defines: Calculate_CRC |
 | `WIN32LIB/MISC/CRC.ASM` | 113 | C already defines: Calculate_CRC |
 
@@ -140,19 +140,18 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## NATIVE (C++) -- 5 files
+## NATIVE (C++) -- 4 files
 
 | File | What replaces it |
 |---|---|
 | `CDFILE.CPP` | CD-ROM drive detection -> a data directory |
-| `CONQUER.CPP` | game loop is portable; its remaining errors are DirectDraw palette access and the CD volume check |
 | `KEY.CPP` | Win32 keyboard and mouse messages -> NSEvent |
 | `STARTUP.CPP` | WinMain, single-instance check, CD/path setup -> the app entry point |
 | `WINSTUB.CPP` | window creation and the Win32 message pump -> NSApplication / NSWindow |
 
 ---
 
-## DROP -- 22 files
+## DROP -- 20 files
 
 | File | Reason |
 |---|---|
@@ -168,8 +167,6 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 | `NULLDLG.CPP` | multiplayer / online / serial |
 | `NULLMGR.CPP` | multiplayer / online / serial |
 | `PACKET.CPP` | multiplayer / online / serial |
-| `QUEUE.CPP` | multiplayer / online / serial |
-| `SESSION.CPP` | multiplayer / online / serial |
 | `STATS.CPP` | multiplayer / online / serial |
 | `TCPIP.CPP` | multiplayer / online / serial |
 | `TOOLTIP.CPP` | ToolTipClass; used only by WOL_* and ICONLIST |
@@ -181,24 +178,19 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## Libraries (`port/lib-build-set.txt`) -- {'TWEAK': 5, 'DONE': 62, 'DROP': 9, 'NATIVE': 1}
+## Libraries (`port/lib-build-set.txt`) -- {'DONE': 67, 'DROP': 9, 'NATIVE': 1}
 
 Measured by `port/probe-libs.sh`, each library with its own include path.
 
 | File | Tag | Note |
 |---|---|---|
-| `WIN32LIB/AUDIO/SOUNDINT.CPP` | TWEAK | cast from pointer to smaller type 'unsigned int' loses information |
-| `WIN32LIB/AUDIO/SOUNDIO.CPP` | TWEAK | incompatible function pointer types assigning to 'int (*)(short, short *, void **, LONG *)' (aka 'int (*)(shor |
-| `WIN32LIB/DRAWBUFF/GBUFFER.CPP` | TWEAK | no member named 'AddAttachedSurface' in 'IDirectDrawSurface' |
 | `WIN32LIB/IFF/WRITEPCX.CPP` | DROP | library overload Write_PCX_File(char *, ...) has no callers; the game uses CODE/WRITEPCX.CPP |
-| `WIN32LIB/MISC/DDRAW.CPP` | TWEAK | use of undeclared identifier 'MB_ICONEXCLAMATION' |
 | `WIN32LIB/MOVIE/MOVIE.CPP` | NATIVE | MPEG cutscenes over DirectShow -> AVFoundation (the MPEG DLL was never released) |
 | `WIN32LIB/PLAYCD/GETCD.CPP` | DROP | CD-ROM drive enumeration; nothing in the game calls it |
 | `WIN32LIB/PROFILE/WPROFILE.CPP` | DROP | x86 sampling profiler; Instruments replaces it (Stop_Profiler needs a stub at link) |
 | `WIN32LIB/RAWFILE/RAWFILE.CPP` | DROP | library file layer (mmio*), wholly superseded by CODE/CCFILE.CPP, which defines every symbol the game calls; linking both would duplicate them |
 | `WIN32LIB/WINCOMM/MODEMREG.CPP` | DROP | modem registry -- serial multiplayer |
 | `WIN32LIB/WINCOMM/WINCOMM.CPP` | DROP | serial/modem comms -- multiplayer |
-| `WINVQ/VQA32/AUDIO.CPP` | TWEAK | cast from pointer to smaller type 'unsigned int' loses information |
 | `WINVQ/VQM32/TESTVB.CPP` | DROP | DOS vertical-blank port test |
 | `WINVQ/VQM32/VESAVID.CPP` | DROP | DOS VESA video; the Win32 player never uses it |
 | `WINVQ/VQM32/VIDEO.CPP` | DROP | DOS VGA/VESA mode setting |

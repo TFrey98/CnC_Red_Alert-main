@@ -4173,10 +4173,10 @@ int Get_CD_Index (int cd_drive, int timeout)
 		{
 		sprintf(buffer, "%c:\\", 'A' + cd_drive);
 
-		if (GetVolumeInformation ((char const *)buffer, &volume_name[0] ,
-				(unsigned long)sizeof(volume_name), (unsigned long *)NULL ,
-				(unsigned long *)&filename_length, (unsigned long *)&misc_dword,
-				(char *)NULL, (unsigned long)0))
+		if (GetVolumeInformation ((char const *)buffer, &volume_name[0] ,	// port: (unsigned long *) is 8 bytes on macOS; these are DWORD (4-byte) outputs
+				(DWORD)sizeof(volume_name), (LPDWORD)NULL ,
+				(LPDWORD)&filename_length, (LPDWORD)&misc_dword,
+				(char *)NULL, (DWORD)0))
 			{
 			/*
 			** Try opening 'movies.mix' to verify that the CD is really there and is what

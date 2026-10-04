@@ -530,7 +530,7 @@ bool SessionClass::Am_I_Master(void)
  * HISTORY:                                                                *
  *   12/04/1995 BRR : Created.                                             *
  *=========================================================================*/
-SessionClass::Save(Pipe & file) const
+int SessionClass::Save(Pipe & file) const	// port: implicit return type; declared int
 {
 #ifdef FIXIT_MULTI_SAVE
 	file.Put(&CommProtocol, sizeof(CommProtocol));
@@ -572,7 +572,7 @@ SessionClass::Save(Pipe & file) const
  * HISTORY:                                                                *
  *   12/04/1995 BRR : Created.                                             *
  *=========================================================================*/
-SessionClass::Load(Straw & file)
+int SessionClass::Load(Straw & file)	// port: implicit return type; declared int
 {
 #ifdef FIXIT_MULTI_SAVE
 //	if(GameVersion != 0x0100616D){
@@ -619,7 +619,7 @@ SessionClass::Load(Straw & file)
  * HISTORY:                                                                *
  *   12/04/1995 BRR : Created.                                             *
  *=========================================================================*/
-SessionClass::Save(CCFileClass & file)
+int SessionClass::Save(CCFileClass & file)
 {
 	int i;
 
@@ -666,7 +666,7 @@ SessionClass::Save(CCFileClass & file)
  * HISTORY:                                                                *
  *   12/04/1995 BRR : Created.                                             *
  *=========================================================================*/
-SessionClass::Load(CCFileClass & file)
+int SessionClass::Load(CCFileClass & file)
 {
 	int count;
 	int i;

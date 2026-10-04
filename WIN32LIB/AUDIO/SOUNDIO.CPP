@@ -154,10 +154,10 @@ extern	void (*Audio_Focus_Loss_Function)(void) = NULL;
 /* The following PRIVATE functions are in this file:                       */
 /*=========================================================================*/
 
-static BOOL File_Callback(short id, short *odd, void **buffer, long *size);
-static int __cdecl Stream_Sample_Vol(void *buffer, long size, BOOL (*callback)(short id, short *odd, void **buffer, long *size), int volume, int handle);
+static BOOL File_Callback(short id, short *odd, void **buffer, LONG *size);
+static int __cdecl Stream_Sample_Vol(void *buffer, long size, BOOL (*callback)(short id, short *odd, void **buffer, LONG *size), int volume, int handle);
 void CALLBACK Sound_Timer_Callback ( UINT, UINT, DWORD, DWORD, DWORD );
-//static int __cdecl Stream_Sample(void *buffer, long size, BOOL (*callback)(short id, short *odd, void **buffer, long *size));
+//static int __cdecl Stream_Sample(void *buffer, long size, BOOL (*callback)(short id, short *odd, void **buffer, LONG *size));
 void Sound_Thread (void *);
 volatile BOOL AudioDone;
 /*= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
@@ -167,7 +167,7 @@ volatile BOOL AudioDone;
 // This callback is called whenever the queue buffer playback has begun
 // and another buffer is needed for queuing up.  Returns TRUE if there
 // is more data to read from the file.
-static BOOL File_Callback(short id, short *odd, void **buffer, long *size)
+static BOOL File_Callback(short id, short *odd, void **buffer, LONG *size)
 {
 	SampleTrackerType       *st;            // Pointer to sample playback control struct.
 	void                    *ptr;           // Pointer to working portion of file buffer.
@@ -322,7 +322,7 @@ static BOOL File_Callback(short id, short *odd, void **buffer, long *size)
 
 
 // Generic streaming sample playback initialization.
-static int __cdecl Stream_Sample_Vol(void *buffer, long size, BOOL (*callback)(short id, short *odd, void **buffer, long *size), int volume, int handle)
+static int __cdecl Stream_Sample_Vol(void *buffer, long size, BOOL (*callback)(short id, short *odd, void **buffer, LONG *size), int volume, int handle)
 {
 	int								playid=-1;      // Sample play ID.
 	SampleTrackerType               *st;                    // Working pointer to sample control structure.
@@ -361,7 +361,7 @@ static int __cdecl Stream_Sample_Vol(void *buffer, long size, BOOL (*callback)(s
 
 
 #if (0)
-static int __cdecl Stream_Sample(void *buffer, long size, BOOL (*callback)(short id, short *odd, void **buffer, long *size), int handle)
+static int __cdecl Stream_Sample(void *buffer, long size, BOOL (*callback)(short id, short *odd, void **buffer, LONG *size), int handle)
 {
 	return Stream_Sample_Vol(buffer, size, callback, 0xFF, handle);
 }
@@ -435,7 +435,8 @@ void File_Stream_Preload(int handle)
     /*
     ** Loop through the blocks and load up the number we need.
     */
-    for (int index = st->FilePending; index < num; index++) {
+    int index;	// port: read after the loop (`index == maxnum`); hoisted to keep Watcom's for-scope
+    for (index = st->FilePending; index < num; index++) {
 		long s = Read_File(fh, Add_Long_To_Pointer(buffer, (long)index * (long)LockedData.StreamBufferSize), LockedData.StreamBufferSize);
        if (s) {
          	st->FilePendingSize = s;
@@ -839,7 +840,7 @@ long Sample_Read(int fh, void *buffer, long size)
 	size -= sizeof(RawHeader);
 	outbuffer = Add_Long_To_Pointer(buffer, sizeof(RawHeader));
   	actual_bytes_read = Read_File(fh, &RawHeader, sizeof(RawHeader));
-	actual_bytes_read +=Read_File(fh, outbuffer, MIN(size, RawHeader.Size));
+	actual_bytes_read +=Read_File(fh, outbuffer, MIN(size, (long)RawHeader.Size));	// port: Size is int32_t now (on-disk AUD header)
 	Mem_Copy(&RawHeader, buffer, sizeof(RawHeader));
 	return(actual_bytes_read);
 }
@@ -1843,7 +1844,7 @@ int Play_Sample_Handle(void const *sample, int priority, int volume, signed shor
 		st->Service=TRUE;				//We still need to service it so that we can stop it when
 											// it plays past the end of the sample data
 		//memset ( (char*)( (unsigned)play_buffer_ptr + (unsigned)st->DestPtr ), 0 , SECONDARY_BUFFER_SIZE - (unsigned)st->DestPtr );
-		memset ( (char*)( (unsigned)play_buffer_ptr + (unsigned)st->DestPtr ), 0 , SECONDARY_BUFFER_SIZE/4);
+		memset ( (char*)play_buffer_ptr + (uintptr_t)st->DestPtr, 0 , SECONDARY_BUFFER_SIZE/4);	// port: a REAL pointer plus an offset; (unsigned) truncated the pointer
 	}
 
 	st->PlayBuffer->Unlock(	play_buffer_ptr,

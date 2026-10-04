@@ -20,8 +20,8 @@
  {
   "file": "CODE/COORDA.ASM",
   "lines": 134,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Cardinal_To_Fixed, Fixed_To_Cardinal"
+  "tag": "SUPERSEDED",
+  "note": "C already defines: Cardinal_To_Fixed, Fixed_To_Cardinal"
  },
  {
   "file": "CODE/CPUID.ASM",

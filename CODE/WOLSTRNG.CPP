@@ -18,7 +18,11 @@
 
 //	New character strings for wolapi integration.
 
-#ifdef WOLAPI_INTEGRATION
+//	Port: originally `#ifdef WOLAPI_INTEGRATION`, which CODE/MAKEFILE defined for every
+//	build. The port does not define it (it would switch on the defunct Westwood Online
+//	client), but these strings are not online-only: MENUS.CPP, EXPAND.CPP, GOPTIONS.CPP
+//	and CONQUER.CPP use them unconditionally ("Counterstrike Missions", "Propose Draw").
+#if 1
 #include "function.h"
 #include "WolStrng.h"
 

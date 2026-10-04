@@ -70,6 +70,18 @@ int main() {
 	CloseHandle(s);
 	(void)epoch; (void)ft; (void)z;
 
+	/* FindFirstFile: SESSION.CPP lists *.PKT mission packs and *.MPR user maps */
+	{ FILE * f; f = fopen("ALLIED.MPR", "w"); fclose(f); f = fopen("soviet.mpr", "w"); fclose(f); f = fopen("NOTAMAP.TXT", "w"); fclose(f); mkdir("DIR.MPR", 0755); }
+	WIN32_FIND_DATA fdata; int found = 0, dirs = 0;
+	HANDLE fh = FindFirstFile("*.MPR", &fdata);
+	if (fh != INVALID_HANDLE_VALUE) {
+		do {
+			if (fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) dirs++; else found++;
+		} while (FindNextFile(fh, &fdata));
+		FindClose(fh);
+	}
+	check(found == 2 && dirs == 1 && fdata.cAlternateFileName[0] == 0, "FindFirstFile *.MPR: case-insensitive, directories flagged, 8.3 name empty");
+	check(FindFirstFile("*.PKT", &fdata) == INVALID_HANDLE_VALUE, "FindFirstFile with no match returns INVALID_HANDLE_VALUE");
 	check(DeleteFile("SAVEGAME.000") && access("SAVEGAME.000", F_OK) != 0, "DeleteFile");
 	char cmd[1100]; snprintf(cmd, sizeof cmd, "rm -rf %s", dir); system(cmd);
 	printf("%s\n", fails ? "FAILED" : "win32_file: all pass");

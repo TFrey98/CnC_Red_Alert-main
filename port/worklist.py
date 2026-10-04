@@ -32,7 +32,7 @@ PROBE = os.path.join(os.environ.get('TMPDIR', '/tmp'), 'ra-probe')
 # multiplayer; DIBUTIL.CPP looks like graphics but only serves Westwood Online).
 # --------------------------------------------------------------------------
 DROP = {}
-for f in ('CONNECT COMBUF COMQUEUE PACKET QUEUE SESSION NETDLG MPLAYER MPGSET '
+for f in ('CONNECT COMBUF COMQUEUE PACKET NETDLG MPLAYER MPGSET '
           'IPX IPX95 IPXADDR IPXCONN IPXGCONN IPXMGR NULLCONN NULLDLG NULLMGR '
           'TCPIP INTERNET WSPROTO WSPIPX WSPUDP _WSPROTO BIGCHECK DDE CCDDE '
           'CCMPATH CCTEN TENMGR MPMGRD MPMGRW MODEMREG SENDFILE STATS UDPADDR').split():
@@ -44,7 +44,6 @@ for f, why in (('DIBUTIL', 'Win32 GDI bitmaps; only callers are WOLAPIOB.CPP and
                ('ICONLIST', 'IconListClass; used only by WOL_* and TOOLTIP'),
                ('TOOLTIP', 'ToolTipClass; used only by WOL_* and ICONLIST'),
                ('WOLAPIOB', 'Westwood Online API objects'),
-               ('WOLSTRNG', 'Westwood Online strings'),
                ('COMINIT', 'OLE initialisation for WOLAPI; ComInit is instantiated nowhere in CODE/')):
     DROP[f] = why
 
@@ -58,7 +57,6 @@ NATIVE_CPP = {
     'STARTUP':  'WinMain, single-instance check, CD/path setup -> the app entry point',
     'KEY':      'Win32 keyboard and mouse messages -> NSEvent',
     'CDFILE':   'CD-ROM drive detection -> a data directory',
-    'CONQUER':  'game loop is portable; its remaining errors are DirectDraw palette access and the CD volume check',
 }
 
 # --------------------------------------------------------------------------

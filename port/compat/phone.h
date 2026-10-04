@@ -1,22 +1,33 @@
 /*
-**	phone.h -- stub for the modem phone-list manager.
+**	phone.h -- the modem phone book entry, RECONSTRUCTED for the arm64 port.
 **
-**	Absent from EA's source release, along with the Greenleaf library it drove
-**	(see modem.h). CODE/function.h includes it unconditionally, so the header
-**	must exist for every translation unit in the game.
+**	CODE/PHONE.H was not part of EA's release. This was an empty stub while no
+**	compiled file needed the class; SESSION.CPP does (it saves and loads the phone
+**	book), and SESSION.CPP is core single-player state -- `Session.Type` decides
+**	whether a game is single-player at all -- so the class is reconstructed here.
 **
-**	Empty is sufficient for the single-player path, and that is not a guess:
-**	the only in-scope consumer, CODE/SESSION.H, forward-declares
-**	`class PhoneEntryClass;` itself (line 53) and stores only
-**	DynamicVectorClass<PhoneEntryClass *> -- pointers to an incomplete type,
-**	which is well formed. DialMethodType, the other name one might expect from
-**	here, is defined in SESSION.H too.
-**
-**	The files that need the real definition -- NULLMGR.H, NULLMGR.CPP and
-**	NULLDLG.CPP -- are all on the modem multiplayer path and out of scope. They
-**	will fail with a clear "incomplete type" at the point of use if that ever
-**	changes, which is the intended signal.
+**	Every member below is taken from its uses in SESSION.CPP, NULLDLG.CPP and
+**	NULLMGR.CPP: Name and Number as character arrays bounded by PHONE_MAX_NAME /
+**	PHONE_MAX_NUM, and Settings as SESSION.H's SerialSettingsType. The two sizes
+**	(21) follow Tiberian Dawn's PHONE.H from the same engine family, from memory --
+**	treat them as reconstructed. They only bound modem-dialog text; the phone book
+**	is stored as INI text, so there is no binary layout to match.
 */
 #ifndef WWPORT_COMPAT_PHONE_H
 #define WWPORT_COMPAT_PHONE_H
+
+#include "session.h"
+
+class PhoneEntryClass {
+	public:
+		enum PhoneEntryEnum {
+			PHONE_MAX_NAME = 21,
+			PHONE_MAX_NUM = 21
+		};
+
+		char               Name[PHONE_MAX_NAME];
+		char               Number[PHONE_MAX_NUM];
+		SerialSettingsType Settings;
+};
+
 #endif

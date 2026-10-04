@@ -34,26 +34,21 @@ every file that needs them is in the multiplayer path.
 
 ## Current state
 
-**Every in-scope game translation unit compiles for arm64.** Of the 247 in the
-build set: **220 compile clean**, **5 are tagged NATIVE** -- the game's Win32
-platform layer (`WINSTUB`, `STARTUP`, `KEY`, `CDFILE`, and the DirectDraw/CD
-remnants of `CONQUER`), which is reimplemented over `port/backend/` rather than
-patched -- and **22 are DROP** (multiplayer and Westwood Online). There is no
-TWEAK work left in `CODE/`.
+**Compiling is done; linking is the measure now.** Every in-scope translation
+unit compiles for arm64 -- 225 of 249 game units (4 platform-layer files are
+NATIVE, 20 multiplayer DROP) and 67 of 77 library units (9 DROP, 1 NATIVE).
 
-That changes what "next" means. The C++ compile grind for the game is done; the
-remaining phases are the platform layer, the libraries (`WIN32LIB/`, `WINVQ/`,
-not yet measured by `probe.sh`), the assembly, and then linking -- which will be
-the next great source of truth, the way compiling was.
-
-The file layer is already real: `RawFileClass`, through which every MIX, INI and
-save file is opened, runs end to end on macOS over a POSIX implementation of the
-Win32 file API, and is covered by `port/tests/run.sh`.
+`port/link-census.sh` compiles all of it to objects, links once, and classifies
+every unresolved symbol by cause into `port/LINK-CENSUS.md`. **106 undefined
+symbols remain, 0 duplicates** (from 461 at the first link; 197 before the
+multiplayer stubs below). When that list is
+empty, the game links.
 
 Tools, in the order to run them:
 
 | Command | What it tells you |
 |---|---|
+| `port/link-census.sh` | **the measure now:** every unresolved symbol, by cause (`port/LINK-CENSUS.md`) |
 | `port/probe.sh` | clean / total for the build set, and the biggest blockers |
 | `port/worklist.py` | regenerates `WORKLIST.md`: every file tagged, assembly classified by liveness |
 | `port/tests/run.sh` | **the data-path tests** -- CRC, SHA-1, RSA against independent references |
@@ -218,6 +213,117 @@ Two consequences worth carrying forward:
   `sizeof(CELL)*CHAR_BIT-14`, and `sizeof` is not available to the preprocessor,
   so that branch cannot compile as written. Anyone reviving a big-endian target
   is starting from scratch there, not from working code.
+
+## Linking: what the first link taught
+
+The first link of everything that compiles left 461 undefined symbols. Most of
+them were not "missing code" but more Watcom-vs-standard differences, each with
+an exact equivalent:
+
+- **Template instantiation (211 symbols).** The engine defines template members
+  in `.CPP` files (`VECTOR`, `DYNAVEC`, `HEAP`, `CCPTR`, `MIXFILE`); standard C++
+  instantiates them only for uses in that file. Watcom did it automatically --
+  `FUNCTION.H`'s dummy externs (`y002`, `xxx1`, `whatever`) were Westwood forcing
+  it. Each defining file now ends with explicit instantiations, and
+  `port/gen-instantiations.py` merges in whatever a link census reports missing.
+  Instantiating the bodies for real types exposed more dependent-base lookups
+  needing `this->`, as predicted.
+- **The ARM template rule.** `JSHELL.H` and `WWSTD.H` define templates
+  (`Bound`, `MIN`, `MAX`, `ABS`) and then declare ordinary functions with the
+  same signatures. Pre-standard C++ meant "generate this from the template";
+  standard C++ means "a different function", which nobody defined and which
+  overload resolution then prefers. Each now delegates to its template.
+- **Enum operators declared `inline` with no body (39).** Watcom gave enums
+  C-style arithmetic. Each now does exactly that integer operation.
+- **`#pragma aux` (11).** Inline x86 assembly written *inside headers* -- never
+  counted by the assembly inventory, because it is not in a `.ASM` file. C bodies
+  in `CODE/PRAGMAUX.CPP`, tested against a register-level emulation of each
+  original instruction sequence (2.45M `calcx`/`calcy` pairs, 2M fixed-point
+  conversions, 0 mismatches). The VGA palette ports are emulated as a DAC
+  (`WWPort_VGA_DAC`), which **the display backend must present from** -- recorded
+  for the display work.
+- **Three "multiplayer" files were core single-player code**, mis-tagged by a
+  filename rule: `CONQUER.CPP` (the main loop), `SESSION.CPP` (`Session.Type`
+  decides whether a game is single-player at all) and `QUEUE.CPP` (`Queue_AI`,
+  run every tick). All three compile now. `SESSION` needed `PhoneEntryClass`,
+  missing from the release like `PaletteClass`, reconstructed from its uses.
+
+Also found on the way:
+
+- **`Disk_Space_Available` would refuse saves on big disks.** It multiplies
+  clusters x sectors x bytes in 32-bit unsigned arithmetic; a modern disk's free
+  space would wrap, sometimes to a small number. `_dos_getdiskfree` reports real
+  free space capped at 2GB.
+- **CD checks fail fast.** `GetVolumeInformation` reports "path not found" (a Mac
+  has no drive letters), which `Get_CD_Index` treats as "no CD" immediately; only
+  "not ready" would make it wait two minutes. Finding the data without a CD is
+  `CDFILE.CPP`/`Force_CD_Available` work in the platform layer.
+
+### Still to resolve at link (see `port/LINK-CENSUS.md`)
+
+| Cause | Symbols | Next step |
+|---|---|---|
+| DROP | 2 | `GetCDClass` (CD, platform layer); `TestVBIBit` (VQ player vertical-blank poll) |
+| NOWHERE | 13 | `CDFileClass` statics (CD), `Mpg*` (MPEG player -> AVFoundation), `_ShapeBuffer`, `Generate_Prime`, `RandNumb`, `ShowCommand` |
+| ASM: TRANSLATE | 39 | the assembly translation, now listed symbol by symbol |
+| NATIVE-CPP | 18 | the platform layer: `WINSTUB`, `STARTUP`, `KEY`, `CDFILE` |
+| COMPAT | 17 | message pump, cursor, registry, `DirectDrawCreate`, `DirectSoundCreate` |
+| ARCHIVED | 8 | monochrome debug monitor, DOS VM paging, DOS MCGA video |
+| ASM: other | 8 | `VQA_sosCODEC*` wrappers over ADPCM.CPP; CPUID; mouse cursor |
+
+### Multiplayer: stubbed, not ported (`CODE/NETSTUB.CPP`)
+
+Single-player still reaches the network layer: `GLOBALS.CPP` constructs the IPX
+and null-modem managers, the main loop polls them, `INIT.CPP` reads spawn
+options, and `CCDDE.CPP` (which compiles, so it links) opens a DDE link to
+Westwood Chat at startup. `CODE/NETSTUB.CPP` -- port-created -- gives all of it
+inert bodies: no IPX, no connections, nothing received, every dialog returns
+"cancelled". The original network files are untouched; to port multiplayer,
+delete `NETSTUB.CPP` and put them back in the build. That removed 91 undefined
+symbols.
+
+Three details that are not just "return 0":
+
+- **`Instance_Class::Test_Server_Running` must return FALSE.** `CCDDE.CPP` uses
+  it as the "is Red Alert already running?" check at static-init time; TRUE
+  would make every launch think it was a second copy.
+- **`Compute_Name_CRC` keeps its real body** -- it is a plain CRC of a name.
+- **`GameTimerInUse` is defined as `BOOL`, not `bool`.** `STATS.CPP` defines it
+  `bool`, but the one linked reader, `CCDDE.CPP`, declares it `extern BOOL` and
+  reads four bytes. A latent ODR mismatch in the original; defined at the
+  reader's width so it cannot read past the object.
+
+**`WOLSTRNG.CPP` was compiling to an empty object.** Its whole body is under
+`#ifdef WOLAPI_INTEGRATION`, which `CODE/MAKEFILE` defined for every build and
+the port does not (it would enable the defunct online client). But the strings
+are not online-only: the single-player menus use them unconditionally
+("Counterstrike Missions", "Aftermath Missions", "Propose Draw"). The guard is
+now `#if 1` with a note, and the file exports its 187 strings. It was also
+removed from the DROP list, where it never belonged. Watch for other
+`WOLAPI_INTEGRATION` blocks that guard something single-player needs.
+
+## Independent verification against the published VQA format
+
+[Gordan Ugarkovic's VQA overview](https://multimedia.cx/vqa_overview.htm)
+describes the movie format from outside Westwood, which makes it a check on the
+port that does not depend on the code being changed:
+
+- `port/tests/vqa_format.cpp` lays out a synthetic VQA file from the document's
+  offsets and parses it through the engine's own structs and macros. All twelve
+  checks pass -- before last round's fixes the first would have failed.
+- `port/tests/lcw_format80.cpp` generates 3000 random Format80/LCW streams from
+  the document's five commands and requires both engine decoders to reproduce
+  them exactly. **This found a real bug in Westwood's decoder** (not the port's):
+  the fill command aligns with up to four byte stores regardless of its count,
+  then `count -= gap` on an unsigned count. A fill shorter than the gap wrapped to
+  ~4GB -- on 32-bit Windows the pointer wrapped too and one byte *before* the fill
+  was silently clobbered; on arm64 it ran 4GB forward and crashed. Westwood's
+  compressor evidently only emitted long fills, so real data never hit it. Both
+  decoders now fill with `memset`, which is byte-identical for every stream the
+  original compressor produced.
+- `port/tests/adpcm_ima.cpp` checks the game's ADPCM decoder (and its precomputed
+  tables) against an IMA decoder written from the document's parameters: 1.6M
+  samples, decoded in random chunks, 0 mismatches.
 
 ## The libraries (`WIN32LIB/`, `WINVQ/`)
 

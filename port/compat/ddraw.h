@@ -18,17 +18,111 @@
 #include "windows.h"
 
 /*
-**	Result codes. DirectDraw's HRESULTs are only ever compared against DD_OK
-**	and DDERR_SURFACELOST by this codebase.
+**	Result codes, numbered exactly as the DirectX SDK does: MAKE_DDHRESULT(code).
+**	Only the port's own backend ever produces them, so the values matter for
+**	diagnostics, not behaviour -- but WIN32LIB/MISC/DDRAW.CPP switches over
+**	nearly all of them to print error text, and a duplicate would surface there as
+**	a duplicate case label. Generating them from one macro also fixed two earlier
+**	hand-typed values: WASSTILLDRAWING (was 0x8760021C) and SURFACEBUSY (was
+**	0x887601AA, i.e. code 426 rather than 430).
 */
+#define MAKE_DDHRESULT(code)        ((HRESULT)(0x88760000u | (unsigned)(code)))
 #define DD_OK                       ((HRESULT)0)
-#define DDERR_GENERIC               ((HRESULT)0x80004005)
-#define DDERR_INVALIDPARAMS         ((HRESULT)0x80070057)
-#define DDERR_OUTOFMEMORY           ((HRESULT)0x8007000E)
-#define DDERR_SURFACELOST           ((HRESULT)0x887601C2)
-#define DDERR_SURFACEBUSY           ((HRESULT)0x887601AA)
-#define DDERR_WASSTILLDRAWING       ((HRESULT)0x8760021C)
-#define DDERR_UNSUPPORTED           ((HRESULT)0x80004001)
+#define DDERR_GENERIC               ((HRESULT)0x80004005)	/* = E_FAIL */
+#define DDERR_INVALIDPARAMS         ((HRESULT)0x80070057)	/* = E_INVALIDARG */
+#define DDERR_OUTOFMEMORY           ((HRESULT)0x8007000E)	/* = E_OUTOFMEMORY */
+#define DDERR_UNSUPPORTED           ((HRESULT)0x80004001)	/* = E_NOTIMPL */
+#define DDERR_ALREADYINITIALIZED             MAKE_DDHRESULT(5)
+#define DDERR_CANNOTATTACHSURFACE            MAKE_DDHRESULT(10)
+#define DDERR_CANNOTDETACHSURFACE            MAKE_DDHRESULT(20)
+#define DDERR_CURRENTLYNOTAVAIL              MAKE_DDHRESULT(40)
+#define DDERR_EXCEPTION                      MAKE_DDHRESULT(55)
+#define DDERR_HEIGHTALIGN                    MAKE_DDHRESULT(90)
+#define DDERR_INCOMPATIBLEPRIMARY            MAKE_DDHRESULT(95)
+#define DDERR_INVALIDCAPS                    MAKE_DDHRESULT(100)
+#define DDERR_INVALIDCLIPLIST                MAKE_DDHRESULT(110)
+#define DDERR_INVALIDMODE                    MAKE_DDHRESULT(120)
+#define DDERR_INVALIDOBJECT                  MAKE_DDHRESULT(130)
+#define DDERR_INVALIDPIXELFORMAT             MAKE_DDHRESULT(145)
+#define DDERR_INVALIDRECT                    MAKE_DDHRESULT(150)
+#define DDERR_LOCKEDSURFACES                 MAKE_DDHRESULT(160)
+#define DDERR_NO3D                           MAKE_DDHRESULT(170)
+#define DDERR_NOALPHAHW                      MAKE_DDHRESULT(180)
+#define DDERR_NOCLIPLIST                     MAKE_DDHRESULT(205)
+#define DDERR_NOCOLORCONVHW                  MAKE_DDHRESULT(210)
+#define DDERR_NOCOOPERATIVELEVELSET          MAKE_DDHRESULT(212)
+#define DDERR_NOCOLORKEY                     MAKE_DDHRESULT(215)
+#define DDERR_NOCOLORKEYHW                   MAKE_DDHRESULT(220)
+#define DDERR_NODIRECTDRAWSUPPORT            MAKE_DDHRESULT(222)
+#define DDERR_NOEXCLUSIVEMODE                MAKE_DDHRESULT(225)
+#define DDERR_NOFLIPHW                       MAKE_DDHRESULT(230)
+#define DDERR_NOGDI                          MAKE_DDHRESULT(240)
+#define DDERR_NOMIRRORHW                     MAKE_DDHRESULT(250)
+#define DDERR_NOTFOUND                       MAKE_DDHRESULT(255)
+#define DDERR_NOOVERLAYHW                    MAKE_DDHRESULT(260)
+#define DDERR_NORASTEROPHW                   MAKE_DDHRESULT(280)
+#define DDERR_NOROTATIONHW                   MAKE_DDHRESULT(290)
+#define DDERR_NOSTRETCHHW                    MAKE_DDHRESULT(310)
+#define DDERR_NOT4BITCOLOR                   MAKE_DDHRESULT(316)
+#define DDERR_NOT4BITCOLORINDEX              MAKE_DDHRESULT(317)
+#define DDERR_NOT8BITCOLOR                   MAKE_DDHRESULT(320)
+#define DDERR_NOTEXTUREHW                    MAKE_DDHRESULT(330)
+#define DDERR_NOVSYNCHW                      MAKE_DDHRESULT(335)
+#define DDERR_NOZBUFFERHW                    MAKE_DDHRESULT(340)
+#define DDERR_NOZOVERLAYHW                   MAKE_DDHRESULT(350)
+#define DDERR_OUTOFCAPS                      MAKE_DDHRESULT(360)
+#define DDERR_OUTOFVIDEOMEMORY               MAKE_DDHRESULT(380)
+#define DDERR_OVERLAYCANTCLIP                MAKE_DDHRESULT(382)
+#define DDERR_OVERLAYCOLORKEYONLYONEACTIVE   MAKE_DDHRESULT(384)
+#define DDERR_PALETTEBUSY                    MAKE_DDHRESULT(387)
+#define DDERR_COLORKEYNOTSET                 MAKE_DDHRESULT(400)
+#define DDERR_SURFACEALREADYATTACHED         MAKE_DDHRESULT(410)
+#define DDERR_SURFACEALREADYDEPENDENT        MAKE_DDHRESULT(420)
+#define DDERR_SURFACEBUSY                    MAKE_DDHRESULT(430)
+#define DDERR_CANTLOCKSURFACE                MAKE_DDHRESULT(435)
+#define DDERR_SURFACEISOBSCURED              MAKE_DDHRESULT(440)
+#define DDERR_SURFACELOST                    MAKE_DDHRESULT(450)
+#define DDERR_SURFACENOTATTACHED             MAKE_DDHRESULT(460)
+#define DDERR_TOOBIGHEIGHT                   MAKE_DDHRESULT(470)
+#define DDERR_TOOBIGSIZE                     MAKE_DDHRESULT(480)
+#define DDERR_TOOBIGWIDTH                    MAKE_DDHRESULT(490)
+#define DDERR_UNSUPPORTEDFORMAT              MAKE_DDHRESULT(510)
+#define DDERR_UNSUPPORTEDMASK                MAKE_DDHRESULT(520)
+#define DDERR_VERTICALBLANKINPROGRESS        MAKE_DDHRESULT(537)
+#define DDERR_WASSTILLDRAWING                MAKE_DDHRESULT(540)
+#define DDERR_XALIGN                         MAKE_DDHRESULT(560)
+#define DDERR_INVALIDDIRECTDRAWGUID          MAKE_DDHRESULT(561)
+#define DDERR_DIRECTDRAWALREADYCREATED       MAKE_DDHRESULT(562)
+#define DDERR_NODIRECTDRAWHW                 MAKE_DDHRESULT(563)
+#define DDERR_PRIMARYSURFACEALREADYEXISTS    MAKE_DDHRESULT(564)
+#define DDERR_NOEMULATION                    MAKE_DDHRESULT(565)
+#define DDERR_REGIONTOOSMALL                 MAKE_DDHRESULT(566)
+#define DDERR_CLIPPERISUSINGHWND             MAKE_DDHRESULT(567)
+#define DDERR_NOCLIPPERATTACHED              MAKE_DDHRESULT(568)
+#define DDERR_NOHWND                         MAKE_DDHRESULT(569)
+#define DDERR_HWNDSUBCLASSED                 MAKE_DDHRESULT(570)
+#define DDERR_HWNDALREADYSET                 MAKE_DDHRESULT(571)
+#define DDERR_NOPALETTEATTACHED              MAKE_DDHRESULT(572)
+#define DDERR_NOPALETTEHW                    MAKE_DDHRESULT(573)
+#define DDERR_BLTFASTCANTCLIP                MAKE_DDHRESULT(574)
+#define DDERR_NOBLTHW                        MAKE_DDHRESULT(575)
+#define DDERR_NODDROPSHW                     MAKE_DDHRESULT(576)
+#define DDERR_OVERLAYNOTVISIBLE              MAKE_DDHRESULT(577)
+#define DDERR_NOOVERLAYDEST                  MAKE_DDHRESULT(578)
+#define DDERR_INVALIDPOSITION                MAKE_DDHRESULT(579)
+#define DDERR_NOTAOVERLAYSURFACE             MAKE_DDHRESULT(580)
+#define DDERR_EXCLUSIVEMODEALREADYSET        MAKE_DDHRESULT(581)
+#define DDERR_NOTFLIPPABLE                   MAKE_DDHRESULT(582)
+#define DDERR_CANTDUPLICATE                  MAKE_DDHRESULT(583)
+#define DDERR_NOTLOCKED                      MAKE_DDHRESULT(584)
+#define DDERR_CANTCREATEDC                   MAKE_DDHRESULT(585)
+#define DDERR_NODC                           MAKE_DDHRESULT(586)
+#define DDERR_WRONGMODE                      MAKE_DDHRESULT(587)
+#define DDERR_IMPLICITLYCREATED              MAKE_DDHRESULT(588)
+#define DDERR_NOTPALETTIZED                  MAKE_DDHRESULT(589)
+#define DDERR_UNSUPPORTEDMODE                MAKE_DDHRESULT(590)
+#define DDERR_NOMIPMAPHW                     MAKE_DDHRESULT(591)
+#define DDERR_INVALIDSURFACETYPE             MAKE_DDHRESULT(592)
 
 /* Surface description validity flags. */
 #define DDSD_CAPS                   0x00000001
@@ -71,6 +165,10 @@
 
 /* Driver capability flags. */
 #define DDCAPS_BLT                  0x00000040
+#define DDCAPS_BLTQUEUE             0x00000080
+#define DDCAPS_PALETTEVSYNC         0x00010000
+#define DDCAPS_NOHARDWARE           0x02000000
+#define DDCAPS_BANKSWITCHED         0x08000000
 #define DDCAPS_BLTCOLORFILL         0x04000000
 #define DDCAPS_COLORKEY             0x00400000
 
@@ -85,6 +183,10 @@
 #define DDSCL_NORMAL                0x00000008
 #define DDSCL_EXCLUSIVE             0x00000010
 #define DDSCL_ALLOWMODEX            0x00000040
+
+#define DDWAITVB_BLOCKBEGIN         0x00000001
+#define DDWAITVB_BLOCKBEGINEVENT    0x00000002
+#define DDWAITVB_BLOCKEND           0x00000004
 
 struct IDirectDraw;
 struct IDirectDraw2;
@@ -182,7 +284,10 @@ struct IDirectDrawSurface {
 	virtual HRESULT Unlock(LPVOID surfacedata) = 0;
 	virtual HRESULT Restore() = 0;
 	virtual HRESULT SetPalette(LPDIRECTDRAWPALETTE palette) = 0;
+	virtual HRESULT GetPalette(LPDIRECTDRAWPALETTE * palette) = 0;	/* CONQUER.CPP reads back the attached palette */
 	virtual HRESULT SetColorKey(DWORD flags, LPDDCOLORKEY colorkey) = 0;
+	/* GBUFFER.CPP attaches the back buffer to the primary for page flipping. */
+	virtual HRESULT AddAttachedSurface(LPDIRECTDRAWSURFACE attach) = 0;
 	virtual ULONG   Release() = 0;
 protected:
 	~IDirectDrawSurface() {}
@@ -196,6 +301,8 @@ struct IDirectDraw {
 	virtual HRESULT RestoreDisplayMode() = 0;
 	virtual HRESULT GetCaps(LPDDCAPS driver, LPDDCAPS emulation) = 0;
 	virtual HRESULT FlipToGDISurface() = 0;
+	/* Frame pacing (DDRAW.CPP's Wait_Vert_Blank). The Metal backend paces on the display link. */
+	virtual HRESULT WaitForVerticalBlank(DWORD flags, HANDLE event) = 0;
 	virtual ULONG   Release() = 0;
 protected:
 	~IDirectDraw() {}

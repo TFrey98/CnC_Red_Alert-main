@@ -179,9 +179,16 @@ T Bound(T original, T minval, T maxval)
 	if (original > maxval) return(maxval);
 	return(original);
 };
-int Bound(signed int, signed int, signed int);
-unsigned Bound(unsigned, unsigned, unsigned);
-long Bound(long, long, long);
+/*
+**	Port: under the pre-standard (ARM) template rules Watcom followed, declaring an
+**	ordinary function with a template's signature meant "generate this from the
+**	template". Standard C++ treats it as a separate function -- one nobody
+**	defined, which overload resolution then prefers for exact matches. Each
+**	such declaration below now delegates to the template, as it did originally.
+*/
+inline int Bound(signed int a0, signed int a1, signed int a2) { return Bound<int>(a0, a1, a2); }
+inline unsigned Bound(unsigned a0, unsigned a1, unsigned a2) { return Bound<unsigned>(a0, a1, a2); }
+inline long Bound(long a0, long a1, long a2) { return Bound<long>(a0, a1, a2); }
 
 template<class T>
 T _rotl(T X, int n)
@@ -202,9 +209,16 @@ T _rotl(T X, int n)
 **	The shape flags are likely to be "or"ed together and other such bitwise
 **	manipulations. These instatiated operator templates allow this.
 */
-inline ShapeFlags_Type operator |(ShapeFlags_Type, ShapeFlags_Type);
-inline ShapeFlags_Type operator &(ShapeFlags_Type, ShapeFlags_Type);
-inline ShapeFlags_Type operator ~(ShapeFlags_Type);
+/*
+**	Port: the enum operators in this file were declared `inline` with no body.
+**	Watcom gave enums C-style integer arithmetic and accepted that; standard C++
+**	needs the body. Each now does exactly the integer operation on the enum's
+**	value and converts back -- postfix ++ advances by one and returns the old
+**	value -- which is what the original code relied on.
+*/
+inline ShapeFlags_Type operator|(ShapeFlags_Type a, ShapeFlags_Type b) { return (ShapeFlags_Type)((int)a | (int)b); }
+inline ShapeFlags_Type operator&(ShapeFlags_Type a, ShapeFlags_Type b) { return (ShapeFlags_Type)((int)a & (int)b); }
+inline ShapeFlags_Type operator~(ShapeFlags_Type value) { return (ShapeFlags_Type)(~(int)value); }
 
 
 void Set_Bit(void * array, int bit, int value);

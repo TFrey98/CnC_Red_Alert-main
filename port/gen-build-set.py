@@ -18,11 +18,13 @@ depends on (it calls something defined only there):
   + LCWUNCMP  C implementation of LCW_Uncompress (LCWUNCMP.ASM), already in the tree
   + CSTRAW    CacheStraw, used by live code
   + RAND      Sim_IRandom, called from MPLAYER.CPP
+  + PRAGMAUX  C bodies for Watcom `#pragma aux` inline-asm functions (port-created)
+  + NETSTUB   inert multiplayer stand-ins for the single-player build (port-created)
 """
 import os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EXTRA = ['PALETTE', 'ADPCM', 'LCWUNCMP', 'CSTRAW', 'RAND']
+EXTRA = ['PALETTE', 'ADPCM', 'LCWUNCMP', 'CSTRAW', 'RAND', 'PRAGMAUX', 'NETSTUB']
 
 objs, stack, cur = set(), [], None
 for raw in open(os.path.join(ROOT, 'CODE', 'MAKEFILE'), encoding='latin-1'):

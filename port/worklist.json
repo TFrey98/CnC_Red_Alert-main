@@ -202,8 +202,8 @@
   },
   {
    "file": "CODE/CONQUER.CPP",
-   "tag": "NATIVE",
-   "note": "game loop is portable; its remaining errors are DirectDraw palette access and the CD volume check"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/CONST.CPP",
@@ -721,6 +721,11 @@
    "note": "multiplayer / online / serial"
   },
   {
+   "file": "CODE/NETSTUB.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
    "file": "CODE/NULLCONN.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
@@ -791,14 +796,19 @@
    "note": "compiles clean for arm64"
   },
   {
+   "file": "CODE/PRAGMAUX.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
    "file": "CODE/PROFILE.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/QUEUE.CPP",
-   "tag": "DROP",
-   "note": "multiplayer / online / serial"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/RADAR.CPP",
@@ -907,8 +917,8 @@
   },
   {
    "file": "CODE/SESSION.CPP",
-   "tag": "DROP",
-   "note": "multiplayer / online / serial"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/SHA.CPP",
@@ -1258,8 +1268,8 @@
   {
    "file": "CODE/COORDA.ASM",
    "lines": 134,
-   "tag": "TRANSLATE",
-   "note": "no C yet for: Cardinal_To_Fixed, Fixed_To_Cardinal"
+   "tag": "SUPERSEDED",
+   "note": "C already defines: Cardinal_To_Fixed, Fixed_To_Cardinal"
   },
   {
    "file": "CODE/CPUID.ASM",
@@ -1703,13 +1713,13 @@
  "lib": [
   {
    "file": "WIN32LIB/AUDIO/SOUNDINT.CPP",
-   "tag": "TWEAK",
-   "note": "cast from pointer to smaller type 'unsigned int' loses information"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "WIN32LIB/AUDIO/SOUNDIO.CPP",
-   "tag": "TWEAK",
-   "note": "incompatible function pointer types assigning to 'int (*)(short, short *, void **, LONG *)' (aka 'int (*)(shor"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "WIN32LIB/AUDIO/SOUNDLCK.CPP",
@@ -1743,8 +1753,8 @@
   },
   {
    "file": "WIN32LIB/DRAWBUFF/GBUFFER.CPP",
-   "tag": "TWEAK",
-   "note": "no member named 'AddAttachedSurface' in 'IDirectDrawSurface'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "WIN32LIB/DRAWBUFF/ICONCACH.CPP",
@@ -1828,8 +1838,8 @@
   },
   {
    "file": "WIN32LIB/MISC/DDRAW.CPP",
-   "tag": "TWEAK",
-   "note": "use of undeclared identifier 'MB_ICONEXCLAMATION'"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "WIN32LIB/MISC/DELAY.CPP",
@@ -1958,8 +1968,8 @@
   },
   {
    "file": "WINVQ/VQA32/AUDIO.CPP",
-   "tag": "TWEAK",
-   "note": "cast from pointer to smaller type 'unsigned int' loses information"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "WINVQ/VQA32/CAPTION.CPP",

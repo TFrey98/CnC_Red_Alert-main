@@ -673,3 +673,25 @@ void BooleanVectorClass::Fixup(int index) const
 }
 
 
+/*
+**	Port: explicit instantiation. These template members are defined in this .CPP,
+**	so standard C++ instantiates them only for uses inside this file; every use
+**	elsewhere was an undefined symbol at link time. Watcom instantiated them
+**	automatically (FUNCTION.H's dummy externs -- y002, xxx1, whatever -- were
+**	Westwood's way of forcing it). This list is exactly the set of
+**	specialisations the linker reported missing; regenerate it from a link if
+**	the set of types changes.
+*/
+template class VectorClass<BaseNodeClass>;
+template class VectorClass<CellClass>;
+template class VectorClass<EgoClass*>;
+template class VectorClass<FileEntryClass*>;
+template class VectorClass<ObjectClass*>;
+template class VectorClass<RemapControlType*>;
+template class VectorClass<TriggerClass*>;
+template class VectorClass<char const *>;
+template class VectorClass<void*>;
+template class VectorClass<MultiMission*>;
+template class VectorClass<NodeNameTag*>;
+template class VectorClass<PhoneEntryClass*>;
+template class VectorClass<char*>;

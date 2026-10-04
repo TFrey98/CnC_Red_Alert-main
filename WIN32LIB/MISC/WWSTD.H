@@ -121,8 +121,15 @@ template<class T> T ABS(T a)
 {
 	return (a < 0) ? -a : a;
 }
-int ABS(int);
-long ABS(long);
+/*
+**	Port: under the pre-standard (ARM) template rules Watcom followed, declaring an
+**	ordinary function with a template's signature meant "generate this from the
+**	template". Standard C++ treats it as a separate function -- one nobody
+**	defined, which overload resolution then prefers for exact matches. Each
+**	such declaration below now delegates to the template, as it did originally.
+*/
+inline int ABS(int a0) { return ABS<int>(a0); }
+inline long ABS(long a0) { return ABS<long>(a0); }
 
 // Returns the minimum of the two numbers.
 #ifdef MIN
@@ -132,9 +139,9 @@ template<class T> T MIN(T a, T b)
 {
 	return (b < a) ? b : a;
 };
-short MIN(short, short);
-int MIN(int, int);
-long MIN(long, long);
+inline short MIN(short a0, short a1) { return MIN<short>(a0, a1); }
+inline int MIN(int a0, int a1) { return MIN<int>(a0, a1); }
+inline long MIN(long a0, long a1) { return MIN<long>(a0, a1); }
 
 // Returns the maximum of the two numbers.
 #ifdef MAX
@@ -144,9 +151,9 @@ template<class T> T MAX(T a, T b)
 {
 	return (b > a) ? b : a;
 };
-short MAX(short, short);
-int MAX(int, int);
-long MAX(long, long);
+inline short MAX(short a0, short a1) { return MAX<short>(a0, a1); }
+inline int MAX(int a0, int a1) { return MAX<int>(a0, a1); }
+inline long MAX(long a0, long a1) { return MAX<long>(a0, a1); }
 #pragma option -Jgd
 
 // Returns the low word of a long

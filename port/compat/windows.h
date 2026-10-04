@@ -207,6 +207,9 @@ typedef int (*PROC)(void);
 #define S_OK            ((HRESULT)0)
 #define S_FALSE         ((HRESULT)1)
 #define E_FAIL          ((HRESULT)0x80004005)
+#define E_NOTIMPL       ((HRESULT)0x80004001)
+#define E_INVALIDARG    ((HRESULT)0x80070057)
+#define E_OUTOFMEMORY   ((HRESULT)0x8007000E)
 #define E_INVALIDARG    ((HRESULT)0x80070057)
 #define E_OUTOFMEMORY   ((HRESULT)0x8007000E)
 #define E_NOINTERFACE   ((HRESULT)0x80004002)
@@ -357,6 +360,18 @@ HGLOBAL GlobalFree(HGLOBAL mem);
 #define GPTR              (GMEM_FIXED | GMEM_ZEROINIT)
 #define MB_OK             0x00000000
 #define MB_ICONERROR      0x00000010
+#define MB_ICONSTOP       0x00000010
+#define MB_ICONHAND       0x00000010
+#define MB_ICONQUESTION   0x00000020
+#define MB_ICONEXCLAMATION 0x00000030
+#define MB_ICONWARNING    0x00000030
+#define MB_ICONINFORMATION 0x00000040
+#define MB_OKCANCEL       0x00000001
+#define MB_YESNO          0x00000004
+#define IDOK              1
+#define IDCANCEL          2
+#define IDYES             6
+#define IDNO              7
 #define FILE_ATTRIBUTE_NORMAL 0x00000080
 
 /*
@@ -544,6 +559,21 @@ HANDLE GetCurrentThread(void);
 BOOL   DuplicateHandle(HANDLE srcprocess, HANDLE src, HANDLE dstprocess, LPHANDLE dst, DWORD access, BOOL inherit, DWORD options);
 BOOL   SetPriorityClass(HANDLE process, DWORD priorityclass);
 DWORD  GetPriorityClass(HANDLE process);
+/*
+**	Thread priority. SOUNDIO.CPP raises its sound thread to TIME_CRITICAL; on
+**	macOS that thread is the multimedia-timer queue, which already runs at
+**	QOS_CLASS_USER_INTERACTIVE (see wwcompat.cpp), so this records nothing.
+*/
+#define THREAD_ALL_ACCESS             0x001F03FF
+#define THREAD_PRIORITY_IDLE          (-15)
+#define THREAD_PRIORITY_LOWEST        (-2)
+#define THREAD_PRIORITY_BELOW_NORMAL  (-1)
+#define THREAD_PRIORITY_NORMAL        0
+#define THREAD_PRIORITY_ABOVE_NORMAL  1
+#define THREAD_PRIORITY_HIGHEST       2
+#define THREAD_PRIORITY_TIME_CRITICAL 15
+BOOL   SetThreadPriority(HANDLE thread, int priority);
+int    GetThreadPriority(HANDLE thread);
 
 /*
 **	Win32 file API, implemented for real on POSIX in wwcompat.cpp. RawFileClass
@@ -589,6 +619,50 @@ BOOL   WriteFile(HANDLE file, LPCVOID buffer, DWORD towrite, LPDWORD written, LP
 DWORD  SetFilePointer(HANDLE file, LONG distance, LONG * distancehigh, DWORD method);
 DWORD  GetFileSize(HANDLE file, LPDWORD sizehigh);
 BOOL   DeleteFileA(LPCSTR name);
+/*
+**	CD volume label (CONQUER.CPP's Get_CD_Index). A Mac has no drive letters, so
+**	this reports ERROR_PATH_NOT_FOUND -- which Get_CD_Index treats as "no CD
+**	here" and returns at once (only ERROR_NOT_READY makes it wait out its
+**	two-minute timeout). Finding the game data without a CD is the platform
+**	layer's job (CDFILE.CPP / Force_CD_Available), not this function's.
+*/
+BOOL   GetVolumeInformationA(LPCSTR root, char * volname, DWORD volnamesize, LPDWORD serial, LPDWORD maxcomponent, LPDWORD flags, char * fsname, DWORD fsnamesize);
+#define GetVolumeInformation GetVolumeInformationA
+
+/*
+**	Directory search, Win32 style (SESSION.CPP lists *.PKT mission packs and
+**	*.MPR user maps). Implemented in wwcompat.cpp on the same case-insensitive
+**	DOS-style matcher as _dos_findfirst. cAlternateFileName is left empty: the
+**	engine falls back to cFileName when it is, and macOS has no 8.3 names.
+*/
+#ifndef MAX_PATH
+#define MAX_PATH 260
+#endif
+#define FILE_ATTRIBUTE_READONLY   0x00000001
+#define FILE_ATTRIBUTE_HIDDEN     0x00000002
+#define FILE_ATTRIBUTE_SYSTEM     0x00000004
+#define FILE_ATTRIBUTE_DIRECTORY  0x00000010
+#define FILE_ATTRIBUTE_ARCHIVE    0x00000020
+#define FILE_ATTRIBUTE_TEMPORARY  0x00000100
+typedef struct _WIN32_FIND_DATAA {
+	DWORD    dwFileAttributes;
+	FILETIME ftCreationTime;
+	FILETIME ftLastAccessTime;
+	FILETIME ftLastWriteTime;
+	DWORD    nFileSizeHigh;
+	DWORD    nFileSizeLow;
+	DWORD    dwReserved0;
+	DWORD    dwReserved1;
+	char     cFileName[MAX_PATH];
+	char     cAlternateFileName[14];
+} WIN32_FIND_DATAA, *LPWIN32_FIND_DATAA;
+typedef WIN32_FIND_DATAA WIN32_FIND_DATA;
+typedef LPWIN32_FIND_DATAA LPWIN32_FIND_DATA;
+HANDLE FindFirstFileA(LPCSTR pattern, LPWIN32_FIND_DATAA data);
+BOOL   FindNextFileA(HANDLE search, LPWIN32_FIND_DATAA data);
+BOOL   FindClose(HANDLE search);
+#define FindFirstFile FindFirstFileA
+#define FindNextFile  FindNextFileA
 BOOL   GetFileInformationByHandle(HANDLE file, LPBY_HANDLE_FILE_INFORMATION info);
 BOOL   SetFileTime(HANDLE file, const FILETIME * creation, const FILETIME * access, const FILETIME * write);
 BOOL   FileTimeToDosDateTime(const FILETIME * filetime, WORD * dosdate, WORD * dostime);

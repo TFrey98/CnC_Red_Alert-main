@@ -190,6 +190,63 @@ warned at compile time.
   requested disc as inserted and reopens `MAIN<n>.MIX` (`CONQUER.CPP`,
   `Port_Discs_Installed`); a classic single-`MAIN.MIX` install behaves as before.
 
+### Fourth pass: campaign, score screen, audio, focus
+
+Found by playing through the Allied campaign, with scripted input
+(`RA_INPUT_SCRIPT`, see `port/compat/win32_window.cpp`) for the repeatable
+parts.
+
+- **Struct layouts that differ between files.** Westwood headers and sources
+  set a bare `#pragma pack(4)` (or `pack(1)`) and never restore it, so a struct's
+  layout depends on which file includes it. On 32-bit Watcom, `pack(4)` *was*
+  the natural layout, so it was harmless. With 8-byte pointers it isn't.
+  `SOUNDIO.CPP` and `SOUNDINT.CPP` saw `LockedData`, the SOS codec state,
+  `CRITICAL_SECTION` and the timer classes laid out differently from every other
+  file; `LockedData.SoundVolume` read as 0 and every sound effect was silent.
+  Both files' directives are gone. `port/layout-check.sh` now compiles every
+  linked file, dumps every record layout and reports types whose layout
+  differs. Three remain, all two different types sharing a name:
+  `WWKeyboardClass` and `MonoClass` (game vs library; the library versions
+  aren't linked) and `_tagCOMPRESS_INFO` (game audio vs movie player).
+- **A template shared by two different structs.** `port/compat/ww_sos_adpcm.h`
+  was instantiated as `decompress<_tagCOMPRESS_INFO>` in both WIN32LIB and
+  WINVQ. Same mangled name, different layouts, one copy kept by the linker.
+  The header now has internal linkage.
+- **Audio chunk marker read as `long`.** `Sample_Copy` read the 4-byte `0xDEAF`
+  marker into an 8-byte `long`, consuming 4 bytes of audio with it. Most chunks
+  were rejected, the music stream ended immediately and was restarted ~20 times
+  a second, and effects produced no samples. Now `int32_t`.
+- **`operator new` returning NULL.** Every pooled object (units, bullets,
+  animations, ...) has a class `operator new` that returns NULL when its pool is
+  full, and the code tests for it. Watcom checked before running the
+  constructor; standard C++ doesn't, so a big battle crashed in `AnimClass`'s
+  constructor at address 0. `-fcheck-new` in `port/flags.sh` restores the test.
+  Verified by exhausting the 100-slot animation pool in the running game: 2,900
+  NULLs back, no crash.
+- **WSA frame limit** (`WIN32LIB/WSA/WSA.CPP`): the file's
+  `largest_frame_size` has the 32-bit header size (43) folded in; subtracting
+  this build's (64) cut the end off the largest frames. Crashed the
+  mission-select map.
+- **PCX palettes** (`CODE/WINSTUB.CPP`, `WIN32LIB/IFF/LOADPCX.CPP`): `RGB` is
+  plain `char`, signed under `/j`, so `>>= 2` turned colours of 128+ into
+  224-255. The score screen's +30% brightening then made them white. Shifted
+  unsigned now.
+- **Edge scrolling** (`CODE/CONQUER.CPP`, `Sync_Delay`): the frame-wait loop
+  scrolled once per pass and ran thousands of passes per frame. Now one pass
+  per 60 Hz tick (a known problem on fast PCs too).
+- **`GameInFocus` is a 1-byte `bool`** in the game but was declared `BOOL`
+  (4 bytes) in three library files, which read 3 bytes of neighbouring data
+  with it. Watcom's `bool` was an `int`, so they matched there. A scan of every
+  library `extern` against the game's definitions found one other mismatch,
+  `TickCount` (library `TimerClass` vs game `TTimerClass`). It's latent: the
+  library functions that use it are dead-stripped.
+- **Focus and the pointer** (`port/backend/ra_metal.mm`, `ra_input.mm`): Cocoa
+  sends mouse moves only to the active app's key window; Windows sent them to
+  whichever window was under the pointer. After clicking away and back, the
+  game's cursor stayed where the pointer had left, usually on an edge. The view
+  now has an always-active tracking area, and activation re-reports the real
+  pointer position.
+
 ### Related: bool, narrowing, and for-scope
 
 - **Watcom 10.6 had no native `bool`; the engine's polyfill was

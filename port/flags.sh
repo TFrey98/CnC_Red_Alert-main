@@ -51,6 +51,15 @@ RA_STD=(
   # The backend (no WIN32, its own flags) never sees an engine enum: the
   # boundary, ra_platform.h, passes ints only.
   -fshort-enums
+
+  # Null from operator new. Every pooled game object (units, infantry, bullets,
+  # animations, ...) has a class operator new that returns NULL when its fixed
+  # pool is full, and the code checks for it (`if (anim) ...`). Watcom, pre-
+  # standard, tested that NULL before running the constructor. Standard C++
+  # assumes operator new cannot return NULL, so clang ran the constructor on
+  # address 0: the AnimClass crash once a big battle filled the animation pool.
+  # -fcheck-new restores the test.
+  -fcheck-new
 )
 
 RA_DEFINES=(

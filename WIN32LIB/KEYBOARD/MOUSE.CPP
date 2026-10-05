@@ -38,7 +38,7 @@
 
 static WWMouseClass *_Mouse=NULL;
 void CALLBACK Process_Mouse( UINT event_id, UINT res1 , DWORD user, DWORD  res2, DWORD  res3 );
-extern BOOL GameInFocus;
+extern bool GameInFocus;		// port: was BOOL (4 bytes); the game defines a 1-byte bool (GLOBALS.CPP) -- Watcom's bool was an int, so they agreed then
 
 
 /***********************************************************************************************

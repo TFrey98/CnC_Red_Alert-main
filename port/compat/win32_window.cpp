@@ -21,18 +21,24 @@
 **	    backend's key mapping (ra_input.mm).
 **	  * The Mac pointer is hidden over the window while the engine has it
 **	    hidden (ShowCursor), since the engine draws its own cursor.
+**	  * Scripted input, for testing UI flows without a person at the window:
+**	    RA_INPUT_SCRIPT=<file> (see Script below).
 */
 
 #include "windows.h"
 #include "ra_platform.h"
 #include "win32_internal.h"
 
+#include <algorithm>
 #include <atomic>
 #include <deque>
 #include <map>
 #include <mutex>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string>
 #include <string.h>
+#include <vector>
 
 /* ---------------------------------------------------------------- windows */
 
@@ -293,9 +299,15 @@ HCURSOR SetCursor(HCURSOR cursor) {(void)cursor; return NULL;}
 */
 BOOL ClipCursor(const RECT * rect) {(void)rect; return TRUE;}
 
+namespace { bool Scripted(void); }	// scripted input, below
+
 BOOL GetCursorPos(LPPOINT point)
 {
 	if (point == NULL) return FALSE;
+	if (Scripted()) {				// the script owns the pointer
+		*point = LastMouse;
+		return TRUE;
+	}
 	int x, y;
 	RA_Platform_Mouse_Position(&x, &y);
 	point->x = x;
@@ -383,10 +395,88 @@ void translate(RA_Event const & e)
 	}
 }
 
+/*
+**	Scripted input. RA_INPUT_SCRIPT names a text file of timed events, fed in
+**	through translate() exactly as backend events are; while it is set, real
+**	input and focus events are ignored and the pointer position is the script's.
+**	One event per line, time in seconds from the first message pump:
+**
+**	    12.5  move  320 200          pointer to (x, y), framebuffer pixels
+**	    14    click 600 180 [right]  move, press, release 50 ms later
+**	    15    key   0x1B             press and release a virtual key
+**	    20    deactivate             the app loses focus (clicked elsewhere)
+**	    25    activate               the app gets focus back
+**	    90    quit                   close the window
+**
+**	A script starts with an implicit activate at time 0: on Windows the window
+**	was always activated when it opened, and the game waits for that
+**	(INIT.CPP), but a test window opened behind other apps never gets it.
+**
+**	Blank lines and lines starting with # are ignored.
+*/
+struct ScriptEvent {double at; RA_Event e;};
+std::vector<ScriptEvent> Script;
+size_t ScriptNext = 0;
+DWORD ScriptStart = 0;
+int ScriptState = -1;				// -1 unread, 0 none, 1 active
+
+void load_script(void)
+{
+	ScriptState = 0;
+	char const * path = getenv("RA_INPUT_SCRIPT");
+	if (path == NULL || path[0] == 0) return;
+	FILE * f = fopen(path, "r");
+	if (f == NULL) {fprintf(stderr, "RA_INPUT_SCRIPT: cannot open %s\n", path); return;}
+	char line[256];
+	while (fgets(line, sizeof(line), f)) {
+		double at; char cmd[16] = {0}; char a[16] = {0}, b[16] = {0}, c[16] = {0};
+		if (line[0] == '#' || sscanf(line, "%lf %15s %15s %15s %15s", &at, cmd, a, b, c) < 2) continue;
+		RA_Event e; memset(&e, 0, sizeof(e));
+		e.x = (int)strtol(a, NULL, 0); e.y = (int)strtol(b, NULL, 0);
+		if (strcmp(cmd, "move") == 0 || strcmp(cmd, "click") == 0) {
+			e.type = RA_EV_MOUSE_MOVE; Script.push_back({at, e});
+			if (cmd[0] == 'c') {
+				e.button = strcmp(c, "right") == 0 ? 1 : 0;
+				e.type = RA_EV_BUTTON_DOWN; Script.push_back({at, e});
+				e.type = RA_EV_BUTTON_UP; Script.push_back({at + 0.05, e});
+			}
+		} else if (strcmp(cmd, "key") == 0) {
+			e.vk = (int)strtol(a, NULL, 0); e.x = LastMouse.x; e.y = LastMouse.y;
+			e.type = RA_EV_KEY_DOWN; Script.push_back({at, e});
+			e.type = RA_EV_KEY_UP; Script.push_back({at + 0.05, e});
+		} else if (strcmp(cmd, "quit") == 0) {
+			e.type = RA_EV_QUIT; Script.push_back({at, e});
+		} else if (strcmp(cmd, "activate") == 0 || strcmp(cmd, "deactivate") == 0) {
+			e.type = cmd[0] == 'a' ? RA_EV_ACTIVATE : RA_EV_DEACTIVATE; Script.push_back({at, e});
+		}
+	}
+	fclose(f);
+	{RA_Event e; memset(&e, 0, sizeof(e)); e.type = RA_EV_ACTIVATE; Script.insert(Script.begin(), ScriptEvent{0, e});}
+	std::stable_sort(Script.begin(), Script.end(), [](ScriptEvent const & l, ScriptEvent const & r) {return l.at < r.at;});
+	ScriptStart = GetTickCount();
+	ScriptState = 1;
+	fprintf(stderr, "RA_INPUT_SCRIPT: %zu events from %s\n", Script.size(), path);
+}
+
+bool Scripted(void)
+{
+	if (ScriptState < 0) load_script();
+	return ScriptState == 1;
+}
+
 void pump(void)
 {
 	RA_Event e;
-	while (RA_Platform_Poll_Event(&e)) translate(e);
+	bool const scripted = Scripted();
+	while (RA_Platform_Poll_Event(&e)) {
+		if (!(scripted && e.type != RA_EV_QUIT)) translate(e);	// a script owns input and focus: the test is unaffected by using the Mac meanwhile
+	}
+	if (scripted) {
+		double now = (GetTickCount() - ScriptStart) / 1000.0;
+		while (ScriptNext < Script.size() && Script[ScriptNext].at <= now) {
+			translate(Script[ScriptNext++].e);
+		}
+	}
 	WWPort_Display_Pump();
 }
 

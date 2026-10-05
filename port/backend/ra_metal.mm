@@ -78,9 +78,15 @@ static bool CursorVisible = true;
 
 - (void)push:(int)type vk:(int)vk repeat:(int)repeat button:(int)button event:(NSEvent *)e
 {
+	[self push:type vk:vk repeat:repeat button:button at:(e != nil ? [e locationInWindow] : NSMakePoint(NAN, NAN))];
+}
+
+/* `w` is in window coordinates; NAN means no position (key events). */
+- (void)push:(int)type vk:(int)vk repeat:(int)repeat button:(int)button at:(NSPoint)w
+{
 	RA_Event r = {type, vk, repeat, button, 0, 0};
-	if (e != nil && self.display != NULL) {
-		NSPoint p = [self convertPoint:[e locationInWindow] fromView:nil];
+	if (!isnan(w.x) && self.display != NULL) {
+		NSPoint p = [self convertPoint:w fromView:nil];
 		NSRect b = self.bounds;
 		int x = (int)(p.x * self.display->width / b.size.width);
 		int y = (int)((b.size.height - p.y) * self.display->height / b.size.height);
@@ -117,6 +123,33 @@ static bool CursorVisible = true;
 }
 
 - (void)mouseMoved:(NSEvent *)e        { [self push:RA_EV_MOUSE_MOVE vk:0 repeat:0 button:0 event:e]; }
+
+/*
+**	Mouse moves while the app is in the background. Windows sent WM_MOUSEMOVE
+**	to the window under the pointer whether or not it was active; Cocoa only
+**	sends mouseMoved: to the key window of the active app. Without this, coming
+**	back to the window left the game's cursor where the pointer had exited --
+**	usually on an edge, where it also scrolls the map. (NSTrackingActiveAlways;
+**	when the app is active the window delivers the moves as well, and a repeated
+**	position is harmless.)
+*/
+- (void)updateTrackingAreas
+{
+	[super updateTrackingAreas];
+	for (NSTrackingArea * a in [self.trackingAreas copy]) [self removeTrackingArea:a];
+	[self addTrackingArea:[[NSTrackingArea alloc] initWithRect:NSZeroRect
+		options:(NSTrackingMouseMoved | NSTrackingActiveAlways | NSTrackingInVisibleRect)
+		owner:self userInfo:nil]];
+}
+
+/* Report where the pointer really is, if it is over this view (see RA_Metal_Sync_Pointer). */
+- (void)syncPointer
+{
+	if (self.window == nil) return;
+	NSPoint w = [self.window convertPointFromScreen:[NSEvent mouseLocation]];
+	NSPoint v = [self convertPoint:w fromView:nil];
+	if (NSPointInRect(v, self.bounds)) [self push:RA_EV_MOUSE_MOVE vk:0 repeat:0 button:0 at:w];
+}
 - (void)mouseDragged:(NSEvent *)e      { [self push:RA_EV_MOUSE_MOVE vk:0 repeat:0 button:0 event:e]; }
 - (void)rightMouseDragged:(NSEvent *)e { [self push:RA_EV_MOUSE_MOVE vk:0 repeat:0 button:0 event:e]; }
 - (void)otherMouseDragged:(NSEvent *)e { [self push:RA_EV_MOUSE_MOVE vk:0 repeat:0 button:0 event:e]; }
@@ -159,6 +192,17 @@ static bool CursorVisible = true;
 	return NO;
 }
 @end
+
+/*
+**	Called when the app becomes active: the game's idea of the pointer is
+**	whatever was last reported, which may be from before focus was lost.
+*/
+void RA_Metal_Sync_Pointer(void)
+{
+	for (NSWindow * w in [NSApp windows]) {
+		if ([w.contentView isKindOfClass:[RAView class]]) [(RAView *)w.contentView syncPointer];
+	}
+}
 
 void RA_Platform_Set_Cursor_Visible(int visible)
 {

@@ -54,7 +54,12 @@
 
 /*= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
 
-#pragma pack(4)
+// port: was #pragma pack(4). On Watcom's 32-bit build that was the natural
+// layout, so a no-op; with 8-byte pointers it repacked every struct this file
+// includes -- LockedData, SampleTrackerType, the SOS codec state, CRITICAL_SECTION,
+// the timer classes -- differently from every other file (port/layout-check.sh).
+// SOUNDLCK.CPP set LockedData.SoundVolume where this file never read it, and
+// every sound effect played at volume 0. (Same directive as SOUNDIO.CPP.)
 #define WIN32
 #ifndef _WIN32 // Denzil 6/2/98 Watcom 11.0 complains without this check
 #define _WIN32

@@ -523,7 +523,7 @@ GraphicViewPortClass *Set_Logic_Page(GraphicViewPortClass &ptr)
  *   10/09/1995     : Code stolen from Steve Tall                          *
  *=========================================================================*/
 extern	void Colour_Debug (int call_number);
-extern BOOL GameInFocus;
+extern bool GameInFocus;		// port: was BOOL (4 bytes); the game defines a 1-byte bool (GLOBALS.CPP) -- Watcom's bool was an int, so they agreed then
 
 extern void Block_Mouse(GraphicBufferClass *buffer);
 extern void Unblock_Mouse(GraphicBufferClass *buffer);

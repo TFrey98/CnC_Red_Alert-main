@@ -16,6 +16,14 @@
 
 #include <stdint.h>
 
+/*
+**	Internal linkage, deliberately: WIN32LIB and WINVQ each have their own
+**	_tagCOMPRESS_INFO, same name, different layout. With external linkage
+**	decompress<_tagCOMPRESS_INFO> mangled identically in both libraries and the
+**	linker kept one copy for both, so one of game audio or movie audio decoded
+**	with the other's field offsets. Found by port/layout-check.sh.
+*/
+namespace {
 namespace WWPortSOS {
 
 static const int16_t IndexTab[16] = {-1, -1, -1, -1, 2, 4, 6, 8, -1, -1, -1, -1, 2, 4, 6, 8};
@@ -136,6 +144,7 @@ void init(Info * info)
 	info->dwSampleIndex2 = 0;
 }
 
+}
 }
 
 #endif

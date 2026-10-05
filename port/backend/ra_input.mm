@@ -62,6 +62,7 @@ void RA_Platform_Mouse_Position(int * x, int * y)
 {
 	RA_Event e = {RA_EV_ACTIVATE, 0, 0, 0, 0, 0};
 	RA_Input_Push(e);
+	RA_Metal_Sync_Pointer();
 }
 - (void)applicationDidResignActive:(NSNotification *)n
 {

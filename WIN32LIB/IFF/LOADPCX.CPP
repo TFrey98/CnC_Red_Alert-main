@@ -149,9 +149,10 @@ GraphicBufferClass* Read_PCX_File(char* name, char* Palette, void *Buff, long Si
 
 	  pal = ( RGB * ) Palette ;
 	  for ( i = 0 ; i < 256 ; i ++ ) {
-		 pal -> red >>= 2 ;
-		 pal -> green >>= 2 ;
-		 pal -> blue >>= 2 ;
+		 // port: unsigned shift -- see Read_PCX_File in CODE/WINSTUB.CPP; RGB is signed char under /j
+		 pal -> red = (char)((unsigned char)pal->red >> 2) ;
+		 pal -> green = (char)((unsigned char)pal->green >> 2) ;
+		 pal -> blue = (char)((unsigned char)pal->blue >> 2) ;
 		 pal ++ ;
 	  }
   }

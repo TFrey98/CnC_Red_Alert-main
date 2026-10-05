@@ -454,7 +454,7 @@ bool FootClass::Basic_Path(void)
 			*/
 			if (found1) {
 				Fixup_Path(&path1);
-				memcpy(&Path[0], &workpath1[0], min(path->Length, (int)sizeof(Path)));
+				memcpy(&Path[0], &workpath1[0], min(path->Length, (int)ARRAY_SIZE(Path)) * sizeof(Path[0]));	// port: was a byte count -- right only while Watcom made FacingType one byte
 			}
 
 			Mark(MARK_DOWN);

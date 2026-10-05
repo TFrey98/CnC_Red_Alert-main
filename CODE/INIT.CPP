@@ -3029,7 +3029,7 @@ void Extract(char* filename, char* outfile);
  
 static void Init_Secondary_Mixfiles(void)
 {
-	MainMix = new MFCD("MAIN.MIX", &FastKey);
+	MainMix = new MFCD(Main_Mix_Name(), &FastKey);		// port: see CONQUER.CPP, Port_Discs_Installed
 	assert(MainMix != NULL);
 
 	//Denzil extract mixfile

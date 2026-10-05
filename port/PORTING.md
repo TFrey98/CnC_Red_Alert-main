@@ -34,15 +34,23 @@ every file that needs them is in the multiplayer path.
 
 ## Current state
 
-**Compiling is done; linking is the measure now.** Every in-scope translation
-unit compiles for arm64 -- 225 of 249 game units (4 platform-layer files are
-NATIVE, 20 multiplayer DROP) and 67 of 77 library units (9 DROP, 1 NATIVE).
+**The game links.** `port/link-census.sh` produces a 2.6 MB arm64 executable
+(`$TMPDIR/ra-link/redalert`) with 0 undefined and 0 duplicate symbols: 234 game
+translation units, 97 library units, the assembly translations, and the Mac
+platform layer. Run with no data it starts, opens its message loop, and stops
+where Windows did without an installed copy: "run SETUP first" (no
+REDALERT.INI). Going further needs the game's data files.
 
-`port/link-census.sh` compiles all of it to objects, links once, and classifies
-every unresolved symbol by cause into `port/LINK-CENSUS.md`. **106 undefined
-symbols remain, 0 duplicates** (from 461 at the first link; 197 before the
-multiplayer stubs below). When that list is
-empty, the game links.
+What is real and what is temporary:
+
+| Piece | State |
+|---|---|
+| Window, message loop, keyboard, mouse, focus, quit | **real** -- Westwood's WINSTUB/KEY/STARTUP over `port/compat/win32_window.cpp` and `port/backend/ra_input.mm` |
+| DirectDraw (display) | **real, untested on data** -- `port/compat/win32_ddraw.cpp`, presenting through Metal |
+| DirectSound | **real, untested on data** -- `port/compat/win32_dsound.cpp` mixes the game's buffers (resampling, volume, looping) into CoreAudio (`port/backend/ra_audio.mm`); `port/tests/dsound_mixer.cpp` replays the game's own streaming pattern sample-exact |
+| Data location | `$RA_DATA_DIR`, else the executable's folder; `-CD.` is passed so all files are local (no CD prompts) |
+| Registry | answered as the installer would: Counterstrike/Aftermath installed iff `EXPAND.MIX`/`EXPAND2.MIX` exist |
+| MessageBox | **real** -- an NSAlert (`port/backend/ra_dialog.mm`), also echoed to stderr |
 
 Tools, in the order to run them:
 
@@ -51,7 +59,8 @@ Tools, in the order to run them:
 | `port/link-census.sh` | **the measure now:** every unresolved symbol, by cause (`port/LINK-CENSUS.md`) |
 | `port/probe.sh` | clean / total for the build set, and the biggest blockers |
 | `port/worklist.py` | regenerates `WORKLIST.md`: every file tagged, assembly classified by liveness |
-| `port/tests/run.sh` | **the data-path tests** -- CRC, SHA-1, RSA against independent references |
+| `port/tests/run.sh` | **the data-path tests** -- CRC, SHA-1, RSA against independent references; every assembly translation against vectors from the original |
+| `port/asmref/gen_vectors.py` | re-runs Westwood's original assembly under an x86 emulator to regenerate those vectors (`port/asmref/setup.sh` once) |
 | `port/build-backend.sh` | the Metal backend builds, and the engine/Cocoa boundary holds |
 
 **The compile count is not the measure that matters most.** Read the next
@@ -149,6 +158,37 @@ Known and deliberately left as-is:
   value.
 - Two debug `printf`s in `EVENT.CPP` pass `long` to `%d`; harmless on this ABI and
   only printed with `Debug_Print_Events`.
+
+### Third pass: found by running a mission
+
+These only showed up once a scenario loaded and units moved. Each crashed; none
+warned at compile time.
+
+- **Watcom sized enums to fit (no `/ei`).** `DirType` (0-255) was one unsigned
+  byte, `FacingType` (-1..8) one signed byte, `TemplateType` (..65535) two bytes.
+  The code relies on that three ways: file layouts (`MapPack` stores 16-bit
+  template numbers, `OverlayPack` 1-byte ids), arithmetic (`(DirType)(dir+160)`
+  wraps mod 256 only because it is stored in a byte; as an int, -160 indexed
+  `Dir_To_32`'s table), and copies that count elements as bytes (path command
+  lists in `FINDPATH.CPP` and `FOOT.CPP`). Fixed for the whole tree with
+  `-fshort-enums` (`port/flags.sh`), whose rule matches Watcom's except that an
+  enum whose values are all 0..127 is unsigned rather than signed. A compile-time
+  check confirmed the key enums' sizes and signs; a search found no negative
+  value stored in any of the 132 enums where the rules differ. The `MapPack` /
+  `OverlayPack` readers and the path copies were also made explicit about their
+  widths, so they don't depend on the flag.
+- **Shape frame offsets** (`2KEYFRAM.CPP`, `Build_Frame`) were read into
+  `unsigned long offset[]`: 32-bit entries on disk, 64-bit here. Now `uint32_t`.
+- **Writes to read-only data.** Watcom left string literals and `const` statics
+  writable; macOS doesn't. `MIXFILE.CPP` upper-cased a literal file name,
+  `SIDEBAR.CPP` patched the `?` in `"SIDE?NA.SHP"` in place, and `HELP.CPP`
+  wrote its `const` `OverlapList` through a cast. Each is now writable storage.
+  Expect more of these: the signature is SIGBUS / `KERN_PROTECTION_FAILURE` at
+  an address inside the executable.
+- **The discs, installed.** The Steam release ships the four discs' `MAIN.MIX`
+  as `MAIN1`-`MAIN4.MIX`. When those are present, `Force_CD_Available` treats a
+  requested disc as inserted and reopens `MAIN<n>.MIX` (`CONQUER.CPP`,
+  `Port_Discs_Installed`); a classic single-`MAIN.MIX` install behaves as before.
 
 ### Related: bool, narrowing, and for-scope
 
@@ -263,13 +303,13 @@ Also found on the way:
 
 | Cause | Symbols | Next step |
 |---|---|---|
-| DROP | 2 | `GetCDClass` (CD, platform layer); `TestVBIBit` (VQ player vertical-blank poll) |
-| NOWHERE | 13 | `CDFileClass` statics (CD), `Mpg*` (MPEG player -> AVFoundation), `_ShapeBuffer`, `Generate_Prime`, `RandNumb`, `ShowCommand` |
-| ASM: TRANSLATE | 39 | the assembly translation, now listed symbol by symbol |
 | NATIVE-CPP | 18 | the platform layer: `WINSTUB`, `STARTUP`, `KEY`, `CDFILE` |
 | COMPAT | 17 | message pump, cursor, registry, `DirectDrawCreate`, `DirectSoundCreate` |
+| NOWHERE | 12 | `CDFileClass` statics and `GetCDClass` (CD, platform layer), `Mpg*` (MPEG player -> AVFoundation), `Generate_Prime`, `RandNumb`, `ShowCommand` |
 | ARCHIVED | 8 | monochrome debug monitor, DOS VM paging, DOS MCGA video |
-| ASM: other | 8 | `VQA_sosCODEC*` wrappers over ADPCM.CPP; CPUID; mouse cursor |
+| DROP | 1 | `GetCDClass::GetCDClass()` (CD, platform layer) |
+| ENTRY | 1 | `main` -- the platform layer |
+| ASM | **0** | done -- see "The assembly" |
 
 ### Multiplayer: stubbed, not ported (`CODE/NETSTUB.CPP`)
 
@@ -301,6 +341,90 @@ are not online-only: the single-player menus use them unconditionally
 now `#if 1` with a note, and the file exports its 187 strings. It was also
 removed from the DROP list, where it never belonged. Watch for other
 `WOLAPI_INTEGRATION` blocks that guard something single-player needs.
+
+## The assembly: translated, and verified against the original code
+
+Every assembly routine the linked game calls now has a C translation beside its
+`.ASM` (same name, `.CPP`, a `PORT-CREATED` banner), or -- where it drove x86 or
+VGA hardware -- a native replacement. 31 files / ~17,700 lines translated, 3
+replaced; the other assembly is superseded by C already in the tree, dead, or
+named in headers but not called by anything linked (`WORKLIST.md`, `UNLINKED`).
+
+### How each translation is proven
+
+`port/asmref/` runs **Westwood's original assembly** as the reference:
+
+1. `tasm2gas.py` converts TASM IDEAL-mode source (PROC/ARG/LOCAL/USES frames,
+   STRUC overlays, `??` local labels, MACRO/REPT, IF/ELSE, the makefile's `/d`
+   defines) into GNU Intel syntax. It fails loudly on anything it does not
+   understand rather than guessing.
+2. `clang -target i386` assembles it; `x86ref.py` relocates the ELF object into
+   a flat 32-bit address space and runs it under the Unicorn CPU emulator
+   (installed into `port/asmref/.venv` by `setup.sh`; nothing system-wide).
+3. `gen_vectors.py` drives each routine with generated inputs -- including
+   clipping extremes, overlapping copies, every effect combination -- and
+   records the inputs (large buffers as a seed) and a hash of every byte the
+   routine could touch, guard bands included, in `port/tests/asm_vectors/`.
+4. `port/tests/asm_*.cpp` replay those vectors against the C translations under
+   ASan + UBSan in `run.sh`. The regression suite needs no emulator.
+
+About 20,000 recorded cases. Regenerating all of them from the original takes
+under two minutes and reproduces the committed files byte for byte.
+
+### What running the original found
+
+- **`CODE/ADPCM.CPP` would have overrun every compressed 16-bit sound buffer
+  four times over.** It was in the build as the replacement for `SOSCODEC.ASM`,
+  but it took its byte count as *input* bytes; every caller passes the
+  *uncompressed* size, which is what the assembly took. Its init also left the
+  step index and step alone -- state the 8-bit/stereo decoder reads. The
+  library's own translation (`WIN32LIB/AUDIO/SOSCODEC.CPP`) replaces it.
+- **The live `IControl_Type` in `WIN32LIB/INCLUDE/TILE.H` still used `long`**
+  (64-bit here) -- the earlier struct pass fixed only the copy compiled out with
+  `#if 0`. Now packed and asserted to 40 bytes, like `CODE/COMPAT.H`.
+- `Buffer_Get_Pixel` off-screen returns the coordinate it was testing, not 0.
+- `ModeX_Blit` ORs in the upper half of ECX, which it never sets -- garbage
+  pixels unless the caller left it zero. The native replacement is the
+  intended copy; the emulator, with the VGA planes modelled, proves it equal to
+  the original whenever ECX was clean.
+- `Buffer_Frame_To_Page`'s two paths disagree, and both are kept (see the file's
+  header): its cached per-line path has four defects of its own -- predator +
+  transparent leaves pixels the old path writes; predator + fading barely moves
+  the shimmer (`and` for `add`); predator + ghost indexes the translucency table
+  with stale high bits; predator + ghost + fading writes `fade(0)` everywhere.
+  All 19 line routines and all 16 effect combinations are exercised and match.
+- `Asm_Interpolate_Line_Interpolate` reads one source line past the end;
+  `Buffer_To_Buffer`'s size check ignores rows skipped above the view;
+  `Linear_Blit_To_Linear` does not move the destination when it clips the
+  source; `LCW_Comp` counts a run reaching the end one short. All reproduced.
+- Two files were mis-assigned: the makefile builds `GETPIX.ASM`, not the
+  identical `FTPUTPIX.ASM`; `WOLSTRNG.CPP` (above) compiled to nothing.
+
+### Divergences (each also stated in its file)
+
+Where the original crashed or hung -- a counter wrapping on a zero size, an
+`idiv` faulting on nonsense input, a zero fade count -- the translation does
+nothing instead. Where it depended on an address (one `Buffer_Frame_To_Page`
+corner case reads with a jump-table address in a register), it uses 0. Inputs
+that make the original read memory it does not own (beyond a 64K table, past a
+4-pixel-wide view) are excluded from the vectors, and the reasons are written
+beside each exclusion in `gen_vectors.py`.
+
+### Native replacements
+
+`WaitVB`/`WaitNoVB`/`TestVBIBit` (VGA retrace) return at once -- presenting on
+the display's refresh is the Metal backend's job. `SetPalette` (movie player)
+writes the emulated VGA DAC through the same `outportb` the game's palette code
+uses. `CPUID` reports the assembly's own "not identified" values and no MMX.
+`sosCODEC_Lock`/`_Unlock` (DPMI page locking) succeed.
+
+### The `.ASM` files stay
+
+They are not archived: they are the reference `gen_vectors.py` runs.
+
+**Note:** `WIN32LIB/TILE/ICONSET.CPP` stores an absolute pointer in
+`IControl_Type`'s 32-bit `Icons` field. Nothing in the game calls it (icon sets
+come through `CODE/COMPAT.H`), but if anything ever does, it will truncate.
 
 ## Independent verification against the published VQA format
 
@@ -643,7 +767,8 @@ palettes in places, and silently rescaling both would corrupt one of them.
    Command Line Tools were available and treated Homebrew/CMake/SDL2 as
    prerequisites; that was wrong on both counts, and irrelevant now that the
    backend is native.
-3. **Rewrite the assembly in C** -- now measured, see `WORKLIST.md`.
+3. ~~**Rewrite the assembly in C.**~~ **Done for everything the game links** --
+   see "The assembly" above; the history below is how it was scoped.
    `port/worklist.py` classifies every file by *liveness*: a file is live if live
    code calls something it exports (as a closure, since assembly calls assembly).
    Result: **62 files / ~24,000 lines to translate**, 8 SUPERSEDED (a C version

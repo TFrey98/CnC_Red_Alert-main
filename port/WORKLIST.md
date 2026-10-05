@@ -7,19 +7,22 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 | Tag | Meaning | Files |
 |---|---|---|
-| DONE | compiles clean for arm64 | 225 |
+| DONE | compiles clean for arm64 | 234 |
 | TWEAK | needs source or compat fixes | 0 |
 | DROP | out of scope for single-player; left in place because live code includes its headers | 20 |
-| NATIVE | the Win32 platform layer: reimplement over port/backend/ | 4 |
+| NATIVE | the Win32 platform layer: reimplement over port/backend/ | 0 |
 
 ## Assembly
 
 | Tag | Meaning | Files | Lines |
 |---|---|---|---|
-| TRANSLATE | live, no C yet: rewrite as portable C | 61 | 23,877 |
-| SUPERSEDED | live, but a C/C++ definition already exists in the tree | 9 | 3,032 |
-| NATIVE | needed, reimplemented on a macOS framework | 2 | 951 |
-| REBUILD | no arm64 equivalent; new logic | 3 | 448 |
+| TRANSLATED | done: a C translation beside it, verified against the original | 31 | 17,666 |
+| REPLACED | done: replaced natively -- it drove x86/VGA hardware | 3 | 641 |
+| UNLINKED | named in headers, but nothing the linked game calls (per the last link census) | 33 | 8,240 |
+| TRANSLATE | live, no C yet: rewrite as portable C | 0 | 0 |
+| SUPERSEDED | live, but a C/C++ definition already exists in the tree | 8 | 1,761 |
+| NATIVE | needed, reimplemented on a macOS framework | 0 | 0 |
+| REBUILD | no arm64 equivalent; new logic | 0 | 0 |
 | DEAD | nothing live calls it | 2 | 323 |
 
 ---
@@ -28,79 +31,105 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## TRANSLATE -- 61 files, 23,877 lines
+## TRANSLATE -- 0 files, 0 lines
 
 | File | Lines | Note |
 |---|---|---|
-| `CODE/2KEYFBUF.ASM` | 4,848 | no C yet for: Buffer_Frame_To_Page |
-| `WINVQ/VQA32/UNVQBUFF.ASM` | 1,153 | no C yet for: UnVQ_2x2, UnVQ_2x3, UnVQ_4x2, UnVQ_4x2_Woofer, UnVQ_4x4 |
-| `WIN32LIB/SHAPE/DRAWSHP.ASM` | 1,128 | no C yet for: Draw_Shape |
-| `CODE/WINASM.ASM` | 890 | no C yet for: Asm_Create_Palette_Interpolation_Table, Asm_Interpolate, Asm_Interpolate_Line_Double, Asm_Interpolate_Line_Interpolate, Change8259Priority, FastGetPortHardware, FastSetPortHardware, HMAnswer, HMDial, HMInputLine, HMSendString, HMSendStringNoWait, HMSetDialingMethod, HMSetUpAbortKey, HMSetUpEchoRoutine, HMWaitForOK, IPX_Initialise, Int3, ModeX_Blit, MouseQX, MouseQY, PortKillTime, PortOpenGreenleafFast, SetAbortModemFunctionPtr, Set_Palette_Register, Stop_Execution |
-| `WIN32LIB/AUDIO/OLSOSDEC.ASM` | 755 | General_sosCODECDecompressData is live (SOUNDINT.CPP): adapt CODE/ADPCM.CPP rather than translate from scratch |
-| `WIN32LIB/AUDIO/SOSCODEC.ASM` | 724 | no C yet for: sosCODEC_Lock, sosCODEC_Unlock |
-| `WIN32LIB/DRAWBUFF/FILLQUAD.ASM` | 669 | no C yet for: Buffer_Fill_Quad |
-| `WIN32LIB/WSA/XORDELTA.ASM` | 669 | no C yet for: Apply_XOR_Delta, Apply_XOR_Delta_To_Page_Or_Viewport |
-| `WIN32LIB/DRAWBUFF/STAMP.ASM` | 600 | no C yet for: Buffer_Draw_Stamp, Buffer_Draw_Stamp_Clip |
-| `WIN32LIB/DRAWBUFF/SCALE.ASM` | 569 | no C yet for: Linear_Scale_To_Linear |
-| `CODE/2TXTPRNT.ASM` | 507 | no C yet for: Buffer_Print, Get_Font_Palette_Ptr |
-| `WIN32LIB/DRAWBUFF/TXTPRNT.ASM` | 501 | no C yet for: Buffer_Print, Get_Font_Palette_Ptr |
-| `WIN32LIB/DRAWBUFF/DRAWLINE.ASM` | 464 | no C yet for: Buffer_Draw_Line |
-| `WIN32LIB/DRAWBUFF/BITBLIT.ASM` | 461 | no C yet for: Linear_Blit_To_Linear |
-| `WIN32LIB/FONT/TEXTPRNT.ASM` | 436 | no C yet for: Text_Print |
-| `WIN32LIB/PALETTE/PAL.ASM` | 410 | no C yet for: Bump_Color, Set_Palette_Range |
-| `WINVQ/VQM32/DRAWCHAR.ASM` | 395 | no C yet for: Draw_Char, Set_Font_Palette_Range |
-| `WINVQ/VQM32/HUFFDCMP.ASM` | 391 | no C yet for: BuildHuffTree, HuffDecompress |
-| `WINVQ/VQM32/AUDUNZAP.ASM` | 375 | no C yet for: AudioUnzap |
-| `WIN32LIB/AUDIO/AUDUNCMP.ASM` | 373 | no C yet for: Decompress_Frame |
-| `WIN32LIB/SHAPE/DS_DS.ASM` | 341 | called from other assembly |
-| `WIN32LIB/SHAPE/DS_DSR.ASM` | 341 | called from other assembly |
-| `WINVQ/VQM32/PALETTE.ASM` | 319 | no C yet for: ReadPalette, SetDAC, TranslatePalette |
-| `WIN32LIB/DRAWBUFF/TOPAGE.ASM` | 293 | no C yet for: Buffer_To_Page |
-| `WIN32LIB/DRAWBUFF/TOBUFF.ASM` | 291 | no C yet for: Buffer_To_Buffer |
-| `WIN32LIB/IFF/LCWCOMP.ASM` | 285 | no C yet for: LCW_Compress |
-| `WIN32LIB/DRAWBUFF/STMPCACH.ASM` | 284 | no C yet for: Cache_Copy_Icon, Clear_Icon_Pointers, Get_Free_Index, Get_Icon_Index, Is_Icon_Cached |
-| `CODE/LCWCOMP.ASM` | 283 | no C yet for: LCW_Comp |
-| `WIN32LIB/DRAWBUFF/FILLRECT.ASM` | 274 | no C yet for: Buffer_Fill_Rect |
-| `WIN32LIB/MISC/CLIPRECT.ASM` | 269 | no C yet for: Clip_Rect, Confine_Rect |
-| `WINVQ/VQM32/LCWCOMP.ASM` | 266 | no C yet for: LCW_Compress |
-| `WIN32LIB/SHAPE/DS_DN.ASM` | 257 | called from other assembly |
-| `WIN32LIB/SHAPE/DS_DR.ASM` | 257 | called from other assembly |
-| `WINVQ/VQM32/FILLRECT.ASM` | 216 | no C yet for: Eor_Region, Fill_Rect |
-| `WIN32LIB/MISC/FADING.ASM` | 214 | no C yet for: Build_Fading_Table |
-| `WIN32LIB/SHAPE/DS_TABLE.ASM` | 187 | called from other assembly |
-| `WIN32LIB/MEM/MEM_COPY.ASM` | 184 | no C yet for: Largest_Mem_Block, Mem_Copy |
-| `WINVQ/VQM32/TEXTPRNT.ASM` | 178 | no C yet for: Text_Print |
-| `WIN32LIB/DRAWBUFF/REMAP.ASM` | 175 | no C yet for: Buffer_Remap |
-| `WIN32LIB/MISC/SHAKESCR.ASM` | 158 | no C yet for: Shake_Screen |
-| `WIN32LIB/SHAPE/DS_LSRS.ASM` | 158 | called from other assembly |
-| `WIN32LIB/SHAPE/DS_LSS.ASM` | 158 | called from other assembly |
-| `WIN32LIB/MISC/FACING16.ASM` | 147 | no C yet for: Desired_Facing16 |
-| `WIN32LIB/MISC/REVERSE.ASM` | 139 | no C yet for: Reverse_Long, Reverse_Short, Swap_Long |
-| `WINVQ/VQM32/VB.ASM` | 137 | no C yet for: WaitNoVB, WaitVB |
-| `WIN32LIB/IFF/PACK2PLN.ASM` | 131 | no C yet for: Pack_2_Plane |
-| `WIN32LIB/DRAWBUFF/CLEAR.ASM` | 129 | no C yet for: Buffer_Clear |
-| `WIN32LIB/MISC/RANDOM.ASM` | 118 | no C yet for: Get_Random_Mask, Random |
-| `WIN32LIB/SHAPE/DS_LRS.ASM` | 117 | called from other assembly |
-| `WIN32LIB/SHAPE/DS_LS.ASM` | 117 | called from other assembly |
-| `WIN32LIB/DRAWBUFF/PUTPIX.ASM` | 109 | no C yet for: Buffer_Put_Pixel |
-| `WIN32LIB/SHAPE/DS_RRS.ASM` | 109 | called from other assembly |
-| `WIN32LIB/SHAPE/DS_RS.ASM` | 109 | called from other assembly |
-| `WIN32LIB/SHAPE/DS_RSRS.ASM` | 109 | called from other assembly |
-| `WIN32LIB/SHAPE/DS_RSS.ASM` | 109 | called from other assembly |
-| `WIN32LIB/DRAWBUFF/FTPUTPIX.ASM` | 106 | no C yet for: Buffer_Get_Pixel |
-| `WIN32LIB/DRAWBUFF/GETPIX.ASM` | 105 | no C yet for: Buffer_Get_Pixel |
-| `WIN32LIB/FONT/SETFPAL.ASM` | 105 | no C yet for: Set_Font_Palette_Range |
-| `WIN32LIB/DRAWBUFF/SZREGION.ASM` | 100 | no C yet for: Buffer_Size_Of_Region |
-| `WIN32LIB/SHAPE/SHAPE.ASM` | 94 | no C yet for: Set_Shape_Buffer |
-| `WIN32LIB/SHAPE/SETSHAPE.ASM` | 81 | no C yet for: Set_Shape_Buffer |
 
 ---
 
-## SUPERSEDED -- 9 files, 3,032 lines
+## TRANSLATED -- 31 files, 17,666 lines
 
 | File | Lines | Note |
 |---|---|---|
-| `WINVQ/VQM32/SOSCODEC.ASM` | 1,271 | VQA_-prefixed copy of the SOS ADPCM codec; wrap CODE/ADPCM.CPP |
+| `CODE/2KEYFBUF.ASM` | 4,848 | 2KEYFBUF.CPP, verified against the original assembly (port/asmref) |
+| `WINVQ/VQM32/SOSCODEC.ASM` | 1,271 | SOSCODEC.CPP, verified against the original assembly (port/asmref) |
+| `WINVQ/VQA32/UNVQBUFF.ASM` | 1,153 | UNVQBUFF.CPP, verified against the original assembly (port/asmref) |
+| `CODE/WINASM.ASM` | 890 | WINASM.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/AUDIO/OLSOSDEC.ASM` | 755 | OLSOSDEC.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/AUDIO/SOSCODEC.ASM` | 724 | SOSCODEC.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/WSA/XORDELTA.ASM` | 669 | XORDELTA.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/KEYBOARD/WWMOUSE.ASM` | 662 | WWMOUSE.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/DRAWBUFF/STAMP.ASM` | 600 | STAMP.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/DRAWBUFF/SCALE.ASM` | 569 | SCALE.CPP, verified against the original assembly (port/asmref) |
+| `CODE/2TXTPRNT.ASM` | 507 | 2TXTPRNT.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/DRAWBUFF/DRAWLINE.ASM` | 464 | DRAWLINE.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/DRAWBUFF/BITBLIT.ASM` | 461 | BITBLIT.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/PALETTE/PAL.ASM` | 410 | PAL.CPP, verified against the original assembly (port/asmref) |
+| `WINVQ/VQM32/AUDUNZAP.ASM` | 375 | AUDUNZAP.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/AUDIO/AUDUNCMP.ASM` | 373 | AUDUNCMP.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/DRAWBUFF/TOPAGE.ASM` | 293 | TOPAGE.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/DRAWBUFF/TOBUFF.ASM` | 291 | TOBUFF.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/DRAWBUFF/STMPCACH.ASM` | 284 | STMPCACH.CPP, verified against the original assembly (port/asmref) |
+| `CODE/LCWCOMP.ASM` | 283 | LCWCOMP.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/DRAWBUFF/FILLRECT.ASM` | 274 | FILLRECT.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/MISC/CLIPRECT.ASM` | 269 | CLIPRECT.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/MISC/FADING.ASM` | 214 | FADING.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/MEM/MEM_COPY.ASM` | 184 | MEM_COPY.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/DRAWBUFF/REMAP.ASM` | 175 | REMAP.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/MISC/REVERSE.ASM` | 139 | REVERSE.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/DRAWBUFF/CLEAR.ASM` | 129 | CLEAR.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/DRAWBUFF/PUTPIX.ASM` | 109 | PUTPIX.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/DRAWBUFF/GETPIX.ASM` | 105 | GETPIX.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/FONT/SETFPAL.ASM` | 105 | SETFPAL.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/SHAPE/SETSHAPE.ASM` | 81 | SETSHAPE.CPP, verified against the original assembly (port/asmref) |
+
+---
+
+## REPLACED -- 3 files, 641 lines
+
+| File | Lines | Note |
+|---|---|---|
+| `WINVQ/VQM32/PALETTE.ASM` | 319 | PALETTE.CPP: native replacement (hardware a Mac does not have) |
+| `CODE/CPUID.ASM` | 185 | CPUID.CPP: native replacement (hardware a Mac does not have) |
+| `WINVQ/VQM32/VB.ASM` | 137 | VB.CPP: native replacement (hardware a Mac does not have) |
+
+---
+
+## UNLINKED -- 33 files, 8,240 lines
+
+| File | Lines | Note |
+|---|---|---|
+| `WIN32LIB/SHAPE/DRAWSHP.ASM` | 1,128 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Draw_Shape |
+| `WIN32LIB/DRAWBUFF/FILLQUAD.ASM` | 669 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Buffer_Fill_Quad |
+| `WIN32LIB/DRAWBUFF/TXTPRNT.ASM` | 501 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Buffer_Print, Get_Font_Palette_Ptr |
+| `WIN32LIB/FONT/TEXTPRNT.ASM` | 436 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Text_Print |
+| `WINVQ/VQM32/DRAWCHAR.ASM` | 395 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Draw_Char, Set_Font_Palette_Range |
+| `WINVQ/VQM32/HUFFDCMP.ASM` | 391 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: BuildHuffTree, HuffDecompress |
+| `WIN32LIB/SHAPE/DS_DS.ASM` | 341 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WIN32LIB/SHAPE/DS_DSR.ASM` | 341 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WIN32LIB/PLAYCD/PLAYCD.ASM` | 289 | nothing the linked game calls (LINK-CENSUS); was: DOS DPMI real-mode CD access; Redbook music becomes AVFoundation |
+| `WIN32LIB/IFF/LCWCOMP.ASM` | 285 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: LCW_Compress |
+| `WINVQ/VQM32/LCWCOMP.ASM` | 266 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: LCW_Compress |
+| `WIN32LIB/SHAPE/DS_DN.ASM` | 257 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WIN32LIB/SHAPE/DS_DR.ASM` | 257 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WINVQ/VQM32/FILLRECT.ASM` | 216 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Eor_Region, Fill_Rect |
+| `WIN32LIB/SHAPE/DS_TABLE.ASM` | 187 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WINVQ/VQM32/TEXTPRNT.ASM` | 178 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Text_Print |
+| `WIN32LIB/MISC/SHAKESCR.ASM` | 158 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Shake_Screen |
+| `WIN32LIB/SHAPE/DS_LSRS.ASM` | 158 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WIN32LIB/SHAPE/DS_LSS.ASM` | 158 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WIN32LIB/MISC/OPSYS.ASM` | 149 | nothing the linked game calls (LINK-CENSUS); was: x86/DOS OS detection |
+| `WIN32LIB/MISC/FACING16.ASM` | 147 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Desired_Facing16 |
+| `WIN32LIB/IFF/PACK2PLN.ASM` | 131 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Pack_2_Plane |
+| `WIN32LIB/MISC/RANDOM.ASM` | 118 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Get_Random_Mask, Random |
+| `WIN32LIB/SHAPE/DS_LRS.ASM` | 117 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WIN32LIB/SHAPE/DS_LS.ASM` | 117 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WIN32LIB/MISC/DETPROC.ASM` | 114 | nothing the linked game calls (LINK-CENSUS); was: x86 processor detection |
+| `WIN32LIB/SHAPE/DS_RRS.ASM` | 109 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WIN32LIB/SHAPE/DS_RS.ASM` | 109 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WIN32LIB/SHAPE/DS_RSRS.ASM` | 109 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WIN32LIB/SHAPE/DS_RSS.ASM` | 109 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WIN32LIB/DRAWBUFF/FTPUTPIX.ASM` | 106 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Buffer_Get_Pixel |
+| `WIN32LIB/DRAWBUFF/SZREGION.ASM` | 100 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Buffer_Size_Of_Region |
+| `WIN32LIB/SHAPE/SHAPE.ASM` | 94 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Set_Shape_Buffer |
+
+---
+
+## SUPERSEDED -- 8 files, 1,761 lines
+
+| File | Lines | Note |
+|---|---|---|
 | `CODE/2SUPPORT.ASM` | 564 | C already defines: Conquer_Build_Fading_Table, strtrim |
 | `WIN32LIB/IFF/LCWUNCMP.ASM` | 292 | C already defines: LCW_Uncompress |
 | `WINVQ/VQM32/LCWUNCMP.ASM` | 221 | C already defines: LCW_Uncompress |
@@ -112,22 +141,17 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## NATIVE -- 2 files, 951 lines
+## NATIVE -- 0 files, 0 lines
 
 | File | Lines | Note |
 |---|---|---|
-| `WIN32LIB/KEYBOARD/WWMOUSE.ASM` | 662 | software cursor; NSCursor or composite in the Metal shader |
-| `WIN32LIB/PLAYCD/PLAYCD.ASM` | 289 | DOS DPMI real-mode CD access; Redbook music becomes AVFoundation |
 
 ---
 
-## REBUILD -- 3 files, 448 lines
+## REBUILD -- 0 files, 0 lines
 
 | File | Lines | Note |
 |---|---|---|
-| `CODE/CPUID.ASM` | 185 | x86 CPUID; no arm64 equivalent |
-| `WIN32LIB/MISC/OPSYS.ASM` | 149 | x86/DOS OS detection |
-| `WIN32LIB/MISC/DETPROC.ASM` | 114 | x86 processor detection |
 
 ---
 
@@ -140,14 +164,10 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## NATIVE (C++) -- 4 files
+## NATIVE (C++) -- 0 files
 
 | File | What replaces it |
 |---|---|
-| `CDFILE.CPP` | CD-ROM drive detection -> a data directory |
-| `KEY.CPP` | Win32 keyboard and mouse messages -> NSEvent |
-| `STARTUP.CPP` | WinMain, single-instance check, CD/path setup -> the app entry point |
-| `WINSTUB.CPP` | window creation and the Win32 message pump -> NSApplication / NSWindow |
 
 ---
 
@@ -178,7 +198,7 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## Libraries (`port/lib-build-set.txt`) -- {'DONE': 67, 'DROP': 9, 'NATIVE': 1}
+## Libraries (`port/lib-build-set.txt`) -- {'DONE': 97, 'DROP': 8, 'NATIVE': 1}
 
 Measured by `port/probe-libs.sh`, each library with its own include path.
 
@@ -186,7 +206,6 @@ Measured by `port/probe-libs.sh`, each library with its own include path.
 |---|---|---|
 | `WIN32LIB/IFF/WRITEPCX.CPP` | DROP | library overload Write_PCX_File(char *, ...) has no callers; the game uses CODE/WRITEPCX.CPP |
 | `WIN32LIB/MOVIE/MOVIE.CPP` | NATIVE | MPEG cutscenes over DirectShow -> AVFoundation (the MPEG DLL was never released) |
-| `WIN32LIB/PLAYCD/GETCD.CPP` | DROP | CD-ROM drive enumeration; nothing in the game calls it |
 | `WIN32LIB/PROFILE/WPROFILE.CPP` | DROP | x86 sampling profiler; Instruments replaces it (Stop_Profiler needs a stub at link) |
 | `WIN32LIB/RAWFILE/RAWFILE.CPP` | DROP | library file layer (mmio*), wholly superseded by CODE/CCFILE.CPP, which defines every symbol the game calls; linking both would duplicate them |
 | `WIN32LIB/WINCOMM/MODEMREG.CPP` | DROP | modem registry -- serial multiplayer |

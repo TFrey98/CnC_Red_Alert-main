@@ -540,7 +540,18 @@ assert(filename != NULL);//BG
 	/*
 	**	Create the key block that will be used to binary search for the file.
 	*/
-	long crc = Calculate_CRC(strupr((char *)filename), strlen(filename));
+	/*
+	**	Port: the original upper-cased `filename` in place. Watcom put string
+	**	literals in writable memory, so Retrieve("8POINT.FNT") worked; on macOS
+	**	literals are read-only and that write crashes. The CRC is taken of an
+	**	upper-case copy instead -- the same value, without touching the caller's
+	**	string.
+	*/
+	char upper[_MAX_PATH];
+	strncpy(upper, filename, sizeof(upper) - 1);
+	upper[sizeof(upper) - 1] = '\0';
+	strupr(upper);
+	long crc = Calculate_CRC(upper, strlen(upper));
 	SubBlock key;
 	key.CRC = crc;
 

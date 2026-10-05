@@ -9,3 +9,6 @@ build/
 
 # macOS
 .DS_Store
+# port/asmref/setup.sh: local Python environment for the assembly reference
+port/asmref/.venv/
+__pycache__/

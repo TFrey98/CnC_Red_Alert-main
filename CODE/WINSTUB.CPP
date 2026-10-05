@@ -161,9 +161,13 @@ void Check_For_Focus_Loss(void)
 
 
 
-extern BOOL InMovie;
+extern bool InMovie;		// port: was BOOL, but EXTERNS.H (and its definition) say bool
 
-long FAR PASCAL _export Windows_Procedure(HWND hwnd, UINT message, UINT wParam, LONG lParam)
+/*
+**	Port: Win32's own parameter types (WPARAM, LPARAM) rather than UINT/LONG, so
+**	this is exactly a WNDPROC; on 32-bit Windows they were the same types.
+*/
+long FAR PASCAL _export Windows_Procedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
 	int	low_param = LOWORD(wParam);
@@ -793,7 +797,7 @@ void Memory_Error_Handler(void)
 	VisiblePage.Clear();
 	CCPalette.Set();
 	while (Get_Mouse_State()) {Show_Mouse();};
-	WWMessageBox().Process(TEXT_MEMORY_ERROR, TEXT_ABORT, false);
+	WWMessageBox().Process(TEXT_MEMORY_ERROR, TEXT_ABORT, (char const *)NULL);	// port: `false` as a null char*, which C++11 refuses
 
 	ReadyToQuit = 1;
 
@@ -950,9 +954,16 @@ GraphicBufferClass* Read_PCX_File(char* name, char* palette, void *Buff, long Si
 
 		pal = ( RGB * ) palette;
 		for (i = 0 ; i < 256 ; i ++) {
-			pal ->red	>>= 2;
-			pal ->green	>>= 2;
-			pal ->blue	>>= 2;
+			/*
+			**	Port: 8-bit PCX colour to 6-bit VGA, as an unsigned shift. RGB is plain
+			**	char, signed under /j, so a colour of 128 or more shifted arithmetically:
+			**	168 became 234, not 42. Only the low six bits were right, and the score
+			**	screen's Increase_Palette_Luminance (cap 63) turned every such entry
+			**	white. The shipped game showed that screen correctly.
+			*/
+			pal ->red	= (char)((unsigned char)pal->red >> 2);
+			pal ->green	= (char)((unsigned char)pal->green >> 2);
+			pal ->blue	= (char)((unsigned char)pal->blue >> 2);
 			pal ++ ;
 		}
 	}

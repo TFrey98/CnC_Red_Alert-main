@@ -121,6 +121,15 @@ typedef struct {
 // port: the on-disk offset is 4 bytes; sizeof(unsigned long) is 8 on macOS
 #define EXTRA_charS_ANIMATE_NOT_KNOW_ABOUT	(sizeof(short) + sizeof(uint32_t))
 
+// port: sizeof(SysAnimHeaderType) as the 32-bit build had it -- 7 shorts, two
+// 4-byte pointers, char[13], two shorts and a 4-byte long, packed: 43. The
+// file's largest_frame_size has ANIMATE's idea of this size folded into it, so
+// Open_Animation must take off the 32-bit size, not this build's (64, with
+// 8-byte pointers and alignment), or every frame limit comes out 21 bytes short
+// and the largest frames lose the end of their delta. 43 is the smallest
+// packing could make it, so it never gives a smaller limit than the original.
+#define SYSANIM_HEADER_SIZE_32	43
+
 
 //
 // Header structure for the file.
@@ -352,7 +361,7 @@ void * __cdecl Open_Animation(char const *file_name, char *user_buffer, long use
 	sys_header -> anim_mem_size = user_buffer_size;
 	sys_header -> delta_buffer  = delta_buffer;
 	sys_header -> largest_frame_size =
-                 (unsigned short) (delta_buffer_size - sizeof(SysAnimHeaderType));
+                 (unsigned short) (delta_buffer_size - SYSANIM_HEADER_SIZE_32);	// port: was sizeof(SysAnimHeaderType); see SYSANIM_HEADER_SIZE_32
 
 	strcpy(sys_header->file_name, file_name);
 

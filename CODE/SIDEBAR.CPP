@@ -396,7 +396,7 @@ void SidebarClass::Init_Theater(TheaterType theater)
  *=============================================================================================*/
 void SidebarClass::Reload_Sidebar(void)
 {
-	static char * sidebarnames[]={
+	static char sidebarnames[][12]={		// port: arrays, not char *: the '?' is patched in place below, and literals are read-only here
 		"SIDE?NA.SHP",		//NATO
 		"SIDE?NA.SHP",
 		"SIDE?US.SHP",		//USSR

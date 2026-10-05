@@ -64,6 +64,12 @@ class WWMouseClass {
 		void Clear_Cursor_Clip(void);
 
 	private:
+		/*
+		**	Port: WWMOUSE.ASM read these private fields through a 32-bit struct
+		**	overlay (MOUSE.INC); its C translation, WWMOUSE.CPP, reads them by
+		**	name through this one friend instead.
+		*/
+		friend struct WWPortMouseAccess;
 		enum 	{
 			CONDHIDE		= 1,
 			CONDHIDDEN 	= 2,

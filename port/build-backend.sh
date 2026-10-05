@@ -16,6 +16,8 @@ mkdir -p "$OUT"
 print "== 1. backend (.mm, Cocoa/Metal, NO Win32 shim) =="
 clang++ $RA_OBJCXXFLAGS -c "${RA_ROOT}/port/backend/ra_metal.mm" -o "$OUT/ra_metal.o"
 clang++ $RA_OBJCXXFLAGS -c "${RA_ROOT}/port/backend/ra_dialog.mm" -o "$OUT/ra_dialog.o"
+clang++ $RA_OBJCXXFLAGS -c "${RA_ROOT}/port/backend/ra_input.mm" -o "$OUT/ra_input.o"
+clang++ $RA_OBJCXXFLAGS -c "${RA_ROOT}/port/backend/ra_audio.mm" -o "$OUT/ra_audio.o"
 print "   ok"
 
 print "== 2. offline shader compile (sanity; the app compiles it at runtime) =="
@@ -40,7 +42,7 @@ extern int boundary_ok(void);
 int main(void) { return boundary_ok() ? 0 : 1; }
 CPP
 clang++ $RA_CXXFLAGS -c "$OUT/main.cpp" -o "$OUT/main.o"
-clang++ $RA_TARGET "$OUT/main.o" "$OUT/boundary.o" "$OUT/ra_metal.o" "$OUT/ra_dialog.o" \
+clang++ $RA_TARGET "$OUT/main.o" "$OUT/boundary.o" "$OUT/ra_metal.o" "$OUT/ra_dialog.o" "$OUT/ra_input.o" "$OUT/ra_audio.o" \
         -o "$OUT/ra-backend-smoke" $RA_FRAMEWORKS
 print "   ok -> $OUT/ra-backend-smoke"
 print ""

@@ -38,6 +38,19 @@ RA_STD=(
   # members of dependent base classes without `this->` (see CODE/ftimer.h).
   # This restores that behaviour instead of editing every template.
   -fdelayed-template-parsing
+
+  # Enum sizes. Watcom was run without /ei, so each enum is the smallest
+  # integer type that holds its values: DirType (0..255) one unsigned byte,
+  # FacingType (-1..8) one signed byte, TemplateType (..65535) two bytes. The
+  # code depends on that, not just in file layouts (MapPack's 16-bit template
+  # numbers, OverlayPack's 1-byte ids) but in arithmetic: `(DirType)(dir + 160)`
+  # wraps mod 256 only because the stored value is a byte, and path command
+  # lists are copied by element count as byte count. As ints, every one of
+  # those reads outside a table. clang's rule here is Watcom's, except that an
+  # enum whose values are all 0..127 is unsigned char rather than signed char.
+  # The backend (no WIN32, its own flags) never sees an engine enum: the
+  # boundary, ra_platform.h, passes ints only.
+  -fshort-enums
 )
 
 RA_DEFINES=(
@@ -136,4 +149,6 @@ RA_FRAMEWORKS=(
   -framework Cocoa
   -framework Metal
   -framework QuartzCore
+  -framework Carbon        # only for the kVK_ key-code constants (ra_input.mm)
+  -framework AudioToolbox  # the audio output unit (ra_audio.mm)
 )

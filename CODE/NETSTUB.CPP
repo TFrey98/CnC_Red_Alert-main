@@ -55,6 +55,14 @@ TimerClass			GameTimer;
 BOOL					GameTimerInUse = FALSE;
 
 /*
+**	Globals the dropped files defined for everyone: the window's show command
+**	(INTERNET.CPP), and whether this is Windows NT (IPX95.CPP; STARTUP.CPP sets
+**	it from GetVersion, which reports Windows 95).
+*/
+int					ShowCommand = 0;
+bool					WindowsNT = false;
+
+/*
 **	Free functions.
 */
 void Check_From_WChat(char *)								{}			// INTERNET.CPP
@@ -68,6 +76,7 @@ bool Server_Remote_Connect(void)							{return false;}
 bool Client_Remote_Connect(void)							{return false;}
 bool Init_Network(void)										{return false;}	// NETDLG.CPP
 void Shutdown_Network(void)								{}
+void Unload_IPX_Dll(void)									{}				// IPX95.CPP
 bool Process_Global_Packet(GlobalPacketType *, IPXAddressClass *)	{return false;}
 void Destroy_Connection(int, int)						{}
 void Net_Reconnect_Dialog(int, int, int, unsigned long)	{}
@@ -230,6 +239,7 @@ int TcpipManagerClass::Read(void *, int)										{return 0;}
 void TcpipManagerClass::Write(void *, int)									{}
 void TcpipManagerClass::Close(void)												{}
 void TcpipManagerClass::Set_Host_Address(char *)							{}
+void TcpipManagerClass::Message_Handler(HWND, UINT, UINT, LONG)			{}
 
 /*
 **	Instance_Class (DDE.CPP): the DDE link to Westwood Chat. CCDDE.CPP builds one

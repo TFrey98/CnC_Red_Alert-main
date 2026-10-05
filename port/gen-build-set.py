@@ -14,17 +14,17 @@ DOS/Win32 pair. So the set is the makefile's, plus files live code demonstrably
 depends on (it calls something defined only there):
 
   + PALETTE   PaletteClass, reconstructed by the port (never released)
-  + ADPCM     C implementation of SOSCODEC.ASM's exports, already in the tree
   + LCWUNCMP  C implementation of LCW_Uncompress (LCWUNCMP.ASM), already in the tree
   + CSTRAW    CacheStraw, used by live code
   + RAND      Sim_IRandom, called from MPLAYER.CPP
   + PRAGMAUX  C bodies for Watcom `#pragma aux` inline-asm functions (port-created)
   + NETSTUB   inert multiplayer stand-ins for the single-player build (port-created)
+  + PORTSTUB  stand-ins for DOS/debug-only code the Mac build lacks (port-created)
 """
 import os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EXTRA = ['PALETTE', 'ADPCM', 'LCWUNCMP', 'CSTRAW', 'RAND', 'PRAGMAUX', 'NETSTUB']
+EXTRA = ['PALETTE', 'LCWUNCMP', 'CSTRAW', 'RAND', 'PRAGMAUX', 'NETSTUB', 'PORTSTUB']
 
 objs, stack, cur = set(), [], None
 for raw in open(os.path.join(ROOT, 'CODE', 'MAKEFILE'), encoding='latin-1'):

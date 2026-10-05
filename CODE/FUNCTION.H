@@ -523,6 +523,7 @@ void MPATH_Call_Back(void);
 
 void Center_About_Objects(void);
 bool Force_CD_Available(int cd);
+char const * Main_Mix_Name(void);		// port: MAIN.MIX, or the current disc's MAINn.MIX (CONQUER.CPP)
 void Handle_View(int view, int action=0);
 void Handle_Team(int team, int action=0);
 TechnoTypeClass const * Fetch_Techno_Type(RTTIType type, int id);

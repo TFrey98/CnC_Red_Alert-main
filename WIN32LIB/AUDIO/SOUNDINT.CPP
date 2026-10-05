@@ -189,7 +189,7 @@ long Sample_Copy(SampleTrackerType *st, void ** source, LONG * ssize, void ** al
 				**	a staging area before it can be decompressed.
 				*/
 				{
-					long magic;
+					int32_t magic;		// port: was long -- 8 bytes on arm64, so sizeof(magic) read the 4-byte 0xDEAF chunk marker plus the first 4 bytes of audio, and the check failed unless those were zero
 					unsigned short fsize;
 					unsigned short dsize;
 					void *fptr;
@@ -210,7 +210,7 @@ long Sample_Copy(SampleTrackerType *st, void ** source, LONG * ssize, void ** al
 					}
 
 					s = Simple_Copy(source, ssize, alternate, altsize, &mptr, sizeof(magic));
-					if (s < sizeof(magic) || magic != LockedData.MagicNumber) {
+					if (s < sizeof(magic) || magic != (int32_t)LockedData.MagicNumber) {
 						return datasize;
 					}
 

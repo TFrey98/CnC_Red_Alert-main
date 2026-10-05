@@ -39,3 +39,34 @@ int RA_Platform_Disk_Error(const char * filename, int error_code)
 	if ([NSThread isMainThread]) ask(); else dispatch_sync(dispatch_get_main_queue(), ask);
 	return choice;
 }
+
+/*
+**	The game's MessageBox. Its text was written for a Windows dialog; it is
+**	shown as written (the caption becomes the alert's title line).
+*/
+int RA_Platform_Message_Box(const char * text, const char * caption, int buttons, int warning)
+{
+	__block int choice = RA_ID_OK;
+	void (^ask)(void) = ^{
+		[NSApplication sharedApplication];
+		NSAlert * alert = [[NSAlert alloc] init];
+		alert.alertStyle = warning ? NSAlertStyleWarning : NSAlertStyleInformational;
+		alert.messageText = caption ? [NSString stringWithUTF8String:caption] : @"Red Alert";
+		NSString * body = text ? [NSString stringWithCString:text encoding:NSWindowsCP1252StringEncoding] : @"";
+		alert.informativeText = body ? body : @"";
+		switch (buttons) {
+			case RA_MB_YESNO:    [alert addButtonWithTitle:@"Yes"]; [alert addButtonWithTitle:@"No"]; break;
+			case RA_MB_OKCANCEL: [alert addButtonWithTitle:@"OK"]; [alert addButtonWithTitle:@"Cancel"]; break;
+			default:             [alert addButtonWithTitle:@"OK"]; break;
+		}
+		[NSApp activateIgnoringOtherApps:YES];
+		bool first = [alert runModal] == NSAlertFirstButtonReturn;
+		switch (buttons) {
+			case RA_MB_YESNO:    choice = first ? RA_ID_YES : RA_ID_NO; break;
+			case RA_MB_OKCANCEL: choice = first ? RA_ID_OK : RA_ID_CANCEL; break;
+			default:             choice = RA_ID_OK; break;
+		}
+	};
+	if ([NSThread isMainThread]) ask(); else dispatch_sync(dispatch_get_main_queue(), ask);
+	return choice;
+}

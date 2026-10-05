@@ -2095,6 +2095,7 @@ static void Sync_Delay(void)
 	**	speed controlled by the game options slider.
 	*/
 	while (FrameTimer) {
+		long tick = TickCount;		// port: see below
 		Color_Cycle();
 		Call_Back();
 
@@ -2109,6 +2110,19 @@ static void Sync_Delay(void)
 				Keyboard_Process(input);
 			}
 			Map.Render();
+		}
+
+		/*
+		**	Port: one pass of this loop per system tick (1/60 s). Edge scrolling
+		**	moves the map a fixed distance per Map.Input call, so its speed was
+		**	set by how fast this loop spun -- tolerable on 1997 hardware, where
+		**	a pass cost a large slice of a tick, and far too fast on anything
+		**	since (a known complaint on modern PCs too). Pacing to the tick
+		**	keeps scrolling, cursor and redraw at the rate the game was tuned
+		**	for, and stops this wait loop occupying a whole core.
+		*/
+		while (FrameTimer && (long)TickCount == tick) {
+			Sleep(1);
 		}
 	}
 	Color_Cycle();
@@ -4338,6 +4352,49 @@ typedef enum {
 #error DVD must be defined!
 #endif
 
+/*
+**	Port: the discs, installed. The Steam / "Ultimate Collection" release ships
+**	the four discs' MAIN.MIX files side by side, renamed MAIN1.MIX (Allied),
+**	MAIN2.MIX (Soviet), MAIN3.MIX (Counterstrike) and MAIN4.MIX (Aftermath),
+**	with an RA95.EXE patched to use them. This source predates that and asks for
+**	a disc in a drive. With that layout present, a requested disc counts as
+**	inserted when its MAINn.MIX is there, and it is opened in place of
+**	MAIN.MIX. A classic install (one MAIN.MIX) behaves exactly as before.
+*/
+static bool Port_Discs_Installed(void)
+{
+	static int known = -1;
+	if (known < 0) known = CCFileClass("MAIN1.MIX").Is_Available() ? 1 : 0;
+	return known == 1;
+}
+
+char const * Main_Mix_Name(void)
+{
+	static char name[16];
+	if (!Port_Discs_Installed()) return "MAIN.MIX";
+	int disc = (CurrentCD >= 0 && CurrentCD <= 3) ? CurrentCD : 0;
+	sprintf(name, "MAIN%d.MIX", disc + 1);
+	return name;
+}
+
+/*
+**	The installed disc that satisfies a request (CD_ANY: the current one;
+**	CD_CS_OR_AM: Counterstrike, else Aftermath), or -1 if it is not installed.
+*/
+static int Port_Installed_Disc(int cd_desired)
+{
+	if (!Port_Discs_Installed()) return -1;
+	int want = cd_desired;
+	if (want == -1) want = (CurrentCD >= 0 && CurrentCD <= 3) ? CurrentCD : 0;
+	if (want == 4) {
+		want = CCFileClass("MAIN3.MIX").Is_Available() ? 2 : 3;
+	}
+	if (want < 0 || want > 3) return -1;
+	char name[16];
+	sprintf(name, "MAIN%d.MIX", want + 1);
+	return CCFileClass(name).Is_Available() ? want : -1;
+}
+
 bool Force_CD_Available( int cd_desired )				//	ajw
 {
 	static int _last = -1;
@@ -4381,6 +4438,33 @@ bool Force_CD_Available( int cd_desired )				//	ajw
 	** on the local hard drive and we shouldn't have to worry about it.
 	*/
 	if (cd_desired == CD_LOCAL) return(true);
+
+	/*
+	**	Port: the disc is installed locally (see Port_Discs_Installed). Make it
+	**	the current disc and, if it changed, reopen MAIN.MIX and the archives
+	**	inside it from that disc, exactly as the success path below does.
+	*/
+	int installed = Port_Installed_Disc(cd_desired);
+	if (installed >= 0) {
+		CurrentCD = installed;
+		if (_last != installed) {
+			_last = installed;
+			Theme.Stop();
+			if (MoviesMix) delete MoviesMix;
+			if (GeneralMix) delete GeneralMix;
+			if (ScoreMix) delete ScoreMix;
+			if (MainMix) delete MainMix;
+			MainMix = new MFCD(Main_Mix_Name(), &FastKey);
+			if (CCFileClass("MOVIES1.MIX").Is_Available())
+				MoviesMix = new MFCD("MOVIES1.MIX", &FastKey);
+			else
+				MoviesMix = new MFCD("MOVIES2.MIX", &FastKey);
+			GeneralMix = new MFCD("GENERAL.MIX", &FastKey);
+			ScoreMix = new MFCD("SCORES.MIX", &FastKey);
+			ThemeClass::Scan();
+		}
+		return(true);
+	}
 
 	/*
 	** Find out if the CD in the current drive is the one we are looking for
@@ -4629,7 +4713,7 @@ bool Force_CD_Available( int cd_desired )				//	ajw
 		if (ScoreMix) delete ScoreMix;
 		if (MainMix) delete MainMix;
 
-		MainMix = new MFCD("MAIN.MIX", &FastKey);
+		MainMix = new MFCD(Main_Mix_Name(), &FastKey);		// port: see Port_Discs_Installed
 		assert(MainMix != NULL);
 //		ConquerMix = new MFCD("CONQUER.MIX", &FastKey);
 		if (CCFileClass("MOVIES1.MIX").Is_Available())
@@ -5024,7 +5108,7 @@ bool Force_CD_Available(int cd)
 		if (ScoreMix) delete ScoreMix;
 		if (MainMix) delete MainMix;
 
-		MainMix = new MFCD("MAIN.MIX", &FastKey);
+		MainMix = new MFCD(Main_Mix_Name(), &FastKey);		// port: see Port_Discs_Installed
 		
 		assert(MainMix != NULL);
 //		ConquerMix = new MFCD("CONQUER.MIX", &FastKey);

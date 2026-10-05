@@ -88,6 +88,7 @@ typedef intptr_t            LRESULT;
 typedef size_t              SIZE_T;
 typedef uintptr_t           ULONG_PTR;
 typedef intptr_t            LONG_PTR;
+typedef intptr_t            INT_PTR;
 typedef uintptr_t           DWORD_PTR;
 
 /*
@@ -348,6 +349,109 @@ LPVOID  GlobalLock(HGLOBAL mem);
 BOOL    GlobalUnlock(HGLOBAL mem);
 HGLOBAL GlobalFree(HGLOBAL mem);
 
+/*
+**	Windows, messages and the process -- port/compat/win32_window.cpp and
+**	win32_system.cpp. The engine's own WINSTUB/KEY/STARTUP code uses these
+**	exactly as on Windows; see those files for what each maps onto.
+*/
+typedef WORD ATOM;
+typedef int (*DLGPROC)(HWND, UINT, WPARAM, LPARAM);
+
+typedef struct tagWNDCLASSA {
+	UINT      style;
+	WNDPROC   lpfnWndProc;
+	int       cbClsExtra;
+	int       cbWndExtra;
+	HINSTANCE hInstance;
+	HICON     hIcon;
+	HCURSOR   hCursor;
+	HBRUSH    hbrBackground;
+	LPCSTR    lpszMenuName;
+	LPCSTR    lpszClassName;
+} WNDCLASSA, WNDCLASS;
+
+#define CS_VREDRAW      0x0001
+#define CS_HREDRAW      0x0002
+#define CS_DBLCLKS      0x0008
+#define WS_POPUP        0x80000000u
+#define WS_EX_TOPMOST   0x00000008u
+#define SM_CXSCREEN     0
+#define SM_CYSCREEN     1
+#define SW_HIDE         0
+#define SW_SHOWNORMAL   1
+#define SW_SHOW         5
+#define SW_RESTORE      9
+#define WM_SYSCOMMAND   0x0112
+#define SC_CLOSE        0xF060
+#define SC_SCREENSAVE   0xF140
+#define WA_INACTIVE     0
+#define MK_LBUTTON      0x0001
+#define MK_RBUTTON      0x0002
+#define MK_MBUTTON      0x0010
+#define MAKEINTRESOURCE(i) ((LPCSTR)(ULONG_PTR)(WORD)(i))
+#define IDC_ARROW       MAKEINTRESOURCE(32512)
+#define IDC_WAIT        MAKEINTRESOURCE(32514)
+#ifndef MAKELPARAM
+#define MAKELPARAM(lo, hi) ((LPARAM)(DWORD)(((WORD)(lo)) | ((DWORD)((WORD)(hi))) << 16))
+#endif
+
+ATOM    RegisterClassA(const WNDCLASSA * wc);
+HWND    CreateWindowExA(DWORD exstyle, LPCSTR classname, LPCSTR title, DWORD style, int x, int y, int w, int h,
+                        HWND parent, HMENU menu, HINSTANCE instance, LPVOID param);
+BOOL    UpdateWindow(HWND wnd);
+HWND    SetFocus(HWND wnd);
+BOOL    DestroyWindow(HWND wnd);
+int     GetSystemMetrics(int index);
+LRESULT DefWindowProcA(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+LRESULT SendMessageA(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+BOOL    PostMessageA(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+void    PostQuitMessage(int code);
+UINT    RegisterWindowMessageA(LPCSTR name);
+HICON   LoadIconA(HINSTANCE instance, LPCSTR name);
+HCURSOR LoadCursorA(HINSTANCE instance, LPCSTR name);
+BOOL    ScreenToClient(HWND wnd, LPPOINT point);
+BOOL    ClientToScreen(HWND wnd, LPPOINT point);
+int     ToAscii(UINT vk, UINT scancode, const BYTE * keystate, LPWORD out, UINT flags);
+DWORD   GetModuleFileNameA(HMODULE module, LPSTR buffer, DWORD size);
+DWORD   GetVersion(void);
+void    ExitProcess(UINT code);
+LONG    RegDeleteValueA(HKEY key, LPCSTR name);
+INT_PTR DialogBoxA(HINSTANCE instance, LPCSTR templ, HWND owner, DLGPROC proc);
+#define DialogBox DialogBoxA
+
+#define RegisterClass          RegisterClassA
+#define CreateWindowEx         CreateWindowExA
+#define DefWindowProc          DefWindowProcA
+#define SendMessage            SendMessageA
+#define PostMessage            PostMessageA
+#define RegisterWindowMessage  RegisterWindowMessageA
+#define LoadIcon               LoadIconA
+#define LoadCursor             LoadCursorA
+#define GetModuleFileName      GetModuleFileNameA
+#define RegDeleteValue         RegDeleteValueA
+
+#define ERROR_INVALID_PARAMETER 87L
+#define ERROR_MORE_DATA         234L
+#define REG_DWORD               4
+
+/* Watcom's `_export` (a DLL-export keyword on window procedures); nothing here. */
+#define _export
+
+/*
+**	Drive types. A Mac has no drive letters, so no "X:\" is a CD-ROM drive --
+**	WIN32LIB/PLAYCD/GETCD.CPP then finds none, and the game reads its data
+**	from the directory given with -CD (win32_main.cpp passes the data folder).
+*/
+#define DRIVE_UNKNOWN     0
+#define DRIVE_NO_ROOT_DIR 1
+#define DRIVE_REMOVABLE   2
+#define DRIVE_FIXED       3
+#define DRIVE_REMOTE      4
+#define DRIVE_CDROM       5
+#define DRIVE_RAMDISK     6
+UINT GetDriveTypeA(LPCSTR root);
+#define GetDriveType GetDriveTypeA
+
 #ifdef __cplusplus
 }
 #endif
@@ -504,17 +608,19 @@ HWND  GetFocus(void);
 BOOL  ShowWindow(HWND wnd, int cmdshow);
 int   ShowCursor(BOOL show);
 /*
-**	OS cursor and keyboard layout -- implemented by the native input backend.
+**	OS cursor and keyboard layout -- port/compat/win32_window.cpp.
 **	VkKeyScan is NOT a formality: WIN32LIB/KEYBOARD/KEYBOARD.CPP calls it for
 **	every printable character at startup to build the engine's ASCII <-> key
-**	remap tables, so it needs the real keyboard layout (UCKeyTranslate), or
-**	typed text (save-game names) breaks on non-US layouts.
+**	remap tables. It and ToAscii use a US layout, matching the backend's
+**	mapping of Mac keys by POSITION (kVK_ANSI_*); on another layout, typed text
+**	follows the US key caps. Following the real layout would mean asking the
+**	backend for it (UCKeyTranslate) -- not done yet.
 */
 BOOL    ClipCursor(const RECT * rect);
 BOOL    GetCursorPos(LPPOINT point);
 HCURSOR SetCursor(HCURSOR cursor);
 SHORT   VkKeyScanA(char ch);
-#define VkKeyScan VkKeyScanA		/* hides the OS cursor; the game draws its own (WWMOUSE). Native backend implements it. */
+#define VkKeyScan VkKeyScanA
 
 /*
 **	Win32's A/W split: <windows.h> defines the unsuffixed name as a macro for
@@ -539,7 +645,6 @@ SHORT   VkKeyScanA(char ch);
 #define OPEN_EXISTING       3
 #define OPEN_ALWAYS         4
 #define TRUNCATE_EXISTING   5
-#define INVALID_HANDLE_VALUE ((HANDLE)(LONG_PTR)-1)
 
 UINT SetErrorMode(UINT mode);
 

@@ -9,11 +9,15 @@
 #import <QuartzCore/CAMetalLayer.h>
 
 #include "ra_platform.h"
+#include "ra_internal.h"
+
+@class RAView;
 
 struct RA_Display {
 	int                          width;
 	int                          height;
 	NSWindow                   * window;
+	RAView                     * view;
 	CAMetalLayer               * layer;
 	id<MTLDevice>                device;
 	id<MTLCommandQueue>          queue;
@@ -56,6 +60,138 @@ fragment float4 ra_fs(VSOut in [[stage_in]],
 }
 )METAL";
 
+/*
+**	The window's content view: draws through its CAMetalLayer, and turns
+**	keyboard and mouse NSEvents into RA_Events (ra_input.mm), with positions
+**	scaled from window points to framebuffer pixels.
+*/
+static bool CursorVisible = true;
+
+@interface RAView : NSView <NSWindowDelegate>
+@property (nonatomic) RA_Display * display;
+@end
+
+@implementation RAView
+- (BOOL)acceptsFirstResponder { return YES; }
+- (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
+- (BOOL)wantsUpdateLayer { return YES; }
+
+- (void)push:(int)type vk:(int)vk repeat:(int)repeat button:(int)button event:(NSEvent *)e
+{
+	RA_Event r = {type, vk, repeat, button, 0, 0};
+	if (e != nil && self.display != NULL) {
+		NSPoint p = [self convertPoint:[e locationInWindow] fromView:nil];
+		NSRect b = self.bounds;
+		int x = (int)(p.x * self.display->width / b.size.width);
+		int y = (int)((b.size.height - p.y) * self.display->height / b.size.height);
+		r.x = x < 0 ? 0 : (x >= self.display->width ? self.display->width - 1 : x);
+		r.y = y < 0 ? 0 : (y >= self.display->height ? self.display->height - 1 : y);
+	}
+	RA_Input_Push(r);
+}
+
+- (void)keyDown:(NSEvent *)e
+{
+	int vk = RA_Input_VK_From_Mac([e keyCode]);
+	if (vk) [self push:RA_EV_KEY_DOWN vk:vk repeat:[e isARepeat] button:0 event:nil];
+}
+- (void)keyUp:(NSEvent *)e
+{
+	int vk = RA_Input_VK_From_Mac([e keyCode]);
+	if (vk) [self push:RA_EV_KEY_UP vk:vk repeat:0 button:0 event:nil];
+}
+/* Modifier keys arrive as flag changes, not key events. */
+- (void)flagsChanged:(NSEvent *)e
+{
+	int vk = RA_Input_VK_From_Mac([e keyCode]);
+	if (!vk) return;
+	NSEventModifierFlags f = [e modifierFlags];
+	bool down = false;
+	switch (vk) {
+		case 0x10: down = (f & NSEventModifierFlagShift) != 0; break;
+		case 0x11: down = (f & NSEventModifierFlagControl) != 0; break;
+		case 0x12: down = (f & NSEventModifierFlagOption) != 0; break;
+		case 0x14: down = (f & NSEventModifierFlagCapsLock) != 0; break;
+	}
+	[self push:(down ? RA_EV_KEY_DOWN : RA_EV_KEY_UP) vk:vk repeat:0 button:0 event:nil];
+}
+
+- (void)mouseMoved:(NSEvent *)e        { [self push:RA_EV_MOUSE_MOVE vk:0 repeat:0 button:0 event:e]; }
+- (void)mouseDragged:(NSEvent *)e      { [self push:RA_EV_MOUSE_MOVE vk:0 repeat:0 button:0 event:e]; }
+- (void)rightMouseDragged:(NSEvent *)e { [self push:RA_EV_MOUSE_MOVE vk:0 repeat:0 button:0 event:e]; }
+- (void)otherMouseDragged:(NSEvent *)e { [self push:RA_EV_MOUSE_MOVE vk:0 repeat:0 button:0 event:e]; }
+- (void)mouseDown:(NSEvent *)e         { [self push:RA_EV_BUTTON_DOWN vk:0 repeat:0 button:0 event:e]; }
+- (void)mouseUp:(NSEvent *)e           { [self push:RA_EV_BUTTON_UP vk:0 repeat:0 button:0 event:e]; }
+- (void)rightMouseDown:(NSEvent *)e    { [self push:RA_EV_BUTTON_DOWN vk:0 repeat:0 button:1 event:e]; }
+- (void)rightMouseUp:(NSEvent *)e      { [self push:RA_EV_BUTTON_UP vk:0 repeat:0 button:1 event:e]; }
+- (void)otherMouseDown:(NSEvent *)e    { [self push:RA_EV_BUTTON_DOWN vk:0 repeat:0 button:2 event:e]; }
+- (void)otherMouseUp:(NSEvent *)e      { [self push:RA_EV_BUTTON_UP vk:0 repeat:0 button:2 event:e]; }
+
+/*
+**	When the game draws its own cursor, the Mac pointer is made invisible over
+**	the window only -- outside it, the desktop pointer behaves normally.
+*/
+- (void)resetCursorRects
+{
+	if (CursorVisible) return;
+	static NSCursor * blank = nil;
+	if (blank == nil) {
+		NSImage * img = [[NSImage alloc] initWithSize:NSMakeSize(1, 1)];
+		blank = [[NSCursor alloc] initWithImage:img hotSpot:NSZeroPoint];
+	}
+	[self addCursorRect:self.bounds cursor:blank];
+}
+
+- (void)setFrameSize:(NSSize)size
+{
+	[super setFrameSize:size];
+	if (self.display != NULL && self.display->layer != nil) {
+		CGFloat scale = self.window ? self.window.backingScaleFactor : 1.0;
+		self.display->layer.contentsScale = scale;
+		self.display->layer.drawableSize = CGSizeMake(size.width * scale, size.height * scale);
+	}
+}
+
+/* The close button asks the game to quit; the game decides how. */
+- (BOOL)windowShouldClose:(NSWindow *)w
+{
+	[self push:RA_EV_QUIT vk:0 repeat:0 button:0 event:nil];
+	return NO;
+}
+@end
+
+void RA_Platform_Set_Cursor_Visible(int visible)
+{
+	CursorVisible = visible != 0;
+	for (NSWindow * w in [NSApp windows]) [w invalidateCursorRectsForView:w.contentView];
+}
+
+static void make_index_texture(RA_Display * d)
+{
+	MTLTextureDescriptor * itd =
+		[MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatR8Uint
+		                                                   width:(NSUInteger)d->width
+		                                                  height:(NSUInteger)d->height
+		                                               mipmapped:NO];
+	itd.usage = MTLTextureUsageShaderRead;
+	d->indexTex = [d->device newTextureWithDescriptor:itd];
+}
+
+/*
+**	Window size for a framebuffer: twice its pixels, the 640 x 400 game shown
+**	at 4:3 as on a CRT (400 lines stretched to 480), never larger than the screen.
+*/
+static NSSize window_size_for(int width, int height)
+{
+	double h = (width * 3.0 / 4.0 > height) ? width * 3.0 / 4.0 : height;
+	NSSize s = NSMakeSize(width * 2.0, h * 2.0);
+	NSRect vis = [[NSScreen mainScreen] visibleFrame];
+	double fit = 1.0;
+	if (s.width > vis.size.width * 0.9) fit = vis.size.width * 0.9 / s.width;
+	if (s.height * fit > vis.size.height * 0.9) fit = vis.size.height * 0.9 / s.height;
+	return NSMakeSize(floor(s.width * fit), floor(s.height * fit));
+}
+
 RA_Display * RA_Display_Create(int width, int height, const char * title)
 {
 	if (width <= 0 || height <= 0) return NULL;
@@ -96,13 +232,7 @@ RA_Display * RA_Display_Create(int width, int height, const char * title)
 	**	between index 3 and index 4 does not give a colour between two palette
 	**	entries, it gives an unrelated one.
 	*/
-	MTLTextureDescriptor * itd =
-		[MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatR8Uint
-		                                                   width:(NSUInteger)width
-		                                                  height:(NSUInteger)height
-		                                               mipmapped:NO];
-	itd.usage = MTLTextureUsageShaderRead;
-	d->indexTex = [d->device newTextureWithDescriptor:itd];
+	make_index_texture(d);
 
 	MTLTextureDescriptor * ptd =
 		[MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA8Unorm
@@ -112,21 +242,33 @@ RA_Display * RA_Display_Create(int width, int height, const char * title)
 	ptd.usage = MTLTextureUsageShaderRead;
 	d->paletteTex = [d->device newTextureWithDescriptor:ptd];
 
-	NSRect frame = NSMakeRect(0, 0, width * 2, height * 2);
+	RA_Platform_Init();
+	NSSize size = window_size_for(width, height);
 	d->window = [[NSWindow alloc]
-		initWithContentRect:frame
+		initWithContentRect:NSMakeRect(0, 0, size.width, size.height)
 		          styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable |
-		                     NSWindowStyleMaskMiniaturizable)
+		                     NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable)
 		            backing:NSBackingStoreBuffered
 		              defer:NO];
 	[d->window setTitle:[NSString stringWithUTF8String:(title ? title : "Red Alert")]];
+	[d->window setContentAspectRatio:size];
+	[d->window setAcceptsMouseMovedEvents:YES];
+	[d->window setReleasedWhenClosed:NO];
 
 	d->layer = [CAMetalLayer layer];
 	d->layer.device      = d->device;
 	d->layer.pixelFormat = MTLPixelFormatBGRA8Unorm;
 	d->layer.framebufferOnly = YES;
-	[d->window.contentView setLayer:d->layer];
-	[d->window.contentView setWantsLayer:YES];
+
+	d->view = [[RAView alloc] initWithFrame:NSMakeRect(0, 0, size.width, size.height)];
+	d->view.display = d;
+	[d->view setWantsLayer:YES];
+	[d->view setLayer:d->layer];
+	[d->window setContentView:d->view];
+	[d->window setDelegate:d->view];
+	[d->window makeFirstResponder:d->view];
+	[d->view setFrameSize:size];
+	[d->window center];
 
 	return d;
 }
@@ -134,7 +276,29 @@ RA_Display * RA_Display_Create(int width, int height, const char * title)
 void RA_Display_Destroy(RA_Display * d)
 {
 	if (d == NULL) return;
+	[d->window orderOut:nil];
+	d->view.display = NULL;
 	free(d);
+}
+
+void RA_Display_Show(RA_Display * d)
+{
+	if (d == NULL) return;
+	[d->window makeKeyAndOrderFront:nil];
+	[NSApp activateIgnoringOtherApps:YES];
+}
+
+void RA_Display_Resize(RA_Display * d, int width, int height)
+{
+	if (d == NULL || width <= 0 || height <= 0) return;
+	if (width == d->width && height == d->height) return;
+	d->width = width;
+	d->height = height;
+	make_index_texture(d);
+	NSSize size = window_size_for(width, height);
+	[d->window setContentAspectRatio:size];
+	[d->window setContentSize:size];
+	[d->view setFrameSize:size];
 }
 
 void RA_Display_SetPalette(RA_Display * d, const unsigned char * rgba)

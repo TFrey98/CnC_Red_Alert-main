@@ -172,6 +172,7 @@ long filelength(int handle)
 **	port/compat/windows.h.
 */
 #include "windows.h"
+#include "ra_platform.h"
 #include <pthread.h>
 #include <time.h>
 
@@ -249,19 +250,19 @@ void OutputDebugStringA(LPCSTR text)
 }
 
 /*
-**	Placeholder until the SDL2 layer lands -- routed to stderr so that startup
-**	failures are visible rather than silent.
+**	A Mac alert (port/backend/ra_dialog.mm), also echoed to stderr so a run from
+**	the terminal keeps a record. Only the button sets the game uses are mapped.
 */
 int MessageBoxA(HWND owner, LPCSTR text, LPCSTR caption, UINT type)
 {
-	(void)owner; (void)type;
+	(void)owner;
 	fprintf(stderr, "[%s] %s\n", caption ? caption : "Red Alert", text ? text : "");
-	return 1;   /* IDOK */
+	int buttons = ((type & 0x0F) == MB_YESNO) ? RA_MB_YESNO : ((type & 0x0F) == MB_OKCANCEL) ? RA_MB_OKCANCEL : RA_MB_OK;
+	int warning = (type & 0xF0) == MB_ICONSTOP || (type & 0xF0) == MB_ICONEXCLAMATION;
+	return RA_Platform_Message_Box(text, caption, buttons, warning);
 }
 
-/* Keyboard state is owned by the SDL2 input layer; stubbed until it lands. */
-short GetAsyncKeyState(int key) { (void)key; return 0; }
-short GetKeyState(int key)      { (void)key; return 0; }
+/* GetAsyncKeyState / GetKeyState: win32_window.cpp, from the keys the backend has reported. */
 
 /*
 **	Flat address space: a "global handle" is just the pointer itself.

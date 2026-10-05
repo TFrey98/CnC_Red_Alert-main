@@ -88,12 +88,23 @@ typedef enum {
 **	leading bytes that indicate the size of the entire file.
 */
 //lint -strong(AJX,CompHeaderType)
+/*
+**	Port: ON-DISK LAYOUT (the header of every compressed .CPS picture). Watcom
+**	built this with /zp1 and a 32-bit long -- 8 bytes, Size at offset 2. With a
+**	64-bit, aligned long the fields were read from the wrong offsets and the
+**	decompressor overran its buffer on the first title picture.
+*/
+#pragma pack(push, 1)
 typedef struct {
-	char	Method;		// Compression method (CompressionType).
-	char	pad;			// Reserved pad byte (always 0).
-	long	Size;			// Size of the uncompressed data.
-	short	Skip;			// Number of bytes to skip before data.
+	char		Method;		// Compression method (CompressionType).
+	char		pad;			// Reserved pad byte (always 0).
+	int32_t	Size;			// Size of the uncompressed data.
+	short		Skip;			// Number of bytes to skip before data.
 } CompHeaderType;
+#pragma pack(pop)
+#ifdef __cplusplus
+static_assert(sizeof(CompHeaderType) == 8, "CompHeaderType must match the original 8-byte on-disk layout");
+#endif
 
 
 /*=========================================================================*/

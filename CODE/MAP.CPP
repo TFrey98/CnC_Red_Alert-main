@@ -904,7 +904,8 @@ int MapClass::Write_Binary(Pipe & pipe)
 
 	CellClass * cellptr = &Array[0];
 	for (int i = 0; i < MAP_CELL_TOTAL; i++) {
-		total += comp.Put(&cellptr->TType, sizeof(cellptr->TType));
+		uint16_t ttype = (uint16_t)cellptr->TType;		// port: on disk as 16 bits -- Watcom sized enums to fit (no /ei), and TemplateType's values fit unsigned short; here the enum is an int
+		total += comp.Put(&ttype, sizeof(ttype));
 		cellptr++;
 	}
 
@@ -943,7 +944,9 @@ bool MapClass::Read_Binary(Straw & straw)
 		default:
 			cellptr = &Array[0];
 			for (cell = 0; cell < MAP_CELL_TOTAL; cell++) {
-				decomp.Get(&cellptr->TType, sizeof(cellptr->TType));
+				uint16_t ttype = TEMPLATE_NONE;		// port: on disk as 16 bits -- Watcom sized enums to fit (no /ei), and TemplateType's values fit unsigned short; here the enum is an int
+				decomp.Get(&ttype, sizeof(ttype));
+				cellptr->TType = (TemplateType)ttype;
 				cellptr++;
 			}
 			cellptr = &Array[0];
@@ -959,7 +962,9 @@ bool MapClass::Read_Binary(Straw & straw)
 		case 2:
 			cellptr = &Array[0];
 			for (cell = 0; cell < MAP_CELL_TOTAL; cell++) {
-				decomp.Get(&cellptr->TType, sizeof(cellptr->TType));
+				uint16_t ttype = TEMPLATE_NONE;		// port: 16 bits on disk, as above
+				decomp.Get(&ttype, sizeof(ttype));
+				cellptr->TType = (TemplateType)ttype;
 				decomp.Get(&cellptr->TIcon, sizeof(cellptr->TIcon));
 				cellptr->Recalc_Attributes();
 				cellptr++;

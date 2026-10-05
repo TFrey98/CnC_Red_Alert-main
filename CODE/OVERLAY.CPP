@@ -274,9 +274,9 @@ void OverlayClass::Read_INI(CCINIClass & ini)
 			uncomp.Get_From(&bpipe);
 
 			for (CELL cell = 0; cell < MAP_CELL_TOTAL; cell++) {
-				OverlayType classid;
-
-				uncomp.Get(&classid, sizeof(classid));
+				signed char id = (signed char)OVERLAY_NONE;		// port: one byte on disk -- Watcom sized enums to fit (no /ei), and OverlayType's fit signed char
+				uncomp.Get(&id, sizeof(id));
+				OverlayType classid = (OverlayType)id;
 
 				if (classid != OVERLAY_NONE) {
 
@@ -366,7 +366,8 @@ void OverlayClass::Write_INI(CCINIClass & ini)
 	int total = 0;
 	CellClass * cellptr = &Map[(CELL)0];
 	for (CELL index = 0; index < MAP_CELL_TOTAL; index++) {
-		total += comppipe.Put(&cellptr->Overlay, sizeof(cellptr->Overlay));
+		signed char id = (signed char)cellptr->Overlay;		// port: one byte on disk, as in Read_INI
+		total += comppipe.Put(&id, sizeof(id));
 		cellptr++;
 	}
 	if (total) {

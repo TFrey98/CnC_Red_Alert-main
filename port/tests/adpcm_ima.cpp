@@ -1,13 +1,20 @@
 /*
-** adpcm_ima.cpp -- CODE/ADPCM.CPP (the C replacement for SOSCODEC.ASM, which
-** decodes the game's compressed sound and SND2 movie audio) against an IMA
-** ADPCM decoder written independently from the parameters published at
+** adpcm_ima.cpp -- the game's ADPCM sound decoder, WIN32LIB/AUDIO/SOSCODEC.CPP
+** (the C translation of SOSCODEC.ASM), against an IMA ADPCM decoder written
+** independently from the parameters published at
 ** https://multimedia.cx/vqa_overview.htm: index adjust {-1,-1,-1,-1,2,4,6,8}
 ** and the standard 89-entry step table running from 7 to 32767.
 **
-** ADPCM.CPP is table-driven (DiffTable/IndexTable precompute every step/nibble
-** pair), so agreement here checks those tables as well as the loop. Audio is
-** decoded in chunks, so state must carry across calls -- that is tested too.
+** A second, independent check: port/tests/asm_misc.cpp holds the same code to
+** the original assembly. (This test was first written for CODE/ADPCM.CPP,
+** Westwood's own C version, which the port no longer builds -- see
+** SOSCODEC.CPP.) Audio is decoded in chunks, so state must carry across
+** calls -- that is tested too.
+**
+** The count argument is OUTPUT bytes. ADPCM.CPP took INPUT bytes and wrote four
+** times what its callers asked for -- a heap overrun on every compressed 16-bit
+** mono sound while it was in the build; the original assembly, run under the
+** emulator, is what showed which convention is right.
 */
 #include "soscomp.h"
 #include <stdio.h>
@@ -56,13 +63,16 @@ int main() {
 
 		std::vector<short> got(len * 2);
 		_SOS_COMPRESS_INFO info; memset(&info, 0, sizeof info);
+		info.wBitSize = 16; info.wChannels = 1;		/* as SOUNDIO.CPP sets them from the sound's header */
 		sosCODECInitStream(&info);
 		int pos = 0;
 		while (pos < len) {						/* decode in random chunk sizes, as the streaming code does */
 			int n = 1 + rand() % 257; if (pos + n > len) n = len - pos;
 			info.lpSource = (char *)&in[pos];
 			info.lpDest   = (char *)&got[pos * 2];
-			sosCODECDecompressData(&info, (unsigned long)n);
+			/* the count is OUTPUT bytes, as every caller passes it (SOUNDINT.CPP's
+			** dsize, LOADER.CPP's uncomp_size): n input bytes = 2n samples = 4n bytes */
+			sosCODECDecompressData(&info, (unsigned long)n * 4);
 			pos += n;
 		}
 		streams++; samples += len * 2;

@@ -52,11 +52,10 @@ for f, why in (('DIBUTIL', 'Win32 GDI bitmaps; only callers are WOLAPIOB.CPP and
 # (port/backend/), not patched to compile. Declaring more Win32 surface for these
 # would only defer the real work.
 # --------------------------------------------------------------------------
+# (Empty now. WINSTUB, STARTUP, KEY and CDFILE were listed here to be rewritten;
+# instead they build as Westwood wrote them, over a Win32 window/message layer
+# implemented on the backend -- port/compat/win32_window.cpp.)
 NATIVE_CPP = {
-    'WINSTUB':  'window creation and the Win32 message pump -> NSApplication / NSWindow',
-    'STARTUP':  'WinMain, single-instance check, CD/path setup -> the app entry point',
-    'KEY':      'Win32 keyboard and mouse messages -> NSEvent',
-    'CDFILE':   'CD-ROM drive detection -> a data directory',
 }
 
 # --------------------------------------------------------------------------
@@ -133,11 +132,32 @@ while True:
         break
     live |= more
 
+def translation_of(a):
+    """The port-created file that takes an .ASM's place, if one exists, and
+    how: its banner says "C translation of [...] NAME.ASM" (verified against
+    the original under the emulator, port/asmref), or "native replacement for"
+    / "rebuild of" it (hardware the Mac does not have)."""
+    d, name = os.path.dirname(a), os.path.basename(a)
+    for f in sorted(os.listdir(d)):
+        if f.upper().endswith(('.CPP', '.C')):
+            head = open(os.path.join(d, f), encoding='latin-1').read(3000)
+            if 'PORT-CREATED' not in head:
+                continue
+            m = re.search(r'(C translation of|native replacement for|rebuild of)\s+(?:\S+\s+){0,4}?' + re.escape(name), head, re.I)
+            if m:
+                return f, ('TRANSLATED' if m.group(1).lower().startswith('c trans') else 'REPLACED')
+    return None
+
 asm_rows = []
 for a in asms:
     lines = asm_src[a].count('\n')
     used = sorted(asm_exp[a] & called)
-    if a in ASM_OVERRIDE:
+    done = translation_of(a)
+    if done and done[1] == 'TRANSLATED':
+        tag, why = 'TRANSLATED', f'{done[0]}, verified against the original assembly (port/asmref)'
+    elif done:
+        tag, why = 'REPLACED', f'{done[0]}: native replacement (hardware a Mac does not have)'
+    elif a in ASM_OVERRIDE:
         tag, why = ASM_OVERRIDE[a]
     elif a not in live:
         tag, why = 'DEAD', 'no live caller'
@@ -146,6 +166,23 @@ for a in asms:
     else:
         tag, why = 'TRANSLATE', ('no C yet for: ' + ', '.join(u for u in used if u not in cdefs)) if used else 'called from other assembly'
     asm_rows.append({'file': a, 'lines': lines, 'tag': tag, 'note': why})
+
+# The liveness closure above is name-based: a file counts as live if any of its
+# export names appears in live code -- including header DECLARATIONS, which
+# declare nearly everything. The link census is exact: it lists the symbols the
+# linked game actually needs. When one has been run, an assembly file none of
+# whose exports it needs is UNLINKED. (Self-correcting: if new code starts
+# calling one, the next census lists that symbol under ASM:<tag> again.)
+census_path = os.path.join(os.environ.get('TMPDIR', '/tmp'), 'ra-link', 'census.json')
+if os.path.exists(census_path):
+    needed = set()
+    for syms in json.load(open(census_path)).values():
+        for s in syms:
+            n = s.split('(')[0]
+            needed.add((n[1:] if n.startswith('_') and '(' not in s else n).split('::')[-1])
+    for row in asm_rows:
+        if row['tag'] in ('TRANSLATE', 'NATIVE', 'REBUILD') and not (asm_exp[row['file']] & needed):
+            row['tag'], row['note'] = 'UNLINKED', 'nothing the linked game calls (LINK-CENSUS); was: ' + row['note']
 
 # --------------------------------------------------------------------------
 # C++ translation units, from the last probe run.
@@ -190,7 +227,6 @@ LIB_DROP = {
     'WINVQ/VQM32/VESAVID.CPP':       'DOS VESA video; the Win32 player never uses it',
     'WINVQ/VQM32/VIDEO.CPP':         'DOS VGA/VESA mode setting',
     'WINVQ/VQM32/TESTVB.CPP':        'DOS vertical-blank port test',
-    'WIN32LIB/PLAYCD/GETCD.CPP':     'CD-ROM drive enumeration; nothing in the game calls it',
     'WIN32LIB/IFF/WRITEPCX.CPP':     'library overload Write_PCX_File(char *, ...) has no callers; the game uses CODE/WRITEPCX.CPP',
     'WIN32LIB/RAWFILE/RAWFILE.CPP':  'library file layer (mmio*), wholly superseded by CODE/CCFILE.CPP, which defines every symbol the game calls; linking both would duplicate them',
 }
@@ -250,7 +286,10 @@ out = ['# Worklist -- what needs doing, per file', '',
        f"| NATIVE | the Win32 platform layer: reimplement over port/backend/ | {cc['NATIVE']} |",
        '', '## Assembly', '',
        '| Tag | Meaning | Files | Lines |', '|---|---|---|---|']
-for t, m in (('TRANSLATE', 'live, no C yet: rewrite as portable C'),
+for t, m in (('TRANSLATED', 'done: a C translation beside it, verified against the original'),
+             ('REPLACED', 'done: replaced natively -- it drove x86/VGA hardware'),
+             ('UNLINKED', 'named in headers, but nothing the linked game calls (per the last link census)'),
+             ('TRANSLATE', 'live, no C yet: rewrite as portable C'),
              ('SUPERSEDED', 'live, but a C/C++ definition already exists in the tree'),
              ('NATIVE', 'needed, reimplemented on a macOS framework'),
              ('REBUILD', 'no arm64 equivalent; new logic'),
@@ -259,7 +298,7 @@ for t, m in (('TRANSLATE', 'live, no C yet: rewrite as portable C'),
 out += ['', '---', '', f"## TWEAK -- {cc['TWEAK']} files, grouped by first error", '']
 for s, fs in sorted(groups.items(), key=lambda kv: -len(kv[1])):
     out += [f"### {s} ({len(fs)})", '', ', '.join(f'`{x}`' for x in sorted(fs)), '']
-for t in ('TRANSLATE', 'SUPERSEDED', 'NATIVE', 'REBUILD', 'DEAD'):
+for t in ('TRANSLATE', 'TRANSLATED', 'REPLACED', 'UNLINKED', 'SUPERSEDED', 'NATIVE', 'REBUILD', 'DEAD'):
     rows = sorted((r for r in asm_rows if r['tag'] == t), key=lambda r: -r['lines'])
     out += ['---', '', f"## {t} -- {len(rows)} files, {al[t]:,} lines", '',
             '| File | Lines | Note |', '|---|---|---|']

@@ -128,10 +128,11 @@ unsigned long Get_CPU_Clock(unsigned long & high)
 **	DOS way: write the index to port 3C8h, then red/green/blue to 3C9h. That
 **	"hardware" is emulated here as a 256-entry DAC (6-bit components, as on VGA)
 **	with the write index auto-incrementing after each blue, exactly as the chip
-**	did. Port: the display backend must present from this same palette state --
-**	recorded in PORTING.md as part of the display work.
+**	did. Each completed colour is also handed to the DirectDraw emulation
+**	(port/compat/win32_ddraw.cpp), so the screen's palette follows the DAC.
 */
 unsigned char WWPort_VGA_DAC[256][3];
+extern "C" void WWPort_DAC_Entry(int index, int red, int green, int blue);	// port/compat/win32_ddraw.cpp
 static unsigned char wwport_dac_index;
 static unsigned char wwport_dac_component;
 
@@ -145,6 +146,8 @@ void outportb(int port, unsigned char data)
 		case 0x3C9:								// DAC data: R, G, B, then next entry
 			WWPort_VGA_DAC[wwport_dac_index][wwport_dac_component] = (unsigned char)(data & 0x3F);
 			if (++wwport_dac_component == 3) {
+				unsigned char const * c = WWPort_VGA_DAC[wwport_dac_index];
+				WWPort_DAC_Entry(wwport_dac_index, c[0], c[1], c[2]);		// the screen's palette follows
 				wwport_dac_component = 0;
 				wwport_dac_index++;
 			}
@@ -168,10 +171,6 @@ void outrgb(unsigned char red, unsigned char green, unsigned char blue)
 }
 
 /*
-**	Monochrome debug monitor ports (MONOC.CPP / DPMI.H): a second MDA screen on
-**	the developers' machines. Nothing to drive on macOS.
+**	(`output`, the monochrome-monitor port write, was also given a body here
+**	until WINSTUB.CPP joined the build: Westwood's own empty one is there.)
 */
-void output(short port, short data)
-{
-	(void)port; (void)data;
-}

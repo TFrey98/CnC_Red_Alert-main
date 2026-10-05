@@ -44,8 +44,19 @@ xargs -P 8 -I{} "$L/cc.sh" "$L" lib  {} < "$L/lib.txt"
 ar rcs "$L/libwin32lib.a" "$L"/lib/WIN32LIB_*.o
 ar rcs "$L/libwinvq.a"    "$L"/lib/WINVQ_*.o
 clang++ $RA_CXXFLAGS -w -c port/compat/wwcompat.cpp -o "$L/wwcompat.o"
+clang++ $RA_CXXFLAGS -I port/backend -w -c port/compat/win32_window.cpp -o "$L/win32_window.o"
+clang++ $RA_CXXFLAGS -I port/backend -w -c port/compat/win32_system.cpp -o "$L/win32_system.o"
+clang++ $RA_CXXFLAGS -I port/backend -w -c port/compat/win32_main.cpp -o "$L/win32_main.o"
+clang++ $RA_CXXFLAGS -I port/backend -w -c port/compat/win32_ddraw.cpp -o "$L/win32_ddraw.o"
+clang++ $RA_CXXFLAGS -I port/backend -w -c port/compat/win32_dsound.cpp -o "$L/win32_dsound.o"
+clang++ $RA_OBJCXXFLAGS -c port/backend/ra_input.mm -o "$L/ra_input.o"
+clang++ $RA_OBJCXXFLAGS -c port/backend/ra_audio.mm -o "$L/ra_audio.o"
 clang++ $RA_OBJCXXFLAGS -c port/backend/ra_metal.mm  -o "$L/ra_metal.o"
 clang++ $RA_OBJCXXFLAGS -c port/backend/ra_dialog.mm -o "$L/ra_dialog.o"
-clang++ $RA_TARGET "$L"/game/*.o "$L/wwcompat.o" "$L/ra_metal.o" "$L/ra_dialog.o" \
+# -dead_strip: Westwood's linker dropped unreferenced code (PK.CPP's unused
+# PKey::Generate calls a Generate_Prime that was never written).
+clang++ $RA_TARGET -Wl,-dead_strip "$L"/game/*.o "$L/wwcompat.o" "$L/win32_window.o" "$L/win32_system.o" "$L/win32_main.o" \
+        "$L/win32_ddraw.o" "$L/win32_dsound.o" \
+        "$L/ra_metal.o" "$L/ra_dialog.o" "$L/ra_input.o" "$L/ra_audio.o" \
         "$L/libwin32lib.a" "$L/libwinvq.a" $RA_FRAMEWORKS -o "$L/redalert" > "$L/link.txt" 2>&1
 python3 "$RA_ROOT/port/link-census.py" "$L"

@@ -9,6 +9,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+
+/* PRAGMAUX.CPP hands each finished DAC colour to the display (win32_ddraw.cpp); record them here. */
+static int DacEntries = 0;
+extern "C" void WWPort_DAC_Entry(int, int, int, int) {DacEntries++;}
 int  calcx(signed short, short);
 int  calcy(signed short, short);
 unsigned Fixed_To_Cardinal(unsigned base, unsigned fixed);

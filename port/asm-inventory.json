@@ -2,8 +2,8 @@
  {
   "file": "CODE/2KEYFBUF.ASM",
   "lines": 4848,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Frame_To_Page"
+  "tag": "TRANSLATED",
+  "note": "2KEYFBUF.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "CODE/2SUPPORT.ASM",
@@ -14,8 +14,8 @@
  {
   "file": "CODE/2TXTPRNT.ASM",
   "lines": 507,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Print, Get_Font_Palette_Ptr"
+  "tag": "TRANSLATED",
+  "note": "2TXTPRNT.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "CODE/COORDA.ASM",
@@ -26,74 +26,74 @@
  {
   "file": "CODE/CPUID.ASM",
   "lines": 185,
-  "tag": "REBUILD",
-  "note": "x86 CPUID; no arm64 equivalent"
+  "tag": "REPLACED",
+  "note": "CPUID.CPP: native replacement (hardware a Mac does not have)"
  },
  {
   "file": "CODE/LCWCOMP.ASM",
   "lines": 283,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: LCW_Comp"
+  "tag": "TRANSLATED",
+  "note": "LCWCOMP.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "CODE/WINASM.ASM",
   "lines": 890,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Asm_Create_Palette_Interpolation_Table, Asm_Interpolate, Asm_Interpolate_Line_Double, Asm_Interpolate_Line_Interpolate, Change8259Priority, FastGetPortHardware, FastSetPortHardware, HMAnswer, HMDial, HMInputLine, HMSendString, HMSendStringNoWait, HMSetDialingMethod, HMSetUpAbortKey, HMSetUpEchoRoutine, HMWaitForOK, IPX_Initialise, Int3, ModeX_Blit, MouseQX, MouseQY, PortKillTime, PortOpenGreenleafFast, SetAbortModemFunctionPtr, Set_Palette_Register, Stop_Execution"
+  "tag": "TRANSLATED",
+  "note": "WINASM.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/AUDIO/AUDUNCMP.ASM",
   "lines": 373,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Decompress_Frame"
+  "tag": "TRANSLATED",
+  "note": "AUDUNCMP.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/AUDIO/OLSOSDEC.ASM",
   "lines": 755,
-  "tag": "TRANSLATE",
-  "note": "General_sosCODECDecompressData is live (SOUNDINT.CPP): adapt CODE/ADPCM.CPP rather than translate from scratch"
+  "tag": "TRANSLATED",
+  "note": "OLSOSDEC.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/AUDIO/SOSCODEC.ASM",
   "lines": 724,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: sosCODEC_Lock, sosCODEC_Unlock"
+  "tag": "TRANSLATED",
+  "note": "SOSCODEC.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/BITBLIT.ASM",
   "lines": 461,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Linear_Blit_To_Linear"
+  "tag": "TRANSLATED",
+  "note": "BITBLIT.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/CLEAR.ASM",
   "lines": 129,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Clear"
+  "tag": "TRANSLATED",
+  "note": "CLEAR.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/DRAWLINE.ASM",
   "lines": 464,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Draw_Line"
+  "tag": "TRANSLATED",
+  "note": "DRAWLINE.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/FILLQUAD.ASM",
   "lines": 669,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Fill_Quad"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Buffer_Fill_Quad"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/FILLRECT.ASM",
   "lines": 274,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Fill_Rect"
+  "tag": "TRANSLATED",
+  "note": "FILLRECT.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/FTPUTPIX.ASM",
   "lines": 106,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Get_Pixel"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Buffer_Get_Pixel"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/GETCLIP.ASM",
@@ -104,26 +104,26 @@
  {
   "file": "WIN32LIB/DRAWBUFF/GETPIX.ASM",
   "lines": 105,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Get_Pixel"
+  "tag": "TRANSLATED",
+  "note": "GETPIX.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/PUTPIX.ASM",
   "lines": 109,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Put_Pixel"
+  "tag": "TRANSLATED",
+  "note": "PUTPIX.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/REMAP.ASM",
   "lines": 175,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Remap"
+  "tag": "TRANSLATED",
+  "note": "REMAP.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/SCALE.ASM",
   "lines": 569,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Linear_Scale_To_Linear"
+  "tag": "TRANSLATED",
+  "note": "SCALE.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/SHADOW.ASM",
@@ -134,56 +134,56 @@
  {
   "file": "WIN32LIB/DRAWBUFF/STAMP.ASM",
   "lines": 600,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Draw_Stamp, Buffer_Draw_Stamp_Clip"
+  "tag": "TRANSLATED",
+  "note": "STAMP.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/STMPCACH.ASM",
   "lines": 284,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Cache_Copy_Icon, Clear_Icon_Pointers, Get_Free_Index, Get_Icon_Index, Is_Icon_Cached"
+  "tag": "TRANSLATED",
+  "note": "STMPCACH.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/SZREGION.ASM",
   "lines": 100,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Size_Of_Region"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Buffer_Size_Of_Region"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/TOBUFF.ASM",
   "lines": 291,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_To_Buffer"
+  "tag": "TRANSLATED",
+  "note": "TOBUFF.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/TOPAGE.ASM",
   "lines": 293,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_To_Page"
+  "tag": "TRANSLATED",
+  "note": "TOPAGE.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/DRAWBUFF/TXTPRNT.ASM",
   "lines": 501,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Buffer_Print, Get_Font_Palette_Ptr"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Buffer_Print, Get_Font_Palette_Ptr"
  },
  {
   "file": "WIN32LIB/FONT/SETFPAL.ASM",
   "lines": 105,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Set_Font_Palette_Range"
+  "tag": "TRANSLATED",
+  "note": "SETFPAL.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/FONT/TEXTPRNT.ASM",
   "lines": 436,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Text_Print"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Text_Print"
  },
  {
   "file": "WIN32LIB/IFF/LCWCOMP.ASM",
   "lines": 285,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: LCW_Compress"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: LCW_Compress"
  },
  {
   "file": "WIN32LIB/IFF/LCWUNCMP.ASM",
@@ -194,26 +194,26 @@
  {
   "file": "WIN32LIB/IFF/PACK2PLN.ASM",
   "lines": 131,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Pack_2_Plane"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Pack_2_Plane"
  },
  {
   "file": "WIN32LIB/KEYBOARD/WWMOUSE.ASM",
   "lines": 662,
-  "tag": "NATIVE",
-  "note": "software cursor; NSCursor or composite in the Metal shader"
+  "tag": "TRANSLATED",
+  "note": "WWMOUSE.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/MEM/MEM_COPY.ASM",
   "lines": 184,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Largest_Mem_Block, Mem_Copy"
+  "tag": "TRANSLATED",
+  "note": "MEM_COPY.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/MISC/CLIPRECT.ASM",
   "lines": 269,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Clip_Rect, Confine_Rect"
+  "tag": "TRANSLATED",
+  "note": "CLIPRECT.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/MISC/CRC.ASM",
@@ -224,14 +224,14 @@
  {
   "file": "WIN32LIB/MISC/DETPROC.ASM",
   "lines": 114,
-  "tag": "REBUILD",
-  "note": "x86 processor detection"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: x86 processor detection"
  },
  {
   "file": "WIN32LIB/MISC/FACING16.ASM",
   "lines": 147,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Desired_Facing16"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Desired_Facing16"
  },
  {
   "file": "WIN32LIB/MISC/FACING8.ASM",
@@ -248,158 +248,158 @@
  {
   "file": "WIN32LIB/MISC/FADING.ASM",
   "lines": 214,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Build_Fading_Table"
+  "tag": "TRANSLATED",
+  "note": "FADING.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/MISC/OPSYS.ASM",
   "lines": 149,
-  "tag": "REBUILD",
-  "note": "x86/DOS OS detection"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: x86/DOS OS detection"
  },
  {
   "file": "WIN32LIB/MISC/RANDOM.ASM",
   "lines": 118,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Get_Random_Mask, Random"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Get_Random_Mask, Random"
  },
  {
   "file": "WIN32LIB/MISC/REVERSE.ASM",
   "lines": 139,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Reverse_Long, Reverse_Short, Swap_Long"
+  "tag": "TRANSLATED",
+  "note": "REVERSE.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/MISC/SHAKESCR.ASM",
   "lines": 158,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Shake_Screen"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Shake_Screen"
  },
  {
   "file": "WIN32LIB/PALETTE/PAL.ASM",
   "lines": 410,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Bump_Color, Set_Palette_Range"
+  "tag": "TRANSLATED",
+  "note": "PAL.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/PLAYCD/PLAYCD.ASM",
   "lines": 289,
-  "tag": "NATIVE",
-  "note": "DOS DPMI real-mode CD access; Redbook music becomes AVFoundation"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: DOS DPMI real-mode CD access; Redbook music becomes AVFoundation"
  },
  {
   "file": "WIN32LIB/SHAPE/DRAWSHP.ASM",
   "lines": 1128,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Draw_Shape"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Draw_Shape"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_DN.ASM",
   "lines": 257,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_DR.ASM",
   "lines": 257,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_DS.ASM",
   "lines": 341,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_DSR.ASM",
   "lines": 341,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_LRS.ASM",
   "lines": 117,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_LS.ASM",
   "lines": 117,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_LSRS.ASM",
   "lines": 158,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_LSS.ASM",
   "lines": 158,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_RRS.ASM",
   "lines": 109,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_RS.ASM",
   "lines": 109,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_RSRS.ASM",
   "lines": 109,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_RSS.ASM",
   "lines": 109,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/DS_TABLE.ASM",
   "lines": 187,
-  "tag": "TRANSLATE",
-  "note": "called from other assembly"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: called from other assembly"
  },
  {
   "file": "WIN32LIB/SHAPE/SETSHAPE.ASM",
   "lines": 81,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Set_Shape_Buffer"
+  "tag": "TRANSLATED",
+  "note": "SETSHAPE.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WIN32LIB/SHAPE/SHAPE.ASM",
   "lines": 94,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Set_Shape_Buffer"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Set_Shape_Buffer"
  },
  {
   "file": "WIN32LIB/WSA/XORDELTA.ASM",
   "lines": 669,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Apply_XOR_Delta, Apply_XOR_Delta_To_Page_Or_Viewport"
+  "tag": "TRANSLATED",
+  "note": "XORDELTA.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WINVQ/VQA32/UNVQBUFF.ASM",
   "lines": 1153,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: UnVQ_2x2, UnVQ_2x3, UnVQ_4x2, UnVQ_4x2_Woofer, UnVQ_4x4"
+  "tag": "TRANSLATED",
+  "note": "UNVQBUFF.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WINVQ/VQM32/AUDUNZAP.ASM",
   "lines": 375,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: AudioUnzap"
+  "tag": "TRANSLATED",
+  "note": "AUDUNZAP.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WINVQ/VQM32/CRC.ASM",
@@ -410,26 +410,26 @@
  {
   "file": "WINVQ/VQM32/DRAWCHAR.ASM",
   "lines": 395,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Draw_Char, Set_Font_Palette_Range"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Draw_Char, Set_Font_Palette_Range"
  },
  {
   "file": "WINVQ/VQM32/FILLRECT.ASM",
   "lines": 216,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Eor_Region, Fill_Rect"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Eor_Region, Fill_Rect"
  },
  {
   "file": "WINVQ/VQM32/HUFFDCMP.ASM",
   "lines": 391,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: BuildHuffTree, HuffDecompress"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: BuildHuffTree, HuffDecompress"
  },
  {
   "file": "WINVQ/VQM32/LCWCOMP.ASM",
   "lines": 266,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: LCW_Compress"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: LCW_Compress"
  },
  {
   "file": "WINVQ/VQM32/LCWUNCMP.ASM",
@@ -440,25 +440,25 @@
  {
   "file": "WINVQ/VQM32/PALETTE.ASM",
   "lines": 319,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: ReadPalette, SetDAC, TranslatePalette"
+  "tag": "REPLACED",
+  "note": "PALETTE.CPP: native replacement (hardware a Mac does not have)"
  },
  {
   "file": "WINVQ/VQM32/SOSCODEC.ASM",
   "lines": 1271,
-  "tag": "SUPERSEDED",
-  "note": "VQA_-prefixed copy of the SOS ADPCM codec; wrap CODE/ADPCM.CPP"
+  "tag": "TRANSLATED",
+  "note": "SOSCODEC.CPP, verified against the original assembly (port/asmref)"
  },
  {
   "file": "WINVQ/VQM32/TEXTPRNT.ASM",
   "lines": 178,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: Text_Print"
+  "tag": "UNLINKED",
+  "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Text_Print"
  },
  {
   "file": "WINVQ/VQM32/VB.ASM",
   "lines": 137,
-  "tag": "TRANSLATE",
-  "note": "no C yet for: WaitNoVB, WaitVB"
+  "tag": "REPLACED",
+  "note": "VB.CPP: native replacement (hardware a Mac does not have)"
  }
 ]

@@ -74,6 +74,90 @@ void RA_Display_Present(RA_Display * d, const unsigned char * indices);
 enum { RA_DISK_ERROR_CANCEL = 0, RA_DISK_ERROR_RETRY = 1 };
 int RA_Platform_Disk_Error(const char * filename, int error_code);
 
+/*
+**	The application and its one window. RA_Platform_Init makes this a regular
+**	foreground app (Dock icon, menu bar with Quit); call it before anything else
+**	here. It is safe to call more than once.
+*/
+void RA_Platform_Init(void);
+void RA_Display_Show(RA_Display * d);
+
+/*
+**	The engine's framebuffer changed size (DirectDraw SetDisplayMode). The window
+**	keeps its size; the image is rescaled to fit.
+*/
+void RA_Display_Resize(RA_Display * d, int width, int height);
+
+/*
+**	Input, as plain events. Keys carry WINDOWS virtual-key codes (VK_*): the
+**	backend owns the mapping from Mac key codes, so the engine sees exactly the
+**	key messages it was written for. Mouse positions are in framebuffer pixels
+**	(the engine's own coordinates), not window points.
+*/
+enum {
+	RA_EV_NONE = 0,
+	RA_EV_KEY_DOWN,			/* vk, repeat */
+	RA_EV_KEY_UP,				/* vk */
+	RA_EV_MOUSE_MOVE,			/* x, y */
+	RA_EV_BUTTON_DOWN,		/* button (0 left, 1 right, 2 middle), x, y */
+	RA_EV_BUTTON_UP,			/* button, x, y */
+	RA_EV_ACTIVATE,			/* the app came to the front */
+	RA_EV_DEACTIVATE,			/* the app went to the back */
+	RA_EV_QUIT					/* window closed, or Quit chosen */
+};
+typedef struct RA_Event {
+	int type;
+	int vk;
+	int repeat;
+	int button;
+	int x, y;
+} RA_Event;
+
+/*
+**	Runs the Cocoa event loop just long enough to collect what is pending, then
+**	hands back one event. Returns 1 with *ev filled, or 0 if there is none.
+**	Main thread only, like all of Cocoa.
+*/
+int  RA_Platform_Poll_Event(RA_Event * ev);
+
+/*
+**	Blocks in the Cocoa event loop until an event arrives or `milliseconds`
+**	pass. For GetMessage, which waits.
+*/
+void RA_Platform_Wait_Event(int milliseconds);
+
+/*
+**	The last known pointer position in framebuffer pixels. Safe from any thread
+**	(the mouse timer reads it).
+*/
+void RA_Platform_Mouse_Position(int * x, int * y);
+
+/*
+**	Whether the Mac's own pointer shows over the window. The engine draws its
+**	own cursor, so it normally hides this one.
+*/
+void RA_Platform_Set_Cursor_Visible(int visible);
+
+/*
+**	A message box. `buttons`: RA_MB_OK, RA_MB_OKCANCEL or RA_MB_YESNO; `warning`
+**	nonzero for the caution style. Returns the button chosen (RA_ID_*). Blocks.
+*/
+enum {RA_MB_OK = 0, RA_MB_OKCANCEL = 1, RA_MB_YESNO = 2};
+enum {RA_ID_OK = 1, RA_ID_CANCEL = 2, RA_ID_YES = 6, RA_ID_NO = 7};
+int RA_Platform_Message_Box(const char * text, const char * caption, int buttons, int warning);
+
+/*
+**	Audio output. The backend owns the device; the engine side (DirectSound
+**	emulation, port/compat/win32_dsound.cpp) does all the mixing. `render` is
+**	called on CoreAudio's real-time thread to fill `frames` frames of
+**	interleaved stereo float samples (-1..1). It must not block for long.
+**
+**	Returns 1 and the device's sample rate in *rate, or 0 if there is no output.
+*/
+typedef void (*RA_Audio_Render)(float * stereo, int frames, void * user);
+int  RA_Audio_Start(RA_Audio_Render render, void * user, int * rate);
+void RA_Audio_Stop(void);
+
 #ifdef __cplusplus
 }
 #endif

@@ -13,10 +13,61 @@
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
+#include <stdint.h>
+#include <vector>
 static int fails = 0;
 static void check(bool ok, const char * what) { printf("  %-66s %s\n", what, ok ? "ok" : "FAIL"); if (!ok) fails++; }
 static void be32(unsigned char * p, unsigned v) { p[0]=v>>24; p[1]=v>>16; p[2]=v>>8; p[3]=v; }
 static void le16(unsigned char * p, unsigned v) { p[0]=v; p[1]=v>>8; }
+
+extern "C" void __cdecl UnVQ_4x2(unsigned char *, unsigned char *, unsigned char *, unsigned long, unsigned long, unsigned long);
+extern "C" void __cdecl UnVQ_4x4(unsigned char *, unsigned char *, unsigned char *, unsigned long, unsigned long, unsigned long);
+
+/*
+**	The document's block decode, as it words it: "The index table is an array
+**	of bytes and is split into 2 parts - the top half and the bottom half.
+**	TopVal = Table[by*(Width/Wx)+bx]; LowVal = Table[(Width/Wx)*(Height/Wy)+by*(Width/Wx)+bx].
+**	If LowVal=0x0f (0x0ff for the start movie of Red Alert 95) you should simply
+**	fill the block with color TopVal", otherwise the block is codebook entry
+**	LowVal*256+TopVal, Wx*Wy bytes, row by row.
+*/
+static void reference_decode(unsigned char const * cb, unsigned char const * table, unsigned char * out,
+	int bw, int bh, int wx, int wy, int stride, int solid)
+{
+	for (int by = 0; by < bh; by++) for (int bx = 0; bx < bw; bx++) {
+		int top = table[by * bw + bx], low = table[bw * bh + by * bw + bx];
+		for (int y = 0; y < wy; y++) for (int x = 0; x < wx; x++) {
+			out[(by * wy + y) * stride + bx * wx + x] = (low == solid) ? (unsigned char)top
+				: cb[(low * 256 + top) * wx * wy + y * wx + x];
+		}
+	}
+}
+
+static uint32_t rng = 0x12345678u;
+static unsigned rnd(void) { rng ^= rng << 13; rng ^= rng >> 17; rng ^= rng << 5; return rng; }
+
+/* Random frames through the engine's decoder and the reference; returns cases that matched. */
+static int blocks_match(int wy, int solid, int cases)
+{
+	int ok = 0;
+	for (int n = 0; n < cases; n++) {
+		int bw = 1 + rnd() % 60, bh = 1 + rnd() % 40, stride = 4 * bw + (rnd() % 3 ? 0 : (int)(rnd() % 16));
+		int entries = 1 + rnd() % (solid == 0xFF ? 0xFF00 : 0x0F00);
+		std::vector<unsigned char> cb((size_t)entries * 4 * wy), table(2 * bw * bh);
+		for (auto & c : cb) c = (unsigned char)rnd();
+		for (int i = 0; i < bw * bh; i++) {
+			if (rnd() % 4 == 0) { table[i] = (unsigned char)rnd(); table[bw * bh + i] = (unsigned char)solid; continue; }
+			int e = rnd() % entries;
+			table[i] = (unsigned char)e; table[bw * bh + i] = (unsigned char)(e >> 8);
+		}
+		size_t size = (size_t)stride * bh * wy;
+		std::vector<unsigned char> a(size, 0xAA), b(size, 0xAA);
+		reference_decode(cb.data(), table.data(), a.data(), bw, bh, 4, wy, stride, solid);
+		(wy == 4 ? UnVQ_4x4 : UnVQ_4x2)(cb.data(), table.data(), b.data(), bw, bh, stride);
+		ok += a == b;
+	}
+	return ok;
+}
 
 int main() {
 	/* ---- per the document: FORM <size BE> WVQA, then VQHD <size BE> + 42-byte payload ---- */
@@ -54,6 +105,10 @@ int main() {
 	int32_t key = (int32_t)0x80000010u;
 	check((key & VQAFINF_KEY) != 0 && VQAFRAME_OFFSET(key) == 0x20, "FINF: key-frame flag in bit 31 survives the signed 32-bit entry");
 	check(PADSIZE(7) == 8 && PADSIZE(8) == 8, "odd-sized chunks are padded to even");
+
+	/* ---- VPT block decode against the document's own description ---- */
+	check(blocks_match(2, 0x0F, 500) == 500, "4x2 blocks: UnVQ_4x2 == the document's decode (solid 0x0f), 500 frames");
+	check(blocks_match(4, 0xFF, 500) == 500, "4x4 blocks: UnVQ_4x4 == the document's decode (solid 0xff), 500 frames");
 
 	printf("%s\n", fails ? "FAILED" : "vqa_format: all pass");
 	return fails != 0;

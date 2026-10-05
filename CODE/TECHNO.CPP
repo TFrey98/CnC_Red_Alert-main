@@ -5567,7 +5567,7 @@ void TechnoClass::Draw_Pips(int x, int y, WindowNumberType window) const
 		** If this unit is part of a formation, draw an 'F' after the group
 		** number.
 		*/
-		if ( ((FootClass *)this)->XFormOffset != 0x80000000UL) {
+		if ( ((FootClass *)this)->XFormOffset != (int)0x80000000U) {	// port: was 0x80000000UL -- see CONQUER.CPP
 			CC_Draw_Shape(Class_Of().PipShapes, PIP_LETTERF, x+8, y+yval, window, SHAPE_CENTER|SHAPE_WIN_REL);
 		}
 	}

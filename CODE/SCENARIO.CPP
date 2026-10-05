@@ -1319,7 +1319,7 @@ int BGMessageBox(char const * msg, int btn1, int btn2)	// port: declared int in 
 {
 #define BUFFSIZE 511
 	char buffer[BUFFSIZE];
-	bool retval;
+	int retval;		// port: was bool; holds 0, 1 or 2 and is compared with morebutton-1 (2) -- Watcom's bool was an int
 	bool process;								// loop while true
 	KeyNumType input;							// user input
 	int selection;

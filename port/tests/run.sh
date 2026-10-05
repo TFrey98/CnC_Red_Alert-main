@@ -65,7 +65,7 @@ clang++ $RA_CXXFLAGS -w -g -fsanitize=thread "$T/mm_timer.cpp" "${RA_ROOT}/port/
 if (( mt == 0 )) && ! grep -q "WARNING: ThreadSanitizer" "$OUT/mm_timer.out"; then tail -1 "$OUT/mm_timer.out"; else cat "$OUT/mm_timer.out"; fail=1; fi
 
 print "VQA movie structures vs an independent format description (multimedia.cx)"
-clang++ $RA_WINVQ_CXXFLAGS -w -I"${RA_ROOT}/WINVQ/VQA32" "$T/vqa_format.cpp" -o "$OUT/vqa_format"
+clang++ $RA_WINVQ_CXXFLAGS -w -fsanitize=address -I"${RA_ROOT}/WINVQ/VQA32" "$T/vqa_format.cpp" "${RA_ROOT}/WINVQ/VQA32/UNVQBUFF.CPP" -o "$OUT/vqa_format"
 "$OUT/vqa_format" | tail -1 | grep -q "all pass" && "$OUT/vqa_format" | tail -1 || { "$OUT/vqa_format"; fail=1 }
 
 print "LCW / Format80 decoders vs the independent format description (3000 random streams)"

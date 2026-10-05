@@ -78,7 +78,7 @@ int WWMessageBox::Process(const char * msg, const char * b1txt, const char * b2t
 {
 #define BUFFSIZE (511)
 	char buffer[BUFFSIZE];
-	bool retval;
+	int retval;		// port: was bool. It holds 0, 1 or 2 (the button pressed); Watcom's bool was an int, so 2 survived -- as a real bool it became 1 ("Cancel"), and the Soviet button did nothing
 	bool process;								// loop while true
 	int selection;
 	bool pressed;

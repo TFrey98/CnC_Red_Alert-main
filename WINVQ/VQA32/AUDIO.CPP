@@ -124,7 +124,7 @@ static long TimerMethod;
 static long VQATickCount = 0;
 #endif /* VQAAUDIO_ON */
 
-static long TickOffset = 0;
+static int32_t TickOffset = 0;	// port: 32-bit, as the clock arithmetic was on Watcom (see VQA_GetTime)
 char *HMIDevName = "<none>";
 
 #if(VQAAUDIO_ON)
@@ -2003,7 +2003,7 @@ BOOL Move_HMI_Audio_Block_To_Direct_Sound_Buffer (void)
 
 void VQA_SetTimer(VQAHandleP *vqap, long time, long method)
 {
-	unsigned long curtime;
+	uint32_t curtime;	// port: 32-bit, see VQA_GetTime
 
 	#if(VQAAUDIO_ON)
 	VQAAudio      *audio;
@@ -2050,7 +2050,7 @@ void VQA_SetTimer(VQAHandleP *vqap, long time, long method)
 
 	TickOffset = 0L;
 	curtime = VQA_GetTime(vqap);
-	TickOffset = (time - curtime);
+	TickOffset = (int32_t)((uint32_t)time - curtime);
 }
 
 
@@ -2115,18 +2115,27 @@ unsigned long VQA_GetTime(VQAHandleP *vqap)
 	#if(VQAAUDIO_ON)
 	VQAAudio      *audio;
 	VQAConfig     *config;
-	unsigned long fillcount;
-	unsigned long lastfill;
-	unsigned long dma_diff;
-	unsigned long totalbytes;
-	unsigned long samples;
+	/*
+	**	Port: uint32_t, not unsigned long (64 bits here). The clock is briefly
+	**	"negative" at the start (the byte count is computed before the first
+	**	chunk is in), and VQA_SetTimer folds that into TickOffset. On Watcom
+	**	everything wrapped mod 2^32 and the offset cancelled exactly; in 64 bits
+	**	the division of the wrapped count is not congruent, the offset was
+	**	garbage, every frame looked overdue, and movies played in bursts as the
+	**	loader delivered them (choppy video, audio fine).
+	*/
+	uint32_t fillcount;
+	uint32_t lastfill;
+	uint32_t dma_diff;
+	uint32_t totalbytes;
+	uint32_t samples;
 	DWORD				play_cursor;		//Position that direct sound is reading from
 	DWORD				write_cursor;		//Position in buffer that we can write to
 	unsigned			temp;
 	#endif
 
 	// MEG 09.25.95 - changed from long to unsigned long
-	unsigned long ticks;
+	uint32_t ticks;		// port: 32-bit, see above
 
 	#if(VQAAUDIO_ON)
 	switch (TimerMethod) {
@@ -2207,7 +2216,7 @@ unsigned long VQA_GetTime(VQAHandleP *vqap)
 			 * processed times the tick resolution per second divided by the
 			 * sample rate.
 			 */
-			ticks = (long)((samples * VQA_TIMETICKS) / audio->SampleRate);
+			ticks = (uint32_t)((samples * (uint32_t)VQA_TIMETICKS) / (uint32_t)audio->SampleRate);	// port: 32-bit product, as on Watcom
 			ticks += TickOffset;
 			break;
 
@@ -2224,7 +2233,7 @@ unsigned long VQA_GetTime(VQAHandleP *vqap)
 
 			ftime(&mytime);
  			ticks = (unsigned long)mytime.time*1000L+(unsigned long)mytime.millitm;
-			ticks = ((ticks * VQA_TIMETICKS) / 1000L);
+			ticks = ((ticks * (uint32_t)VQA_TIMETICKS) / 1000u);	// port: 32-bit
 			ticks += TickOffset;
 			}
 			break;
@@ -2251,7 +2260,7 @@ unsigned long VQA_GetTime(VQAHandleP *vqap)
 	// 60 and dividing by 1000.  The reason for this is that multiplying by
 	// 60 causes an overflow pretty quickly if the value from Get_Game_Time
 	// is high.
-	ticks = ((ticks * 3L) / 50L);
+	ticks = ((ticks * 3u) / 50u);	// port: 32-bit, as on Watcom
 
 	ticks += TickOffset;
 	}

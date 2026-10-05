@@ -26,6 +26,9 @@ is. This file tracks what's working, what's open, and what to do next.
 | Weapons pointing into freed memory | Rules pools rebuilt for AFTRMATH.INI; Watcom happened to reuse the block | `Set_Heap` keeps storage at the same size (`HEAP.CPP`) |
 | Library and game `TickCount` merged into one object | Watcom's type-encoded symbols kept them apart | `-DTickCount=WWLib_TickCount` for library compiles |
 | LCW decoding past its buffer | The build used Westwood's C decoder, which ignores the length | `WIN32LIB/IFF/LCWUNCMP.CPP`, translated from the shipped assembly, verified (600 cases vs both copies) |
+| Start movie: sound, no picture | 4x4 block decoding disabled in the C header; the released 4x4 decoder doesn't match the files | `UnVQ_4x4` written from the published format, verified against it; `VQABLOCK_4X4 1` |
+| All movies choppy | Movie clock's 32-bit wraparound broken by 64-bit `unsigned long` | `VQA_GetTime`/`VQA_SetTimer` in 32-bit arithmetic |
+| Soviet campaign button did nothing | `WWMessageBox` kept its 0/1/2 result in a `bool`; "Soviet" (2) became 1, Cancel | `int` (also `BGMessageBox`, `ReadyToQuit`); formation sentinel compared at 64 bits, fixed. Soviet mission 1 confirmed by script, ASan-clean, and by the user |
 | Smaller sanitizer findings | `MissionControl[-1]`; unbounded bit scan; overlapping `strcpy`/`strncpy`/`memcpy`; straw destruction order | See `PORTING.md`, "Fifth pass" |
 
 Checks after the last change:
@@ -37,9 +40,8 @@ Checks after the last change:
 
 ## Open, in priority order
 
-1. **Briefing movies play "almost properly"** (user report): get specifics from
-   the user (picture, sound, timing?).
-2. **Retest by the user:** Soviet campaign (past the old `AnimClass` crash?),
+1. **Movies:** user to confirm the start movie and briefings look smooth.
+2. **Retest by the user:** Soviet campaign beyond mission 1,
    music and effects by ear, focus/cursor with real pointer movement.
 3. **Startup waits for focus.** The game blocks in `INIT.CPP` until it gets
    `WM_ACTIVATEAPP`. Launched while another app has focus, macOS may refuse

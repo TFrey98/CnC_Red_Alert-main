@@ -298,6 +298,29 @@ mission 2, production, combat, unit moves; 129 s) reports zero errors.
   `memcpy` (`strtrim`, `INIClass::Get_String`, path shifts) now `memmove`;
   `MixFileClass`'s straws destroyed in the wrong order.
 
+### Movies: no picture, and choppy playback
+
+- **The start movie had sound but no picture.** ENGLISH.VQA (640x400) uses 4x4
+  blocks. The released C header had `VQABLOCK_4X4 0` (the assembly's
+  `VQAPLAY.I` has 1), so the drawer chose `UnVQ_Nop`. Turning it on exposed a
+  second problem: the assembly's `UnVQ_4x4` reads 16-bit codebook offsets,
+  which is not how these files store pointers. The published format says the
+  pointers are the same split low/high tables as 4x2, with "0x0ff for the start
+  movie of Red Alert 95" as the solid-colour marker. The decoder RA95 actually
+  shipped for it isn't in the released source, so `UnVQ_4x4`
+  (`WINVQ/VQA32/UNVQBUFF.CPP`) is written from the format.
+  `port/tests/vqa_format.cpp` checks it, and `UnVQ_4x2`, against a decoder
+  written from the document's wording: 500 random frames each.
+- **Every movie played in bursts** (sound fine, picture choppy). `VQA_GetTime`
+  is briefly "negative" when the clock is set, and `VQA_SetTimer` folds that
+  into `TickOffset`. On Watcom it was all 32-bit `unsigned long` and wrapped
+  consistently; in 64 bits the wrapped byte count divides differently, the
+  offset was garbage, and every frame looked overdue. Frames were then drawn as
+  soon as loaded, in bursts every audio chunk (about 180 ms). The clock
+  arithmetic is now `uint32_t`/`int32_t` (`WINVQ/VQA32/AUDIO.CPP`). Measured
+  after: each frame drawn when due, 60-70 ms apart (15 fps), and the drawer
+  never waits on the loader.
+
 ### Related: bool, narrowing, and for-scope
 
 - **Watcom 10.6 had no native `bool`; the engine's polyfill was
@@ -306,6 +329,18 @@ mission 2, production, combat, unit moves; 129 s) reports zero errors.
   that a real `bool` would collapse. Confirmed exhaustively with clang's
   `-Wdeprecated-increment-bool`, which flags every `++` on a `bool`: it is the
   only one. It is now an `int`.
+- **More `bool`-as-`int` sites, found later by symptom** (the `++` check above
+  can't see stores of 2 or 3). `WWMessageBox::Process` and `BGMessageBox` kept
+  their 0/1/2 result in a `bool retval`, so the third button read as 1: the
+  side-choice "Soviet" button acted as Cancel, and long briefings never paged.
+  `ReadyToQuit` is a 0-3 shutdown state held in a `bool`. All three are `int`
+  now. A sweep with `-Wconstant-conversion`, `-Wswitch-bool` and
+  `-Wtautological-constant-out-of-range-compare` over every linked file found
+  no others. It did find `XFormOffset == 0x80000000UL` (`CONQUER.CPP`,
+  `TECHNO.CPP`): an `int` against a constant that is 64 bits here, so it never
+  matched and formations went undetected; it's `0x80000000U` now. Westwood's own
+  slips are left as they shipped: `switch (!Type)` (`TECHNO.CPP`) and
+  `&= !(1L << house)` (`HOUSE.CPP`).
 - **581 brace-initialisers narrow constants 128-255 into `char`** (508 in
   `COORD.CPP`'s tables). C++98 wrapped them; C++11 rejects them.
   `-Wno-c++11-narrowing` restores the wrap, and it was verified on the target

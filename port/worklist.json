@@ -576,11 +576,6 @@
    "note": "compiles clean for arm64"
   },
   {
-   "file": "CODE/LCWUNCMP.CPP",
-   "tag": "DONE",
-   "note": "compiles clean for arm64"
-  },
-  {
    "file": "CODE/LINK.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
@@ -1461,8 +1456,8 @@
   {
    "file": "WIN32LIB/IFF/LCWUNCMP.ASM",
    "lines": 292,
-   "tag": "SUPERSEDED",
-   "note": "C already defines: LCW_Uncompress"
+   "tag": "TRANSLATED",
+   "note": "LCWUNCMP.CPP, verified against the original assembly (port/asmref)"
   },
   {
    "file": "WIN32LIB/IFF/PACK2PLN.ASM",
@@ -1564,7 +1559,7 @@
    "file": "WIN32LIB/SHAPE/DRAWSHP.ASM",
    "lines": 1128,
    "tag": "UNLINKED",
-   "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Draw_Shape"
+   "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: Draw_Shape, LCW_Uncompress"
   },
   {
    "file": "WIN32LIB/SHAPE/DS_DN.ASM",
@@ -1707,8 +1702,8 @@
   {
    "file": "WINVQ/VQM32/LCWUNCMP.ASM",
    "lines": 221,
-   "tag": "SUPERSEDED",
-   "note": "C already defines: LCW_Uncompress"
+   "tag": "UNLINKED",
+   "note": "nothing the linked game calls (LINK-CENSUS); was: no C yet for: LCW_Uncompress"
   },
   {
    "file": "WINVQ/VQM32/PALETTE.ASM",
@@ -1888,6 +1883,11 @@
   },
   {
    "file": "WIN32LIB/IFF/IFF.CPP",
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
+  },
+  {
+   "file": "WIN32LIB/IFF/LCWUNCMP.CPP",
    "tag": "DONE",
    "note": "compiles clean for arm64"
   },

@@ -240,12 +240,63 @@ parts.
   library `extern` against the game's definitions found one other mismatch,
   `TickCount` (library `TimerClass` vs game `TTimerClass`). It's latent: the
   library functions that use it are dead-stripped.
+- **Every building placement refused** (`CODE/EVENT.H`). The placement click
+  passes `cell + ZoneOffset`, an `int`, so C++ picks EventClass's
+  `(EventType, RTTIType, int id)` constructor, which writes `Data.Specific.ID`.
+  The PLACE handler reads `Data.Place.Cell`. Under Watcom's `/zp1` both start
+  at byte 1, after the one-byte `RTTIType`, and on little-endian x86 the int's
+  low half *is* the cell. With natural alignment the ID went to byte 4, the
+  cell read as 0 from padding, and the building was tried at cell 0. EventClass
+  is now packed as Watcom built it, with a `static_assert` on that overlap.
+  Traced click → event → `Unlimbo` with scripted input; the user confirmed
+  building works. Other game code may lean on `/zp1` union overlaps the same
+  way; none found yet.
 - **Focus and the pointer** (`port/backend/ra_metal.mm`, `ra_input.mm`): Cocoa
   sends mouse moves only to the active app's key window; Windows sent them to
   whichever window was under the pointer. After clicking away and back, the
   game's cursor stayed where the pointer had left, usually on an edge. The view
   now has an always-active tracking area, and activation re-reports the real
   pointer position.
+
+### Fifth pass: AddressSanitizer over a played mission
+
+`RA_SANITIZE=1` (in `port/flags.sh`) builds everything with AddressSanitizer in
+recover mode, with `-g`. Paired with scripted input it runs a mission start to
+finish and reports every out-of-bounds access, use after free and overlap.
+Most of these were silent on Watcom, either harmless there by luck or
+corrupting something nobody noticed. The final session (menu, briefings,
+mission 2, production, combat, unit moves; 129 s) reports zero errors.
+
+- **Crash in `Find_Path`** (stack protector, user report): `Follow_Edge` writes
+  its END terminator one past a full 302-entry move list. Original bug; the
+  lists get one slot of headroom, and the limit is unchanged.
+- **Two `TickCount`s merged into one object**: the library's `TimerClass
+  TickCount` and the game's `TTimerClass TickCount`. Watcom's type-encoded
+  symbol names kept them apart; here two constructors ran on the same bytes.
+  The library's is renamed for library compiles (`-DTickCount=WWLib_TickCount`).
+- **Weapon/warhead pointers into freed memory**: `Heap_Maximums` runs for
+  RULES.INI and again for AFTRMATH.INI, freeing and rebuilding pools that unit
+  types still point into. Worked on Watcom because the freed block came
+  straight back. `FixedHeapClass::Set_Heap` now keeps its storage when the size
+  is unchanged.
+- **Movies: a garbage chunk size after the audio "sleeps"**
+  (`WINVQ/VQA32/LOADER.CPP`): `iffsize` was a local set only when a new chunk
+  header was read; the resumed call used whatever was on the stack. It's now
+  re-derived from the saved header. This was the "ENGLISH.VQA error 14" and is
+  why the logo and briefing movies now play.
+- **LCW decompression ignored its length**: the build used Westwood's C
+  `LCW_Uncompress` (CODE/LCWUNCMP.CPP), which by its own comment ignores the
+  length; the shipped assembly clamps every run to it and stops when full.
+  Replaced with `WIN32LIB/IFF/LCWUNCMP.CPP`, a translation of the assembly
+  verified against both shipped copies (600 cases, `asm_game`).
+- **Shutdown during a movie** (user report): `Prog_End` freed the sound system
+  with the movie's audio timer still running. It now stops movie audio first
+  (`VQA_Port_Stop_Any_Audio`).
+- Smaller: `MissionControl[MISSION_NONE]` read the byte before the table
+  (`Enter_Idle_Mode`); `First_False_Bit` scanned past the bit array (now bounded
+  in `BooleanVectorClass`, same results); overlapping `strcpy`/`strncpy`/
+  `memcpy` (`strtrim`, `INIClass::Get_String`, path shifts) now `memmove`;
+  `MixFileClass`'s straws destroyed in the wrong order.
 
 ### Related: bool, narrowing, and for-scope
 

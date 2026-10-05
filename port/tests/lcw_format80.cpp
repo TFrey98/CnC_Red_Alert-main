@@ -72,7 +72,7 @@ int main() {
 		if (na == want.size()) len_a++;
 		if (memcmp(b.data(), want.data(), want.size()) == 0) ok_b++;
 	}
-	printf("  LCW_Uncompress (LCWUNCMP.CPP: shapes, icons, palettes) %d/%d streams exact\n", ok_a, total);
+	printf("  LCW_Uncompress (WIN32LIB/IFF/LCWUNCMP.CPP) %d/%d streams exact\n", ok_a, total);
 	printf("  LCW_Uncompress returns the decoded length           %d/%d\n", len_a, total);
 	printf("  LCW_Uncomp     (LCW.CPP: streamed and saved data)      %d/%d streams exact\n", ok_b, total);
 	bool pass = ok_a == total && ok_b == total && len_a == total;

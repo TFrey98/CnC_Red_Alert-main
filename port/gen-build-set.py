@@ -14,17 +14,20 @@ DOS/Win32 pair. So the set is the makefile's, plus files live code demonstrably
 depends on (it calls something defined only there):
 
   + PALETTE   PaletteClass, reconstructed by the port (never released)
-  + LCWUNCMP  C implementation of LCW_Uncompress (LCWUNCMP.ASM), already in the tree
   + CSTRAW    CacheStraw, used by live code
   + RAND      Sim_IRandom, called from MPLAYER.CPP
   + PRAGMAUX  C bodies for Watcom `#pragma aux` inline-asm functions (port-created)
   + NETSTUB   inert multiplayer stand-ins for the single-player build (port-created)
   + PORTSTUB  stand-ins for DOS/debug-only code the Mac build lacks (port-created)
+
+(CODE/LCWUNCMP.CPP, Westwood's C LCW_Uncompress, was once an extra too. It
+ignores its length argument, which the shipped assembly honours; the build now
+uses WIN32LIB/IFF/LCWUNCMP.CPP, a verified translation of that assembly.)
 """
 import os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-EXTRA = ['PALETTE', 'LCWUNCMP', 'CSTRAW', 'RAND', 'PRAGMAUX', 'NETSTUB', 'PORTSTUB']
+EXTRA = ['PALETTE', 'CSTRAW', 'RAND', 'PRAGMAUX', 'NETSTUB', 'PORTSTUB']
 
 objs, stack, cur = set(), [], None
 for raw in open(os.path.join(ROOT, 'CODE', 'MAKEFILE'), encoding='latin-1'):

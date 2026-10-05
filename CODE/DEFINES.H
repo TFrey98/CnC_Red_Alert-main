@@ -2989,6 +2989,11 @@ typedef enum FacingType {
 	FACING_COUNT,			// Total of 8 directions (0..7).
 	FACING_FIRST=0
 } FacingType;
+#ifdef __cplusplus
+/* port: path lists of FacingType are copied by byte count (DRIVE.CPP, FINDPATH.CPP),
+** which is right only while it is one byte, as under Watcom (-fshort-enums, port/flags.sh). */
+static_assert(sizeof(FacingType) == 1, "FacingType must be one byte, as Watcom made it");
+#endif
 
 inline FacingType operator++(FacingType & value, int) { FacingType old = value; value = (FacingType)((int)value + 1); return old; }
 inline FacingType operator + (FacingType f1, FacingType f2)

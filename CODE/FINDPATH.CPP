@@ -447,8 +447,16 @@ PathType * FootClass::Find_Path(CELL dest, FacingType * final_moves, int maxlen,
 	int					len;										// Length of detour command list.
 	int					unit_threat;							// Calculated unit threat rating
 	int					cost;										// Cost to enter the square
-	FacingType			moves_left[MAX_MLIST_SIZE+2], 	// Counterclockwise move list.
-							moves_right[MAX_MLIST_SIZE+2];	// Clockwise move list.
+	/*
+	**	Port: one slot more than the limit passed to Follow_Edge. It fills a list
+	**	up to that limit and then, on reaching the target, writes END at
+	**	Command[Length] -- one past the end when the list is full. In the
+	**	original that byte landed on whatever local came next; here the stack
+	**	protector caught it (crash in Find_Path, mission 2). The limit itself is
+	**	unchanged (MAX_MLIST_SIZE+2), so paths are exactly as before.
+	*/
+	FacingType			moves_left[MAX_MLIST_SIZE+2+1], 	// Counterclockwise move list.
+							moves_right[MAX_MLIST_SIZE+2+1];	// Clockwise move list.
 	PathType				pleft,pright;							// Path control structures.
 	PathType *			which;									// Which path to actually use.
 	int					threat;
@@ -628,7 +636,7 @@ top_of_list:
 				pleft.Overlap 	= LeftOverlap;
 				Mem_Copy(path.Command, pleft.Command, path.Length * sizeof(FacingType));		// port: was path.Length bytes -- right only while Watcom made FacingType one byte
 				Mem_Copy(path.Overlap, pleft.Overlap, sizeof(LeftOverlap));
-				left = Follow_Edge(startcell, next, &pleft, COUNTERCLOCK, direction, threat, threat_stage, sizeof(moves_left)/sizeof(moves_left[0]), threshhold);
+				left = Follow_Edge(startcell, next, &pleft, COUNTERCLOCK, direction, threat, threat_stage, MAX_MLIST_SIZE+2, threshhold);	// port: was sizeof(moves_left)/sizeof(moves_left[0]); see moves_left
 //				left = Follow_Edge(startcell, next, &pleft, COUNTERCLOCK, direction, threat, threat_stage, follow_len, threshhold);
 
 				if (left) {
@@ -640,7 +648,7 @@ top_of_list:
 				pright.Overlap = RightOverlap;
 				Mem_Copy(path.Command, pright.Command, path.Length * sizeof(FacingType));	// port: as above
 				Mem_Copy(path.Overlap, pright.Overlap, sizeof(RightOverlap));
-				right = Follow_Edge(startcell, next, &pright, CLOCK, direction, threat, threat_stage, sizeof(moves_right)/sizeof(moves_right[0]), threshhold);
+				right = Follow_Edge(startcell, next, &pright, CLOCK, direction, threat, threat_stage, MAX_MLIST_SIZE+2, threshhold);	// port: as above
 //				right = Follow_Edge(startcell, next, &pright, CLOCK, direction, threat, threat_stage, follow_len, threshhold);
 
 				/*

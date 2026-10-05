@@ -187,9 +187,9 @@ MixFileClass<T>::MixFileClass(char const * filename, PKey const * key) :
 
 	T file(filename);		// Working file object.
 	Filename = strdup(file.File_Name());
-	FileStraw fstraw(file);
-	PKStraw pstraw(PKStraw::DECRYPT, CryptRandom);
-	Straw * straw = &fstraw;
+	PKStraw pstraw(PKStraw::DECRYPT, CryptRandom);	// port: declared before fstraw so fstraw is destroyed first.
+	FileStraw fstraw(file);								// The other way round, ~FileStraw unlinked itself through the already
+	Straw * straw = &fstraw;							// destroyed pstraw (use after scope; found by RA_SANITIZE=1).
 
 	if (!file.Is_Available()) return;
 

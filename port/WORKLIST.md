@@ -7,7 +7,7 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 | Tag | Meaning | Files |
 |---|---|---|
-| DONE | compiles clean for arm64 | 234 |
+| DONE | compiles clean for arm64 | 233 |
 | TWEAK | needs source or compat fixes | 0 |
 | DROP | out of scope for single-player; left in place because live code includes its headers | 20 |
 | NATIVE | the Win32 platform layer: reimplement over port/backend/ | 0 |
@@ -16,11 +16,11 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 | Tag | Meaning | Files | Lines |
 |---|---|---|---|
-| TRANSLATED | done: a C translation beside it, verified against the original | 31 | 17,666 |
+| TRANSLATED | done: a C translation beside it, verified against the original | 32 | 17,958 |
 | REPLACED | done: replaced natively -- it drove x86/VGA hardware | 3 | 641 |
-| UNLINKED | named in headers, but nothing the linked game calls (per the last link census) | 33 | 8,240 |
+| UNLINKED | named in headers, but nothing the linked game calls (per the last link census) | 34 | 8,461 |
 | TRANSLATE | live, no C yet: rewrite as portable C | 0 | 0 |
-| SUPERSEDED | live, but a C/C++ definition already exists in the tree | 8 | 1,761 |
+| SUPERSEDED | live, but a C/C++ definition already exists in the tree | 6 | 1,248 |
 | NATIVE | needed, reimplemented on a macOS framework | 0 | 0 |
 | REBUILD | no arm64 equivalent; new logic | 0 | 0 |
 | DEAD | nothing live calls it | 2 | 323 |
@@ -38,7 +38,7 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## TRANSLATED -- 31 files, 17,666 lines
+## TRANSLATED -- 32 files, 17,958 lines
 
 | File | Lines | Note |
 |---|---|---|
@@ -59,6 +59,7 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 | `WINVQ/VQM32/AUDUNZAP.ASM` | 375 | AUDUNZAP.CPP, verified against the original assembly (port/asmref) |
 | `WIN32LIB/AUDIO/AUDUNCMP.ASM` | 373 | AUDUNCMP.CPP, verified against the original assembly (port/asmref) |
 | `WIN32LIB/DRAWBUFF/TOPAGE.ASM` | 293 | TOPAGE.CPP, verified against the original assembly (port/asmref) |
+| `WIN32LIB/IFF/LCWUNCMP.ASM` | 292 | LCWUNCMP.CPP, verified against the original assembly (port/asmref) |
 | `WIN32LIB/DRAWBUFF/TOBUFF.ASM` | 291 | TOBUFF.CPP, verified against the original assembly (port/asmref) |
 | `WIN32LIB/DRAWBUFF/STMPCACH.ASM` | 284 | STMPCACH.CPP, verified against the original assembly (port/asmref) |
 | `CODE/LCWCOMP.ASM` | 283 | LCWCOMP.CPP, verified against the original assembly (port/asmref) |
@@ -86,11 +87,11 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## UNLINKED -- 33 files, 8,240 lines
+## UNLINKED -- 34 files, 8,461 lines
 
 | File | Lines | Note |
 |---|---|---|
-| `WIN32LIB/SHAPE/DRAWSHP.ASM` | 1,128 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Draw_Shape |
+| `WIN32LIB/SHAPE/DRAWSHP.ASM` | 1,128 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Draw_Shape, LCW_Uncompress |
 | `WIN32LIB/DRAWBUFF/FILLQUAD.ASM` | 669 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Buffer_Fill_Quad |
 | `WIN32LIB/DRAWBUFF/TXTPRNT.ASM` | 501 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Buffer_Print, Get_Font_Palette_Ptr |
 | `WIN32LIB/FONT/TEXTPRNT.ASM` | 436 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Text_Print |
@@ -103,6 +104,7 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 | `WINVQ/VQM32/LCWCOMP.ASM` | 266 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: LCW_Compress |
 | `WIN32LIB/SHAPE/DS_DN.ASM` | 257 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
 | `WIN32LIB/SHAPE/DS_DR.ASM` | 257 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
+| `WINVQ/VQM32/LCWUNCMP.ASM` | 221 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: LCW_Uncompress |
 | `WINVQ/VQM32/FILLRECT.ASM` | 216 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Eor_Region, Fill_Rect |
 | `WIN32LIB/SHAPE/DS_TABLE.ASM` | 187 | nothing the linked game calls (LINK-CENSUS); was: called from other assembly |
 | `WINVQ/VQM32/TEXTPRNT.ASM` | 178 | nothing the linked game calls (LINK-CENSUS); was: no C yet for: Text_Print |
@@ -126,13 +128,11 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## SUPERSEDED -- 8 files, 1,761 lines
+## SUPERSEDED -- 6 files, 1,248 lines
 
 | File | Lines | Note |
 |---|---|---|
 | `CODE/2SUPPORT.ASM` | 564 | C already defines: Conquer_Build_Fading_Table, strtrim |
-| `WIN32LIB/IFF/LCWUNCMP.ASM` | 292 | C already defines: LCW_Uncompress |
-| `WINVQ/VQM32/LCWUNCMP.ASM` | 221 | C already defines: LCW_Uncompress |
 | `WIN32LIB/MISC/FACINGFF.ASM` | 164 | C already defines: Desired_Facing256 |
 | `WIN32LIB/MISC/FACING8.ASM` | 140 | C already defines: Desired_Facing8 |
 | `CODE/COORDA.ASM` | 134 | C already defines: Cardinal_To_Fixed, Fixed_To_Cardinal |
@@ -198,7 +198,7 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## Libraries (`port/lib-build-set.txt`) -- {'DONE': 97, 'DROP': 8, 'NATIVE': 1}
+## Libraries (`port/lib-build-set.txt`) -- {'DONE': 98, 'DROP': 8, 'NATIVE': 1}
 
 Measured by `port/probe-libs.sh`, each library with its own include path.
 

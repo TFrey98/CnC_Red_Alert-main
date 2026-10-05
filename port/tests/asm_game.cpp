@@ -195,6 +195,34 @@ int main()
 		ok &= t.report();
 	}
 	{
+		/* Both shipped copies of the assembly (WIN32LIB/IFF, WINVQ/VQM32) agreed
+		** on every case when the vectors were made. */
+		Tally t("LCW_Uncompress (length-bounded, as shipped)");
+		for (Case const & c : load("lcw_uncomp")) {
+			int size = (int)c.in[0], mode = (int)c.in[2];
+			uint32_t seed = (uint32_t)c.in[1], dseed = (uint32_t)c.in[4];
+			unsigned long length = (unsigned long)c.in[3];
+			int slen = (int)c.in[5];
+			std::vector<unsigned char> data = lcw_data(seed, size);
+			std::vector<unsigned char> slack(128);
+			fill(slack.data(), 128, seed ^ 0xFFFFFFFFu);
+			data.insert(data.end(), slack.begin(), slack.end());
+			std::vector<unsigned char> stream(2 * size + 256);
+			int clen = LCW_Comp(data.data(), stream.data(), size);
+			if (mode == 2 && clen > 0 && stream[clen - 1] == 0x80) clen--;
+			stream.resize(clen);
+			std::vector<unsigned char> past(64);
+			fill(past.data(), 64, dseed ^ 0x5A5A5A5Au);
+			stream.insert(stream.end(), past.begin(), past.end());
+			size_t dsize = ((size_t)length > (size_t)size ? (size_t)length : (size_t)size) + 2 * GUARD;
+			std::vector<unsigned char> d(dsize);
+			fill(d.data(), dsize, dseed);
+			long ret = (long)LCW_Uncompress(stream.data(), d.data() + GUARD, length);
+			t.check(c, clen == slen && ret == c.out[0] && fnv(d.data(), dsize) == c.out[1]);
+		}
+		ok &= t.report();
+	}
+	{
 		Tally t("Buffer_Frame_To_Page");
 		for (Case const & c : load("buffer_frame_to_page")) {
 			long long const * p = &c.in[0];

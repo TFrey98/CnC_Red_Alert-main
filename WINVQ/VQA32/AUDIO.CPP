@@ -1521,6 +1521,17 @@ long VQA_StartAudio(VQAHandleP *vqap)
 *
 ****************************************************************************/
 
+/*
+**	Port: stop the playing movie's audio, if any. Prog_End calls this before
+**	Sound_End frees the sound buffers: closing the window during a movie ended
+**	the game with the movie's audio timer still running, and its next tick used
+**	the freed primary buffer (crash in AudioCallback).
+*/
+void VQA_Port_Stop_Any_Audio(void)
+{
+	if (VQAP) VQA_StopAudio(VQAP);
+}
+
 void VQA_StopAudio(VQAHandleP *vqap)
 {
 	VQAAudio *audio;

@@ -46,6 +46,17 @@
 ** NOTE: If you add or remove an event type, you must also update the globals
 ** EventLength[] and EventNames[].
 */
+/*
+**	Port: packed as Watcom built it (/zp1). The game relies on members of the
+**	Data union overlapping byte for byte as they did then. Most visibly, the
+**	building-placement click passes `cell + ZoneOffset` -- an int -- so C++
+**	picks the (EventType, RTTIType, int id) constructor and fills
+**	Data.Specific.ID, while PLACE reads Data.Place.Cell. Packed, both sit at
+**	byte 1 after the one-byte RTTIType and the int's low half IS the cell; with
+**	natural alignment the ID went to byte 4, the cell was read from padding as
+**	0, and every building was "placed" at cell 0 and refused.
+*/
+#pragma pack(push, 1)
 class EventClass
 {
 	public:
@@ -256,5 +267,11 @@ class EventClass
 		static unsigned char EventLength[LAST_EVENT];
 		static char * EventNames[LAST_EVENT];
 };
+#pragma pack(pop)
+#ifdef __cplusplus
+#include <stddef.h>
+static_assert(offsetof(EventClass, Data.Place.Cell) == offsetof(EventClass, Data.Specific.ID),
+	"PLACE events built by the (type, RTTIType, int) constructor need Place.Cell to overlay Specific.ID");
+#endif
 
 #endif

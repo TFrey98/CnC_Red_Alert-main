@@ -1689,7 +1689,7 @@ void InfantryClass::Enter_Idle_Mode(bool )
 			}
 		} else {
 
-			if (Mission == MISSION_GUARD || Mission == MISSION_GUARD_AREA || MissionControl[Mission].IsZombie || MissionControl[Mission].IsParalyzed) {
+			if (Mission == MISSION_GUARD || Mission == MISSION_GUARD_AREA || (Mission != MISSION_NONE && (MissionControl[Mission].IsZombie || MissionControl[Mission].IsParalyzed))) {	/* port: as in UnitClass::Enter_Idle_Mode -- no mission yet means MissionControl[-1] (found by RA_SANITIZE=1) */
 				return;
 			}
 
@@ -3967,7 +3967,7 @@ void InfantryClass::Movement_AI(void)
 			Mark(MARK_UP);
 			if (Distance(Head_To_Coord()) < 0x0010) {
 
-				memcpy(&Path[0], &Path[1], sizeof(Path)-sizeof(Path[0]));
+				memmove(&Path[0], &Path[1], sizeof(Path)-sizeof(Path[0]));	// port: was memcpy; source and destination overlap
 				Path[(sizeof(Path)/sizeof(Path[0]))-1] = FACING_NONE;
 				Coord = Head_To_Coord();
 				Per_Cell_Process(PCP_END);

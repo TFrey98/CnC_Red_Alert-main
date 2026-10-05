@@ -36,18 +36,18 @@ void strtrim(char * buffer)
 		**	Strip leading white space from the string.
 		*/
 		char * source = buffer;
-		while (isspace(*source)) {
+		while (isspace((unsigned char)*source)) {		// port: unsigned -- isspace of a negative char is undefined
 			source++;
 		}
 		if (source != buffer) {
-			strcpy(buffer, source);
+			memmove(buffer, source, strlen(source) + 1);	// port: was strcpy, which is undefined for overlapping strings
 		}
 
 		/*
 		**	Clip trailing white space from the string.
 		*/
 		for (int index = strlen(buffer)-1; index >= 0; index--) {
-			if (isspace(buffer[index])) {
+			if (isspace((unsigned char)buffer[index])) {
 				buffer[index] = '\0';
 			} else {
 				break;

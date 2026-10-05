@@ -16,6 +16,15 @@ RA_TARGET=(
   -target arm64-apple-macos13
 )
 
+# RA_SANITIZE=1: build everything (game, libraries, backend, link) with
+# AddressSanitizer, for test runs. It stops at the first out-of-bounds access
+# anywhere -- stack, heap or globals -- instead of letting it corrupt memory
+# quietly, which is how most of this code's latent bugs behaved on Watcom.
+if [[ -n "$RA_SANITIZE" ]]; then
+  # recover: with ASAN_OPTIONS=halt_on_error=0 a run reports every error, not just the first
+  RA_TARGET+=(-fsanitize=address -fsanitize-recover=address -fno-omit-frame-pointer -g)
+fi
+
 RA_STD=(
   -std=c++11
 
@@ -119,7 +128,15 @@ RA_CXXFLAGS=($RA_TARGET $RA_STD $RA_DEFINES $RA_INCLUDES)
 # <windows.h>`, so each library file gets windows.h from WWSTD.H. Passing -DWIN32
 # makes WWSTD.H skip that include and leaves UINT, WORD, LONG etc. undeclared.
 # TRUE_FALSE_DEFINED stays: game and libraries must agree on what `bool` is.
-RA_LIB_DEFINES=(-DTRUE_FALSE_DEFINED -DENGLISH)
+#
+# TickCount: the library defines its own `TimerClass TickCount`
+# (TIMER/TIMERINI.CPP) and the game a `TTimerClass<SystemTimerClass> TickCount`
+# (GLOBALS.CPP). Watcom put a variable's type in its linker symbol, so these
+# were two objects. In C++ on this target both are just _TickCount: the linker
+# merged them silently, and two different constructors ran on the same 24 bytes
+# (found by RA_SANITIZE=1, as an ODR violation). Renaming it for library
+# compiles only restores two objects; no game file is affected.
+RA_LIB_DEFINES=(-DTRUE_FALSE_DEFINED -DENGLISH -DTickCount=WWLib_TickCount)
 RA_LIB_COMMON=(
   $RA_TARGET $RA_STD $RA_LIB_DEFINES
   -include "${RA_ROOT}/port/compat/wwcompat.h"

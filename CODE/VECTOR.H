@@ -240,11 +240,29 @@ class BooleanVectorClass
 			return(Get_Bit(&BitArray[0], index));
 		};
 
+		/*
+		**	Port: First_False_Bit / First_True_Bit (the assembly's bsf loops, in
+		**	PRAGMAUX.CPP) scan 32 bits at a time with no length, so the last read
+		**	could run up to three bytes past the bit array, or further when no bit
+		**	matched (found by RA_SANITIZE=1). Both callers here treat any result
+		**	>= BitCount as "none", so a scan bounded to the array's own bytes
+		**	gives the same answer in every case.
+		*/
+		int Port_First_Bit(bool value) const {
+			int const bytes = (BitCount + 7) / 8;
+			unsigned char const * p = (unsigned char const *)&BitArray[0];
+			for (int i = 0; i < bytes; i++) {
+				unsigned b = value ? p[i] : (unsigned char)~p[i];
+				if (b) return i * 8 + __builtin_ctz(b);
+			}
+			return BitCount;
+		}
+
 		// Find first index that is false.
 		int First_False(void) const {
 			if (LastIndex != -1) Fixup(-1);
 
-			int retval = First_False_Bit(&BitArray[0]);
+			int retval = Port_First_Bit(false);
 			if (retval < BitCount) return(retval);
 
 			/*
@@ -258,7 +276,7 @@ class BooleanVectorClass
 		int First_True(void) const {
 			if (LastIndex != -1) Fixup(-1);
 
-			int retval = First_True_Bit(&BitArray[0]);
+			int retval = Port_First_Bit(true);
 			if (retval < BitCount) return(retval);
 
 			/*

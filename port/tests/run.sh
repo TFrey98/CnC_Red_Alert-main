@@ -69,7 +69,7 @@ clang++ $RA_WINVQ_CXXFLAGS -w -I"${RA_ROOT}/WINVQ/VQA32" "$T/vqa_format.cpp" -o 
 "$OUT/vqa_format" | tail -1 | grep -q "all pass" && "$OUT/vqa_format" | tail -1 || { "$OUT/vqa_format"; fail=1 }
 
 print "LCW / Format80 decoders vs the independent format description (3000 random streams)"
-clang++ $RA_CXXFLAGS -w -g -fsanitize=address -iquote "${RA_ROOT}/CODE" "$T/lcw_format80.cpp" "${RA_ROOT}/CODE/LCWUNCMP.CPP" "${RA_ROOT}/CODE/LCW.CPP" -o "$OUT/lcw_format80"
+clang++ $RA_CXXFLAGS -w -g -fsanitize=address -iquote "${RA_ROOT}/CODE" "$T/lcw_format80.cpp" "${RA_ROOT}/WIN32LIB/IFF/LCWUNCMP.CPP" "${RA_ROOT}/CODE/LCW.CPP" -o "$OUT/lcw_format80"
 "$OUT/lcw_format80" | tail -1 | grep -q "all pass" && "$OUT/lcw_format80" | tail -1 || { "$OUT/lcw_format80"; fail=1 }
 
 print "ADPCM audio decoder vs an independent IMA reference (chunked, 1.6M samples)"
@@ -118,11 +118,11 @@ asm_game_test() {   # the game's own assembly: built with the game's flags
 }
 asm_game_test asm_game "The game's own assembly (CODE/*.ASM) vs the original" \
   "${RA_ROOT}/CODE/2TXTPRNT.CPP" "${RA_ROOT}/CODE/WINASM.CPP" \
-  "${RA_ROOT}/CODE/LCWCOMP.CPP" "${RA_ROOT}/CODE/LCWUNCMP.CPP" "${RA_ROOT}/CODE/2KEYFBUF.CPP"
+  "${RA_ROOT}/CODE/LCWCOMP.CPP" "${RA_ROOT}/WIN32LIB/IFF/LCWUNCMP.CPP" "${RA_ROOT}/CODE/2KEYFBUF.CPP"
 asm_test asm_misc "Small library routines (MISC, MEM, FONT, SHAPE) vs the original assembly" \
   $WL/MISC/CLIPRECT.CPP $WL/MISC/REVERSE.CPP $WL/MEM/MEM_COPY.CPP $WL/FONT/SETFPAL.CPP $WL/SHAPE/SETSHAPE.CPP $WL/MISC/FADING.CPP $WL/PALETTE/PAL.CPP $WL/WSA/XORDELTA.CPP $WL/AUDIO/AUDUNCMP.CPP \
   $WL/AUDIO/OLSOSDEC.CPP $WL/AUDIO/SOSCODEC.CPP $WL/KEYBOARD/WWMOUSE.CPP $WL/SHAPE/GETSHAPE.CPP \
-  "${RA_ROOT}/CODE/LCWCOMP.CPP" "${RA_ROOT}/CODE/LCWUNCMP.CPP"
+  "${RA_ROOT}/CODE/LCWCOMP.CPP" "${RA_ROOT}/WIN32LIB/IFF/LCWUNCMP.CPP"
 
 print ""
 (( fail )) && { print "FAILED"; exit 1 } || print "all data-path tests pass"

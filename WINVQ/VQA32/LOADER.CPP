@@ -739,9 +739,18 @@ long VQA_LoadFrame(VQAHandle *vqa)
 				return (VQAERR_EOF);
 			}
 
-			iffsize = REVERSE_LONG(chunk->size);
-			loader->FrameSize += iffsize;
+			loader->FrameSize += REVERSE_LONG(chunk->size);
 		}
+
+		/*
+		**	Port: taken from the saved chunk header on every pass. It was set only
+		**	when a new header was read, so after a VQAERR_SLEEPING return (audio
+		**	buffer full) the resumed call used an uninitialised local. On Watcom
+		**	the stack slot still held the last value; here it held garbage, and a
+		**	sound chunk "sized" 107 TB read over memory (found by RA_SANITIZE=1;
+		**	the ENGLISH.VQA read error).
+		*/
+		iffsize = REVERSE_LONG(chunk->size);
 
 		/* Handle each chunk type */
 		switch (chunk->id) {

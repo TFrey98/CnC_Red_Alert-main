@@ -135,6 +135,22 @@ FixedHeapClass::~FixedHeapClass(void)
 int FixedHeapClass::Set_Heap(int count, void * buffer)
 {
 	/*
+	**	Port: re-setting a heap to the size it already has keeps its storage.
+	**	RulesClass::Heap_Maximums runs once for RULES.INI and again for
+	**	AFTRMATH.INI, rebuilding the weapon and warhead pools each time, while
+	**	unit types keep pointers into the first pool. On Watcom the freed block
+	**	came straight back from new, and the objects were rebuilt in the same
+	**	order, so those pointers landed on the new objects; here they pointed
+	**	into freed memory (found by RA_SANITIZE=1). Reusing the block reproduces
+	**	what Watcom's allocator did.
+	*/
+	void * reuse = 0;
+	if (!buffer && IsAllocated && Buffer && count == TotalCount) {
+		reuse = Buffer;
+		IsAllocated = false;			// so Clear() keeps it
+	}
+
+	/*
 	**	Clear out the old heap data.
 	*/
 	Clear();
@@ -157,7 +173,7 @@ int FixedHeapClass::Set_Heap(int count, void * buffer)
 	*/
 	if (FreeFlag.Resize(count)) {
 		if (!buffer) {
-			buffer = new char[count * Size];
+			buffer = reuse ? reuse : new char[count * Size];
 			if (!buffer) {
 				FreeFlag.Clear();
 				return(false);
@@ -385,7 +401,8 @@ void FixedIHeapClass::Clear(void)
  *=============================================================================================*/
 int FixedIHeapClass::Set_Heap(int count, void * buffer)
 {
-	Clear();
+	// port: no Clear() here -- FixedHeapClass::Set_Heap calls it (virtually, so
+	// this class's Clear runs too) after deciding whether to keep the storage.
 	if (FixedHeapClass::Set_Heap(count, buffer)) {
 		ActivePointers.Resize(count);
 		return(true);

@@ -1009,7 +1009,15 @@ int INIClass::Get_String(char const * section, char const * entry, char const * 
 		buffer[0] = '\0';
 		return(0);
 	} else {
-		strncpy(buffer, defvalue, size);
+		/*
+		**	Port: strncpy, made safe for overlap. Callers often pass the same
+		**	buffer as the default and the result, and strncpy is undefined for
+		**	overlapping strings (found by RA_SANITIZE=1). Same result: copy up to
+		**	`size` bytes, zero-fill the rest.
+		*/
+		size_t len = strnlen(defvalue, size);
+		memmove(buffer, defvalue, len);
+		memset(buffer + len, 0, size - len);
 		buffer[size-1] = '\0';
 		strtrim(buffer);
 		return(strlen(buffer));

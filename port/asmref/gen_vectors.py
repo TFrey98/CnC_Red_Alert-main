@@ -713,6 +713,40 @@ def gen_lcw_comp(r, n):
         yield [size, seed], [ret, fnv(m.read(dst, ret))]
 
 
+def gen_lcw_uncomp(r, n):
+    """LCW_Uncompress, both shipped copies (WIN32LIB/IFF and WINVQ/VQM32), which
+    must agree. Streams come from the original compressor (CODE/LCWCOMP.ASM).
+    Modes: 0 exact length; 1 a shorter length (every copy/run clamped);
+    2 end marker stripped, data ending exactly at the end of its buffer;
+    3 a longer length (stops at the end marker)."""
+    comp = Machine.from_asm('CODE/LCWCOMP.ASM')
+    decs = [Machine.from_asm('WIN32LIB/IFF/LCWUNCMP.ASM'), Machine.from_asm('WINVQ/VQM32/LCWUNCMP.ASM')]
+    for _ in range(n):
+        size = r.choice([r.randint(1, 64), r.randint(1, 2000), r.randint(2000, 9000)])
+        seed = r.getrandbits(32)
+        mode = r.randint(0, 3)
+        data = lcw_data(seed, size)
+        comp.reset_heap()
+        src = comp.put(data + fill(seed ^ 0xFFFFFFFF, 128))
+        dst = comp.put(bytes(2 * size + 256))
+        clen = comp.call('lcw_comp', src, dst, size)
+        stream = comp.read(dst, clen)
+        if mode == 2 and stream[-1:] == b'\x80':
+            stream = stream[:-1]
+        length = {0: size, 1: r.randint(0, size), 2: size, 3: size + r.randint(1, 300)}[mode]
+        dseed = r.getrandbits(32)
+        dsize = max(length, size) + 2 * GUARD
+        results = []
+        for m in decs:
+            m.reset_heap()
+            s = m.put(stream + fill(dseed ^ 0x5A5A5A5A, 64))   # what lies past the stream
+            d = m.put(fill(dseed, dsize))
+            ret = m.call('lcw_uncompress', s, d + GUARD, length)
+            results.append([ret, fnv(m.read(d, dsize))])
+        assert results[0] == results[1], 'the two shipped LCW_Uncompress copies disagree'
+        yield [size, seed, mode, length, dseed, len(stream)], results[0]
+
+
 def snd1_stream(r):
     """A random SND1 stream; returns (bytes, samples it decodes to)."""
     out, samples = bytearray(), 0
@@ -1064,7 +1098,7 @@ COUNTS = {
     'general_sos': 300, 'is_icon_cached': 600, 'lcw_comp': 300, 'linear_blit_to_linear': 1000,
     'linear_scale_to_linear': 1000, 'mem_copy': 800, 'modex_blit': 24, 'reverse': 800,
     'set_font_palette_range': 800, 'set_palette_range': 500, 'sos16': 300, 'unvq_4x2': 400,
-    'vqa_sos': 300, 'mouse_shadow_buffer': 600, 'draw_mouse': 600, 'set_mouse_cursor': 400,
+    'vqa_sos': 300, 'lcw_uncomp': 600, 'mouse_shadow_buffer': 600, 'draw_mouse': 600, 'set_mouse_cursor': 400,
 }
 
 

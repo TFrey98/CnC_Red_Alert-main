@@ -1345,7 +1345,7 @@ void UnitClass::Enter_Idle_Mode(bool initial)
 #endif
 		} else {
 
-			if (Mission == MISSION_GUARD || Mission == MISSION_GUARD_AREA || MissionControl[Mission].IsParalyzed || MissionControl[Mission].IsZombie) {
+			if (Mission == MISSION_GUARD || Mission == MISSION_GUARD_AREA || (Mission != MISSION_NONE && (MissionControl[Mission].IsParalyzed || MissionControl[Mission].IsZombie))	/* port: a just-placed unit has no mission yet; MissionControl[-1] read the byte before the table (found by RA_SANITIZE=1) */) {
 				return;
 			}
 

@@ -840,8 +840,11 @@ bool InitDDraw(void)
  *   03/20/1995 JLB : Created.                                                                 *
  *=============================================================================================*/
 #ifdef WIN32
+void VQA_Port_Stop_Any_Audio(void);	// port: WINVQ/VQA32/AUDIO.CPP
+
 void __cdecl Prog_End(void)
 {
+	VQA_Port_Stop_Any_Audio();		// port: before Sound_End -- a movie may be playing (window closed mid-movie)
 	Sound_End();
 	if (WWMouse) {
 		delete WWMouse;

@@ -273,5 +273,10 @@
   "path": "CODE/.!18355!CONQUER.CPP",
   "files": 1,
   "reason": "Stray partial snapshot of CODE/CONQUER.CPP written by an editor/sync process on 2026-10-04 20:40 (the '.!NNNN!' naming). It is the first 4,631 of CONQUER.CPP's lines as they stood mid-port that evening, cut off mid-statement: every line differs from the current file only by 12 temporary PORT-DEBUG-TEMP test hooks. Its Westwood comments (V.Grippi, ajw, ...) are the same 1996-98 comments as the released source, not earlier code. Never built; kept at the user's request."
+ },
+ {
+  "path": "README.original.md",
+  "files": 1,
+  "reason": "Electronic Arts' original README.md from the repository root (Win32 / Watcom build notes, preservation statement). Renamed because archive/README.md is this archive's own index; restore with `mv archive/README.original.md README.md`. Replaced at the root by a README for the native macOS port."
  }
 ]

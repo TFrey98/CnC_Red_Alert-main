@@ -13,7 +13,7 @@
 **	The data folder is the first of:
 **	  1. $RA_DATA_DIR, used as given;
 **	  2. the folder holding this executable, or the folder holding the .app it
-**	     is inside, if REDALERT.MIX is there;
+**	     is inside, if REDALERT.MIX is there (the latter is then saved);
 **	  3. the folder chosen at an earlier launch;
 **	  4. an installed copy found in the usual places (find_installed_data),
 **	     which is then saved for next time;
@@ -118,16 +118,15 @@ static std::string data_directory(void)
 	if (has_data(exe)) return exe;
 
 	/*
-	**	Inside an app bundle the executable is in "<folder>/Red Alert.app/Contents/MacOS".
+	**	The folder the player put the .app in (the drop-in layout of the release
+	**	zip). Saved, so the game still finds it if the app is moved later.
 	*/
-	std::string const bundle_tail = ".app/Contents/MacOS";
-	if (exe.size() > bundle_tail.size() && exe.compare(exe.size() - bundle_tail.size(), bundle_tail.size(), bundle_tail) == 0) {
-		std::string app = exe.substr(0, exe.size() - std::string("/Contents/MacOS").size());
-		std::string beside = app.substr(0, app.rfind('/'));
-		if (has_data(beside)) return beside;
+	char folder[4096];
+	if (RA_Platform_App_Folder(folder, sizeof(folder)) && has_data(folder)) {
+		RA_Platform_Save_Data_Folder(folder);
+		return folder;
 	}
 
-	char folder[4096];
 	if (!RA_Platform_Option_Key_Down()) {
 		if (RA_Platform_Saved_Data_Folder(folder, sizeof(folder)) && has_data(folder)) return folder;
 		std::string installed = find_installed_data();

@@ -1018,6 +1018,12 @@ palettes in places, and silently rescaling both would corrupt one of them.
    levels deep, native Steam), then a folder picker that requires
    `REDALERT.MIX`. A found or picked folder is saved. Option at launch skips
    the saved folder and the search.
+   The release zip unpacks to `Red Alert/` holding the app and
+   `READ ME FIRST.txt` (`port/release/`), so players drop their game files
+   beside the app. "Beside the app" is taken from `RA_Platform_App_Folder`,
+   which undoes app translocation (a quarantined app opened in place runs from
+   a random read-only path) through `SecTranslocateCreateOriginalPathForURL`,
+   looked up with `dlsym` because it has no public header.
    Notarization needs a Developer ID, which this project does not have.
 
 ## Things to watch

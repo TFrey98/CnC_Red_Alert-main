@@ -5,6 +5,7 @@
 */
 #import <Cocoa/Cocoa.h>
 #include "ra_platform.h"
+#include <dlfcn.h>
 
 /* Win32-style codes from the compat layer's GetLastError(); see compat/windows.h. */
 static NSString * ra_describe_error(int code)
@@ -125,4 +126,40 @@ int RA_Platform_Choose_Data_Folder(char * out, int size, const char * message)
 int RA_Platform_Option_Key_Down(void)
 {
 	return ([NSEvent modifierFlags] & NSEventModifierFlagOption) ? 1 : 0;
+}
+
+/*
+**	App translocation. macOS runs a quarantined app (downloaded, then opened
+**	where it was unzipped) from a read-only copy at a random path, so the
+**	bundle's own location says nothing about the folder the player sees. The
+**	Security framework can map it back; the calls are exported but have no
+**	public header, so they are looked up at run time and skipped if absent.
+*/
+typedef Boolean (*SecTranslocateIsTranslocatedURLFn)(CFURLRef, bool *, CFErrorRef *);
+typedef CFURLRef (*SecTranslocateCreateOriginalPathForURLFn)(CFURLRef, CFErrorRef *);
+
+static NSURL * ra_untranslocated(NSURL * url)
+{
+	void * security = dlopen("/System/Library/Frameworks/Security.framework/Security", RTLD_LAZY);
+	if (security == NULL) return url;
+	SecTranslocateIsTranslocatedURLFn is_translocated =
+		(SecTranslocateIsTranslocatedURLFn)dlsym(security, "SecTranslocateIsTranslocatedURL");
+	SecTranslocateCreateOriginalPathForURLFn original_path =
+		(SecTranslocateCreateOriginalPathForURLFn)dlsym(security, "SecTranslocateCreateOriginalPathForURL");
+	bool translocated = false;
+	if (is_translocated == NULL || original_path == NULL
+	    || !is_translocated((__bridge CFURLRef)url, &translocated, NULL) || !translocated) {
+		return url;
+	}
+	CFURLRef original = original_path((__bridge CFURLRef)url, NULL);
+	return original ? (NSURL *)CFBridgingRelease(original) : url;
+}
+
+int RA_Platform_App_Folder(char * out, int size)
+{
+	@autoreleasepool {
+		NSURL * bundle = [[NSBundle mainBundle] bundleURL];
+		if (bundle == nil || ![[bundle pathExtension] isEqualToString:@"app"]) return 0;
+		return ra_copy_path([[ra_untranslocated(bundle) URLByDeletingLastPathComponent] path], out, size);
+	}
 }

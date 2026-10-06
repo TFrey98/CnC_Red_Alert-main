@@ -38,7 +38,33 @@ Also working:
 Network multiplayer (LAN, internet, modem) is not ported. It will be if enough
 people ask for it; see [Multiplayer](#multiplayer) below.
 
-## Requirements
+## Download and play
+
+1. Download **`Red Alert.zip`** from the
+   [Releases page](https://github.com/TFrey98/CnC_Red_Alert-main/releases) and
+   unzip it. You get a `Red Alert` folder with the app and
+   **`READ ME FIRST.txt`**.
+2. Get the game files from your own copy of the game. This download does not
+   include them. They come with the C&C Ultimate Collection on Steam or the EA
+   App:
+   - **Installed on this Mac with CrossOver or Whisky:** nothing to do; the app
+     finds them.
+   - **Installed on a Windows PC:** copy the game's install folder (in Steam:
+     right-click the game → Manage → Browse local files) into the `Red Alert`
+     folder, next to the app.
+3. Open `Red Alert.app`. The first time, macOS asks you to confirm an app that
+   is not from the App Store. On macOS 15 and later: click Done, then System
+   Settings → Privacy & Security → **Open Anyway**. On macOS 13 and 14:
+   Control-click the app → Open.
+
+`READ ME FIRST.txt` (source: [`port/release/`](port/release/READ%20ME%20FIRST.txt))
+has the full steps, including how to get the files with no Windows PC.
+
+Needs an Apple Silicon Mac (M1 or later) with macOS 13 Ventura or later.
+
+## Building from source
+
+### Requirements
 
 - An Apple Silicon Mac, macOS 13 or later.
 - Xcode or the Xcode Command Line Tools (`clang`, the macOS SDK with Metal).
@@ -49,7 +75,7 @@ people ask for it; see [Multiplayer](#multiplayer) below.
   - `EXPAND.MIX` (Counterstrike) and `EXPAND2.MIX` (Aftermath);
   - `REDALERT.INI`.
 
-## Building the app
+### Building the app
 
 The build is driven by shell scripts; there is no Xcode project.
 
@@ -57,10 +83,12 @@ The build is driven by shell scripts; there is no Xcode project.
 port/build-app.sh
 ```
 
-This compiles the game and writes `build/Red Alert.app`, plus
-`build/Red Alert.zip` for sharing. The app contains only the game executable,
-its icon (Westwood's original) and the license. **The game data is not
-included**: you supply your own copy (see Requirements).
+This compiles the game and writes `build/Red Alert.app` and the release zip,
+`build/Red Alert.zip`, which unpacks to a `Red Alert` folder holding the app
+and `READ ME FIRST.txt`. The app contains only the game executable, its icon
+(Westwood's original) and the license. **The game data is not included**:
+players supply their own copy. To publish a release, upload
+`build/Red Alert.zip` on the GitHub Releases page.
 
 ### Running the app
 
@@ -71,7 +99,9 @@ installed in one of the usual places:
   example
   `~/Library/Application Support/CrossOver/Bottles/Steam/drive_c/Program Files (x86)/Steam/steamapps/common/Command & Conquer Red Alert`;
 - a native Steam download (`~/Library/Application Support/Steam/steamapps/common`);
-- the folder the app itself is in.
+- the folder the app itself is in (the release zip's layout). This also works
+  when macOS runs a freshly downloaded app from a hidden copy ("app
+  translocation"): the app looks next to where the player put it.
 
 Otherwise it asks once for the folder that holds the game data
 (`REDALERT.MIX`, `MAIN1.MIX` …); press Shift-Command-G in the picker to type a

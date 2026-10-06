@@ -4,11 +4,16 @@
 #
 #   port/build-app.sh
 #
-# Writes "build/Red Alert.app" and "build/Red Alert.zip" (the app, zipped for
-# sharing). The app holds only the executable, its icon and the license: the
-# game data is not included. At first launch the game asks for the folder that
-# holds it and remembers the choice (see port/compat/win32_main.cpp; hold
-# Option while launching to choose again).
+# Writes "build/Red Alert.app" and the release zip, "build/Red Alert.zip". The
+# zip unpacks to one folder for players:
+#
+#   Red Alert/
+#     Red Alert.app
+#     READ ME FIRST.txt       (port/release/; how to get the game files and play)
+#
+# The game data is not included. Players put their own copy in that folder,
+# next to the app, or the app finds an installed copy (CrossOver, Whisky, Wine,
+# Steam); see data_directory() in port/compat/win32_main.cpp.
 #
 # The app is signed ad hoc, not with a Developer ID, so a copy downloaded from
 # the internet is quarantined by Gatekeeper; see README.md.
@@ -64,13 +69,19 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 PLIST
 plutil -lint "$APP/Contents/Info.plist" > /dev/null
 
-# 3. Sign (ad hoc) and check.
+# 3. Sign (ad hoc) and check. Extended attributes (Finder info, provenance)
+# are cleared first: codesign rejects some, and none belong in a release.
+xattr -cr "$APP"
 codesign --force --sign - "$APP"
 codesign --verify --strict "$APP"
 
-# 4. A zip for sharing; ditto keeps the bundle's metadata and signature intact.
-rm -f "$RA_ROOT/build/Red Alert.zip"
-ditto -c -k --keepParent "$APP" "$RA_ROOT/build/Red Alert.zip"
+# 4. The release folder and zip; ditto keeps the bundle's signature intact.
+PKG="$RA_ROOT/build/package/Red Alert"
+rm -rf "$RA_ROOT/build/package" "$RA_ROOT/build/Red Alert.zip"
+mkdir -p "$PKG"
+ditto "$APP" "$PKG/Red Alert.app"
+cp "$RA_ROOT/port/release/READ ME FIRST.txt" "$PKG/READ ME FIRST.txt"
+ditto -c -k --norsrc --noextattr --noacl --keepParent "$PKG" "$RA_ROOT/build/Red Alert.zip"
 
 print "built: $APP"
 print "       $RA_ROOT/build/Red Alert.zip"

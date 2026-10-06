@@ -1,0 +1,92 @@
+COMMAND & CONQUER: RED ALERT for Mac
+====================================
+
+This is Red Alert (1996), with Counterstrike and Aftermath, running natively
+on Apple Silicon Macs. It needs:
+
+  - a Mac with Apple Silicon (M1 or later), macOS 13 Ventura or later;
+  - your own copy of the game files, from the C&C Ultimate Collection on
+    Steam or the EA App. This download does not include them.
+
+There are three steps.
+
+
+STEP 1 - GET THE GAME FILES
+---------------------------
+
+Use ONE of these:
+
+A) You installed the game on this Mac with CrossOver or Whisky
+   (Windows Steam or the EA App inside a bottle):
+   Nothing to do. The game finds the files by itself. Go to step 2.
+
+B) You have the game on a Windows PC:
+   1. In Steam, right-click "Command & Conquer Red Alert" in your Library,
+      then choose Manage > Browse local files. (In the EA App, open the
+      game's install folder.)
+   2. Copy everything in that folder to this Mac (USB stick, network share,
+      cloud drive).
+   3. Put the copied files in this "Red Alert" folder, next to
+      Red Alert.app.
+
+   Only these files are needed, if you want to copy less (about 1.4 GB):
+      REDALERT.MIX  HIRES1.MIX  LORES1.MIX
+      MAIN1.MIX  MAIN2.MIX  MAIN3.MIX  MAIN4.MIX
+      EXPAND.MIX  EXPAND2.MIX  REDALERT.INI
+
+C) You own the game but have no Windows PC:
+   Install CrossOver (codeweavers.com, free trial) or Whisky, install the
+   Windows version of Steam or the EA App inside it, sign in, and install
+   Command & Conquer Red Alert. You only need it installed: you do not have
+   to run it there. Then follow A.
+
+
+STEP 2 - OPEN THE GAME THE FIRST TIME
+-------------------------------------
+
+This app is not from the App Store, so macOS asks you to confirm it once.
+
+  macOS 15 Sequoia and later:
+    1. Double-click Red Alert.app. macOS says it could not verify the app.
+       Click Done.
+    2. Open System Settings > Privacy & Security and scroll down to
+       Security. Next to "Red Alert was blocked", click Open Anyway.
+    3. Enter your password, then click Open Anyway again.
+
+  macOS 13 Ventura and 14 Sonoma:
+    Control-click (or right-click) Red Alert.app, choose Open, then click
+    Open in the message that appears.
+
+After the first time, open it like any other app. You can move this
+"Red Alert" folder anywhere, such as Applications.
+
+
+STEP 3 - PLAY
+-------------
+
+  - Esc skips the movies.
+  - Skirmish against the computer: Multiplayer Game > Skirmish.
+  - Saved games are kept with the game files.
+  - Cmd-Q quits.
+
+Online and network play are not available in this version.
+
+
+IF SOMETHING GOES WRONG
+-----------------------
+
+  - The game asks for a folder:
+    It could not find the game files. Choose the folder that contains
+    REDALERT.MIX. It remembers your choice.
+
+  - You want to use a different copy of the game files:
+    Hold the Option key while opening Red Alert.app, and choose the folder.
+
+  - The window stays black at start:
+    Click the window.
+
+
+Command & Conquer Red Alert (c) 1996 Westwood Studios / Electronic Arts.
+The source code is released by Electronic Arts under the GNU GPL v3 with
+additional terms; see LICENSE.md inside Red Alert.app (Contents/Resources).
+This Mac port is not affiliated with or endorsed by Electronic Arts.

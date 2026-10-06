@@ -22,7 +22,7 @@ is. This file tracks what's working, what's open, and what to do next.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| No Mac app; data folder only via `RA_DATA_DIR` | Not built yet | `port/build-app.sh` -> `build/Red Alert.app` + zip, ad hoc signed; icon from `REDALERT.ICO` (`port/make-icon.py`); data folder found automatically in CrossOver/Whisky/Wine bottles and native Steam, else a picker (`win32_main.cpp`), saved via `ra_dialog.mm`. README: app instructions, multiplayer "on request" |
+| No Mac app; data folder only via `RA_DATA_DIR` | Not built yet | `port/build-app.sh` -> `build/Red Alert.app` + zip, ad hoc signed; icon from `REDALERT.ICO` (`port/make-icon.py`); data folder found automatically in CrossOver/Whisky/Wine bottles and native Steam, else a picker (`win32_main.cpp`), saved via `ra_dialog.mm`. Release zip = `Red Alert/` folder (app + `READ ME FIRST.txt` from `port/release/`) for drop-in game files; translocation-aware app folder. README: "Download and play", multiplayer "on request" |
 
 Checks after the last change:
 - Link: 0 undefined and 0 duplicate symbols.
@@ -55,6 +55,9 @@ Checks after the last change:
 6. ~~`.app` bundle~~ done (`port/build-app.sh`). Launched with `open` and
    nothing saved, it finds the CrossOver Steam data and plays the intro. The
    fallback folder picker is unconfirmed by hand (scripts cannot drive it).
+   Unzipped release + game files dropped beside the app: reaches the menu.
+   Untested: a real download (quarantine, Gatekeeper's Open Anyway, app
+   translocation) -- needs a published release and a click-through.
 7. Unanswered question from earlier: whether to clamp the two original
    over-reads (`Asm_Interpolate_Line_Interpolate`, the predator shimmer below
    the view).

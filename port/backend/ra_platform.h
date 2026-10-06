@@ -106,6 +106,14 @@ int  RA_Platform_Choose_Data_Folder(char * out, int size, const char * message);
 int  RA_Platform_Option_Key_Down(void);
 
 /*
+**	The folder that holds the running .app, into `out`. Returns 1, or 0 when
+**	the game is not running from an app bundle. A downloaded app opened where
+**	it was unzipped may be run by macOS from a hidden copy elsewhere ("app
+**	translocation"); this reports where the player actually put it.
+*/
+int  RA_Platform_App_Folder(char * out, int size);
+
+/*
 **	Input, as plain events. Keys carry WINDOWS virtual-key codes (VK_*): the
 **	backend owns the mapping from Mac key codes, so the engine sees exactly the
 **	key messages it was written for. Mouse positions are in framebuffer pixels

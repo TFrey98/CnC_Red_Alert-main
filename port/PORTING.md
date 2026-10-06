@@ -476,6 +476,31 @@ Three details that are not just "return 0":
   reads four bytes. A latent ODR mismatch in the original; defined at the
   reader's width so it cannot read past the object.
 
+**Skirmish: `NULLDLG.CPP` is back in the build.** Skirmish needs no network,
+but its setup dialog, `Com_Scenario_Dialog(true)`, is the serial-game dialog in
+`NULLDLG.CPP`, so it was stubbed with the rest and the Skirmish button returned
+straight to the menu. The file now builds whole. Changes:
+
+- **The modem/serial menu stays closed.** `Select_Serial_Dialog` shows "Modem
+  and serial play are not available in this version." and returns as Cancel
+  does. Its real dialog would reach a `SerialPort` that is never created.
+- Small compile fixes, each marked `port:` -- bare `CD_SET` (a Greenleaf name)
+  is `WinModemClass::CD_SET`, since under WIN32 the status comes from
+  `WinModemClass::Get_Modem_Status`; a pointer cast to `int` goes through
+  `intptr_t`; one implicit `int`.
+- `SetCommBreak`, `ClearCommBreak` and `EscapeCommFunction` are in the compat
+  layer and fail as Win32 does for a handle that is not a comm device.
+  Unreachable while the serial menu is closed.
+- `NETSTUB.CPP` gains inert `NullModemClass` members (modem absent, no
+  carrier) and `ModemRXString`, plus two things kept with their **real
+  contents**: `EngMisStr` (`NETDLG.CPP`'s ENGLISH table, the expansion maps the
+  dialog lists only when that expansion is installed) and
+  `bSpecialAftermathScenario` (from `WOL_GSUP.CPP`, which every shipped build
+  included). Other languages fail at compile time until `NETDLG.CPP` returns.
+
+Verified by script: menu -> Multiplayer -> Skirmish -> OK starts a game, and a
+165 s AddressSanitizer skirmish session reported zero errors.
+
 **`WOLSTRNG.CPP` was compiling to an empty object.** Its whole body is under
 `#ifdef WOLAPI_INTEGRATION`, which `CODE/MAKEFILE` defined for every build and
 the port does not (it would enable the defunct online client). But the strings

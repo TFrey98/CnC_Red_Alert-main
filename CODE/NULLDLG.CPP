@@ -389,7 +389,7 @@ int Test_Null_Modem( void )
 		// put time from start of game for determining the host in case of tie.
 		//
 		SendPacket.ScenarioInfo.Seed = TickCount;
-		SendPacket.ID = (int) buffer;		// address of buffer for more uniqueness.
+		SendPacket.ID = (int)(intptr_t) buffer;		// address of buffer for more uniqueness.	// port: low 32 bits, as the 32-bit cast kept
 
 		NullModem.Send_Message (&SendPacket, sizeof(SendPacket), 1);
 
@@ -548,7 +548,7 @@ int Reconnect_Modem( void )
 
 		case (MODEM_DIALER):
 			modemstatus = NullModem.Get_Modem_Status();
-			if ( (modemstatus & CD_SET) ) {
+			if ( (modemstatus & WinModemClass::CD_SET) ) {	// port: was bare CD_SET (Greenleaf GCL); under WIN32 the status is WinModemClass::Get_Modem_Status, so this is its flag
 				status = Reconnect_Null_Modem();
 			} else {
 				status = Dial_Modem( DialSettings, true );
@@ -557,7 +557,7 @@ int Reconnect_Modem( void )
 
 		case (MODEM_ANSWERER):
 			modemstatus = NullModem.Get_Modem_Status();
-			if ( (modemstatus & CD_SET) ) {
+			if ( (modemstatus & WinModemClass::CD_SET) ) {	// port: was bare CD_SET (Greenleaf GCL); under WIN32 the status is WinModemClass::Get_Modem_Status, so this is its flag
 				status = Reconnect_Null_Modem();
 			} else {
 				status = Answer_Modem( DialSettings, true );
@@ -878,6 +878,14 @@ void Destroy_Null_Connection(int id, int error)
  *=========================================================================*/
 GameType Select_Serial_Dialog( void )
 {
+	/*
+	**	Port: modem and serial play are not ported (WIN32LIB/WINCOMM is not built,
+	**	and SerialPort is never created). Say so and return as Cancel does, rather
+	**	than open a dialog whose every button reaches a NULL SerialPort.
+	*/
+	WWMessageBox().Process("Modem and serial play are not available in this version.");
+	return(GAME_NORMAL);
+
 	int rc;
 //	int value, i;
 	int com = -1, baud = -1;
@@ -1330,7 +1338,7 @@ GameType Select_Serial_Dialog( void )
  * HISTORY:                                                                                    *
  *    12/16/96 2:29PM ST : Created                                                             *
  *=============================================================================================*/
-Advanced_Modem_Settings (SerialSettingsType *settings)
+int Advanced_Modem_Settings (SerialSettingsType *settings)	// port: implicit int
 {
 
 	/*........................................................................
@@ -7189,12 +7197,12 @@ static bool Dial_Modem( SerialSettingsType *settings, bool reconnect )
 
 	modemstatus = NullModem.Get_Modem_Status();
 	if (reconnect) {
-		if ( (modemstatus & CD_SET) ) {
+		if ( (modemstatus & WinModemClass::CD_SET) ) {	// port: was bare CD_SET (Greenleaf GCL); under WIN32 the status is WinModemClass::Get_Modem_Status, so this is its flag
 			connected = true;
 			Session.ModemService = true;
 			return( connected );
 		}
-	} else if ( (modemstatus & CD_SET) ) {
+	} else if ( (modemstatus & WinModemClass::CD_SET) ) {	// port: was bare CD_SET (Greenleaf GCL); under WIN32 the status is WinModemClass::Get_Modem_Status, so this is its flag
 		NullModem.Hangup_Modem();
 		Session.ModemService = false;
 	}
@@ -7378,12 +7386,12 @@ static bool Answer_Modem( SerialSettingsType *settings, bool reconnect )
 
 	modemstatus = NullModem.Get_Modem_Status();
 	if (reconnect) {
-		if ( (modemstatus & CD_SET) ) {
+		if ( (modemstatus & WinModemClass::CD_SET) ) {	// port: was bare CD_SET (Greenleaf GCL); under WIN32 the status is WinModemClass::Get_Modem_Status, so this is its flag
 			connected = true;
 			Session.ModemService = true;
 			return( connected );
 		}
-	} else if ( (modemstatus & CD_SET) ) {
+	} else if ( (modemstatus & WinModemClass::CD_SET) ) {	// port: was bare CD_SET (Greenleaf GCL); under WIN32 the status is WinModemClass::Get_Modem_Status, so this is its flag
 		NullModem.Hangup_Modem();
 		Session.ModemService = false;
 	}

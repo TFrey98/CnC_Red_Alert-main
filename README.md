@@ -32,9 +32,10 @@ Also working:
 - the intro, briefing and win movies, with sound;
 - music and sound effects;
 - the mission-select map and score screens;
-- building, production and combat.
+- building, production and combat;
+- **skirmish** against the computer (Multiplayer Game → Skirmish).
 
-Multiplayer is not ported yet (see below).
+Network multiplayer is not ported yet (see below).
 
 ## Requirements
 
@@ -80,8 +81,8 @@ was needed. `port/PROGRESS.md` tracks current work.
 ## Features still to implement
 
 - **Multiplayer.** LAN, internet, modem/serial and Westwood Online are stubbed
-  out (`CODE/NETSTUB.CPP`); the menus are there, but games cannot be hosted or
-  joined.
+  out (`CODE/NETSTUB.CPP`). Skirmish works, but network games cannot be hosted
+  or joined yet.
 - **A proper Mac app.** The game is a bare executable. It needs an `.app`
   bundle, an icon, and a saved setting for where the game data lives, instead
   of `RA_DATA_DIR`.

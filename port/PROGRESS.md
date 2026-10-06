@@ -1,4 +1,4 @@
-# Progress: running the game (status as of 2026-10-05, afternoon)
+# Progress: running the game (status as of 2026-10-05, evening)
 
 Where the runtime work stands, for picking it up again. `port/PORTING.md`
 ("Third" to "Fifth pass") is the permanent record of *why* each fix is what it
@@ -14,22 +14,15 @@ is. This file tracks what's working, what's open, and what to do next.
   Confirmed by script and by the user.
 - A full AddressSanitizer session of mission 2 (menu, briefings, production,
   combat, unit moves; 129 s) reports zero memory errors.
+- Skirmish: Multiplayer Game -> Skirmish -> setup dialog -> OK starts a game
+  (Russia, 10000 credits, "A Path Beyond" by default). A 165 s ASan session
+  reports zero memory errors. Modem/Serial shows a "not available" message.
 
-## Uncommitted (since bb8ecdc)
+## Uncommitted (since badc2e4)
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| Every building placement refused | PLACE event built by the `int` constructor; its cell overlays `Place.Cell` only under Watcom's `/zp1` | `CODE/EVENT.H` packed (1), `static_assert` on the overlap |
-| Crash in `Find_Path` (stack buffer overflow) | END written one past a full 302-entry move list (original bug) | One slot of headroom, limit unchanged (`FINDPATH.CPP`) |
-| "ENGLISH.VQA error 14"; movies not playing right | `iffsize` uninitialised when the loader resumes after an audio "sleep" | Re-derived from the saved chunk header (`WINVQ/VQA32/LOADER.CPP`) |
-| Crash closing the window during a movie | Sound freed while the movie's audio timer ran | `Prog_End` stops movie audio first (`VQA_Port_Stop_Any_Audio`) |
-| Weapons pointing into freed memory | Rules pools rebuilt for AFTRMATH.INI; Watcom happened to reuse the block | `Set_Heap` keeps storage at the same size (`HEAP.CPP`) |
-| Library and game `TickCount` merged into one object | Watcom's type-encoded symbols kept them apart | `-DTickCount=WWLib_TickCount` for library compiles |
-| LCW decoding past its buffer | The build used Westwood's C decoder, which ignores the length | `WIN32LIB/IFF/LCWUNCMP.CPP`, translated from the shipped assembly, verified (600 cases vs both copies) |
-| Start movie: sound, no picture | 4x4 block decoding disabled in the C header; the released 4x4 decoder doesn't match the files | `UnVQ_4x4` written from the published format, verified against it; `VQABLOCK_4X4 1` |
-| All movies choppy | Movie clock's 32-bit wraparound broken by 64-bit `unsigned long` | `VQA_GetTime`/`VQA_SetTimer` in 32-bit arithmetic |
-| Soviet campaign button did nothing | `WWMessageBox` kept its 0/1/2 result in a `bool`; "Soviet" (2) became 1, Cancel | `int` (also `BGMessageBox`, `ReadyToQuit`); formation sentinel compared at 64 bits, fixed. Soviet mission 1 confirmed by script, ASan-clean, and by the user |
-| Smaller sanitizer findings | `MissionControl[-1]`; unbounded bit scan; overlapping `strcpy`/`strncpy`/`memcpy`; straw destruction order | See `PORTING.md`, "Fifth pass" |
+| Skirmish button went straight back to the menu | Its setup dialog (`Com_Scenario_Dialog`) is in `NULLDLG.CPP`, which was dropped and stubbed with the network files | `NULLDLG.CPP` builds whole; serial menu closed with a message; stubs and real data in `NETSTUB.CPP`; comm calls in compat. See `PORTING.md`, "Skirmish" |
 
 Checks after the last change:
 - Link: 0 undefined and 0 duplicate symbols.
@@ -39,6 +32,12 @@ Checks after the last change:
 - `port/layout-check.sh`: only the three known same-name clashes.
 
 ## Open, in priority order
+
+0. **Network multiplayer, next steps** (LAN over UDP, Mac to Mac): determinism
+   harness (game CRC / record-playback on skirmish); Winsock shim
+   (`WSAAsyncSelect` via the message pump, `getifaddrs` broadcast addresses);
+   build `WSPROTO`/`WSPUDP`/`IPXMGR` with `WINSOCK_IPX`; port in the UDP
+   address so two copies can run on one Mac; then `NETDLG.CPP` (the lobby).
 
 1. **Movies:** user to confirm the start movie and briefings look smooth.
 2. **Retest by the user:** Soviet campaign beyond mission 1,
@@ -77,6 +76,10 @@ Checks after the last change:
   - Mission 2: Power Plant cameo (530,200); a placement that always works is
     (366,256), directly below the Construction Yard's apron. A build takes
     7–10 s once the click registers, but mission start varies, so leave margin.
+- **Frame dumps are 640×480; script coordinates are 640×400.** Subtract 40
+  from a y read off a dumped menu frame. Main menu: Multiplayer Game (320,278).
+  Multiplayer menu: Modem/Serial (320,230), Skirmish (320,252). Skirmish
+  dialog: OK (105,368). With Esc at 2, 4 and 6 s, the main menu is up by 12 s.
 - **Jumping to a scenario:** a temporary hook (not committed), at the top of
   `Main_Loop()`, once:
   `Scen.Set_Scenario_Name(getenv("RA_TEST_SCEN")); Start_Scenario(Scen.ScenarioName, false);`.

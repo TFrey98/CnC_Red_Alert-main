@@ -649,6 +649,18 @@ SHORT   VkKeyScanA(char ch);
 UINT SetErrorMode(UINT mode);
 
 /*
+**	Serial-port control. NULLDLG.CPP's null-modem test hangs up any modem on the
+**	port with these. A Mac has no COM ports, so each one fails the way Win32
+**	does for a handle that is not a comm device. Nothing reaches them: the port
+**	disables the serial menu (Select_Serial_Dialog), the only way in.
+*/
+#define SETDTR  5
+#define CLRDTR  6
+BOOL SetCommBreak(HANDLE file);
+BOOL ClearCommBreak(HANDLE file);
+BOOL EscapeCommFunction(HANDLE file, DWORD func);
+
+/*
 **	Process and thread pseudo-handles. The engine's only use is TIMERINI.CPP
 **	duplicating the timer thread's handle for the profiler (dropped), so these
 **	are faithful in value -- GetCurrentProcess() really is (HANDLE)-1 on Win32 --

@@ -7,9 +7,9 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 | Tag | Meaning | Files |
 |---|---|---|
-| DONE | compiles clean for arm64 | 233 |
+| DONE | compiles clean for arm64 | 234 |
 | TWEAK | needs source or compat fixes | 0 |
-| DROP | out of scope for single-player; left in place because live code includes its headers | 20 |
+| DROP | out of scope for single-player; left in place because live code includes its headers | 19 |
 | NATIVE | the Win32 platform layer: reimplement over port/backend/ | 0 |
 
 ## Assembly
@@ -171,7 +171,7 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 
 ---
 
-## DROP -- 20 files
+## DROP -- 19 files
 
 | File | Reason |
 |---|---|
@@ -184,7 +184,6 @@ hand; rerun the two scripts. Machine-readable twin: `port/worklist.json`.
 | `IPX95.CPP` | multiplayer / online / serial |
 | `IPXMGR.CPP` | multiplayer / online / serial |
 | `NETDLG.CPP` | multiplayer / online / serial |
-| `NULLDLG.CPP` | multiplayer / online / serial |
 | `NULLMGR.CPP` | multiplayer / online / serial |
 | `PACKET.CPP` | multiplayer / online / serial |
 | `STATS.CPP` | multiplayer / online / serial |

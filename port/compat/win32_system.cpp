@@ -133,3 +133,7 @@ LONG RegQueryValueExA(HKEY key, LPCSTR name, LPDWORD reserved, LPDWORD type, LPB
 
 LONG RegDeleteValueA(HKEY key, LPCSTR name) {(void)key; (void)name; return ERROR_FILE_NOT_FOUND;}
 LONG RegCloseKey(HKEY key) {(void)key; return ERROR_SUCCESS;}
+
+BOOL SetCommBreak(HANDLE file)                     {(void)file; SetLastError(ERROR_INVALID_HANDLE); return FALSE;}
+BOOL ClearCommBreak(HANDLE file)                   {(void)file; SetLastError(ERROR_INVALID_HANDLE); return FALSE;}
+BOOL EscapeCommFunction(HANDLE file, DWORD func)   {(void)file; (void)func; SetLastError(ERROR_INVALID_HANDLE); return FALSE;}

@@ -33,7 +33,7 @@ PROBE = os.path.join(os.environ.get('TMPDIR', '/tmp'), 'ra-probe')
 # --------------------------------------------------------------------------
 DROP = {}
 for f in ('CONNECT COMBUF COMQUEUE PACKET NETDLG MPLAYER MPGSET '
-          'IPX IPX95 IPXADDR IPXCONN IPXGCONN IPXMGR NULLCONN NULLDLG NULLMGR '
+          'IPX IPX95 IPXADDR IPXCONN IPXGCONN IPXMGR NULLCONN NULLMGR '
           'TCPIP INTERNET WSPROTO WSPIPX WSPUDP _WSPROTO BIGCHECK DDE CCDDE '
           'CCMPATH CCTEN TENMGR MPMGRD MPMGRW MODEMREG SENDFILE STATS UDPADDR').split():
     DROP[f] = 'multiplayer / online / serial'

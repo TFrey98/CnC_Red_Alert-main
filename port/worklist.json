@@ -742,8 +742,8 @@
   },
   {
    "file": "CODE/NULLDLG.CPP",
-   "tag": "DROP",
-   "note": "multiplayer / online / serial"
+   "tag": "DONE",
+   "note": "compiles clean for arm64"
   },
   {
    "file": "CODE/NULLMGR.CPP",

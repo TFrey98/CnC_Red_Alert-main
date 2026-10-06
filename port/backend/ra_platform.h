@@ -89,6 +89,23 @@ void RA_Display_Show(RA_Display * d);
 void RA_Display_Resize(RA_Display * d, int width, int height);
 
 /*
+**	Where the game data lives. The engine side (port/compat/win32_main.cpp)
+**	decides where to look and in what order; these only remember and ask.
+**	Paths are UTF-8.
+**
+**	RA_Platform_Saved_Data_Folder fills `out` with the folder saved last time
+**	and returns 1, or returns 0 if none was saved. RA_Platform_Save_Data_Folder
+**	saves one for next launch. RA_Platform_Choose_Data_Folder shows a folder
+**	picker headed by `message` and returns 1 with the choice in `out`, or 0 if
+**	the player cancelled. RA_Platform_Option_Key_Down reports whether Option is
+**	held right now (held at launch: choose the folder again).
+*/
+int  RA_Platform_Saved_Data_Folder(char * out, int size);
+void RA_Platform_Save_Data_Folder(const char * path);
+int  RA_Platform_Choose_Data_Folder(char * out, int size, const char * message);
+int  RA_Platform_Option_Key_Down(void);
+
+/*
 **	Input, as plain events. Keys carry WINDOWS virtual-key codes (VK_*): the
 **	backend owns the mapping from Mac key codes, so the engine sees exactly the
 **	key messages it was written for. Mouse positions are in framebuffer pixels

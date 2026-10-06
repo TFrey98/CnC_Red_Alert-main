@@ -84,7 +84,8 @@ void RA_Platform_Init(void)
 	NSMenuItem * appItem = [[NSMenuItem alloc] init];
 	[bar addItem:appItem];
 	NSMenu * appMenu = [[NSMenu alloc] init];
-	NSString * name = [[NSProcessInfo processInfo] processName];
+	NSString * name = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"];	/* "Red Alert" in the .app */
+	if (name == nil) name = [[NSProcessInfo processInfo] processName];
 	[appMenu addItemWithTitle:[@"Quit " stringByAppendingString:name]
 	                   action:@selector(terminate:)
 	            keyEquivalent:@"q"];

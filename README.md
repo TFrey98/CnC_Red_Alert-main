@@ -35,7 +35,8 @@ Also working:
 - building, production and combat;
 - **skirmish** against the computer (Multiplayer Game → Skirmish).
 
-Network multiplayer is not ported yet (see below).
+Network multiplayer (LAN, internet, modem) is not ported. It will be if enough
+people ask for it; see [Multiplayer](#multiplayer) below.
 
 ## Requirements
 
@@ -48,23 +49,55 @@ Network multiplayer is not ported yet (see below).
   - `EXPAND.MIX` (Counterstrike) and `EXPAND2.MIX` (Aftermath);
   - `REDALERT.INI`.
 
-## Building and running
+## Building the app
 
 The build is driven by shell scripts; there is no Xcode project.
 
 ```sh
-port/link-census.sh          # compile the game and libraries, link the executable
+port/build-app.sh
 ```
 
-The executable is written to `$TMPDIR/ra-link/redalert`. Run it with the data
-folder in `RA_DATA_DIR`, or copy it into the folder that holds the data:
+This compiles the game and writes `build/Red Alert.app`, plus
+`build/Red Alert.zip` for sharing. The app contains only the game executable,
+its icon (Westwood's original) and the license. **The game data is not
+included**: you supply your own copy (see Requirements).
+
+### Running the app
+
+Open `Red Alert.app`. It finds the game data by itself if the game is
+installed in one of the usual places:
+
+- the Steam or EA App release in a CrossOver, Whisky or Wine bottle, for
+  example
+  `~/Library/Application Support/CrossOver/Bottles/Steam/drive_c/Program Files (x86)/Steam/steamapps/common/Command & Conquer Red Alert`;
+- a native Steam download (`~/Library/Application Support/Steam/steamapps/common`);
+- the folder the app itself is in.
+
+Otherwise it asks once for the folder that holds the game data
+(`REDALERT.MIX`, `MAIN1.MIX` …); press Shift-Command-G in the picker to type a
+path. The folder is remembered. To choose a different one, hold **Option**
+while opening the app.
+
+Saved games and settings are written to the data folder, as the original game
+did with its install folder, so the folder must be writable.
+
+The four discs are found automatically when `MAIN1.MIX` – `MAIN4.MIX` are
+present, so the game never asks for a CD.
+
+The app is signed ad hoc, not with an Apple Developer ID. A copy you build
+yourself opens normally. A copy downloaded from the internet is blocked by
+Gatekeeper the first time: open it, then go to System Settings → Privacy &
+Security and choose **Open Anyway**.
+
+### Running without the app
+
+`port/link-census.sh` builds only the executable, at
+`$TMPDIR/ra-link/redalert`. Give it the data folder in `RA_DATA_DIR`, put it in
+the data folder, or let it ask as the app does:
 
 ```sh
 RA_DATA_DIR="/path/to/Red Alert data" "$TMPDIR/ra-link/redalert"
 ```
-
-The four discs are found automatically when `MAIN1.MIX` – `MAIN4.MIX` are
-present, so the game never asks for a CD.
 
 Checks and tests:
 
@@ -80,17 +113,23 @@ was needed. `port/PROGRESS.md` tracks current work.
 
 ## Features still to implement
 
-- **Multiplayer.** LAN, internet, modem/serial and Westwood Online are stubbed
-  out (`CODE/NETSTUB.CPP`). Skirmish works, but network games cannot be hosted
-  or joined yet.
-- **A proper Mac app.** The game is a bare executable. It needs an `.app`
-  bundle, an icon, and a saved setting for where the game data lives, instead
-  of `RA_DATA_DIR`.
 - **Display options.** The game runs in a resizable window at its original
   640×400. There is no full-screen mode or choice of scaling filter yet.
 - **Keyboard layouts.** Key-to-character translation assumes a US layout, so
   typing names and messages on other layouts may give the wrong characters.
 - **The scenario editor** and Westwood's other tools are not part of the build.
+
+## Multiplayer
+
+Skirmish against the computer works. Network play does not: LAN, internet,
+modem/serial and Westwood Online are stubbed out (`CODE/NETSTUB.CPP`), and the
+Modem/Serial button says so.
+
+**Network multiplayer will be ported if enough people ask for it.** If you want
+it, please open an issue or add your vote to an existing one. The groundwork is
+known: Westwood's UDP transport (`WSPUDP.CPP`) and LAN lobby (`NETDLG.CPP`) are
+in the source, and `port/PROGRESS.md` lists the steps. It would be Mac to Mac
+only, not with the original Windows game.
 
 ## Known bugs
 

@@ -70,3 +70,59 @@ int RA_Platform_Message_Box(const char * text, const char * caption, int buttons
 	if ([NSThread isMainThread]) ask(); else dispatch_sync(dispatch_get_main_queue(), ask);
 	return choice;
 }
+
+/*
+**	The data folder. Saved in the app's preferences (NSUserDefaults), so the
+**	.app and the bare executable each remember their own.
+*/
+static NSString * const kDataFolderKey = @"DataFolder";
+
+static int ra_copy_path(NSString * path, char * out, int size)
+{
+	if (path == nil || out == NULL || size <= 0) return 0;
+	const char * utf8 = [path fileSystemRepresentation];
+	if (utf8 == NULL || (int)strlen(utf8) >= size) return 0;
+	strcpy(out, utf8);
+	return 1;
+}
+
+int RA_Platform_Saved_Data_Folder(char * out, int size)
+{
+	@autoreleasepool {
+		return ra_copy_path([[NSUserDefaults standardUserDefaults] stringForKey:kDataFolderKey], out, size);
+	}
+}
+
+void RA_Platform_Save_Data_Folder(const char * path)
+{
+	@autoreleasepool {
+		if (path == NULL) return;
+		NSString * p = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:path length:strlen(path)];
+		[[NSUserDefaults standardUserDefaults] setObject:p forKey:kDataFolderKey];
+	}
+}
+
+int RA_Platform_Choose_Data_Folder(char * out, int size, const char * message)
+{
+	__block int chosen = 0;
+	void (^ask)(void) = ^{
+		[NSApplication sharedApplication];
+		NSOpenPanel * panel = [NSOpenPanel openPanel];
+		panel.canChooseDirectories = YES;
+		panel.canChooseFiles = NO;
+		panel.allowsMultipleSelection = NO;
+		panel.prompt = @"Choose";
+		panel.message = message ? [NSString stringWithUTF8String:message] : @"";
+		[NSApp activateIgnoringOtherApps:YES];
+		if ([panel runModal] == NSModalResponseOK) {
+			chosen = ra_copy_path(panel.URL.path, out, size);
+		}
+	};
+	if ([NSThread isMainThread]) ask(); else dispatch_sync(dispatch_get_main_queue(), ask);
+	return chosen;
+}
+
+int RA_Platform_Option_Key_Down(void)
+{
+	return ([NSEvent modifierFlags] & NSEventModifierFlagOption) ? 1 : 0;
+}

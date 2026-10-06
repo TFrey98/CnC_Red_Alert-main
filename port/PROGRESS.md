@@ -18,11 +18,11 @@ is. This file tracks what's working, what's open, and what to do next.
   (Russia, 10000 credits, "A Path Beyond" by default). A 165 s ASan session
   reports zero memory errors. Modem/Serial shows a "not available" message.
 
-## Uncommitted (since badc2e4)
+## Uncommitted (since 724161d)
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| Skirmish button went straight back to the menu | Its setup dialog (`Com_Scenario_Dialog`) is in `NULLDLG.CPP`, which was dropped and stubbed with the network files | `NULLDLG.CPP` builds whole; serial menu closed with a message; stubs and real data in `NETSTUB.CPP`; comm calls in compat. See `PORTING.md`, "Skirmish" |
+| No Mac app; data folder only via `RA_DATA_DIR` | Not built yet | `port/build-app.sh` -> `build/Red Alert.app` + zip, ad hoc signed; icon from `REDALERT.ICO` (`port/make-icon.py`); data folder found automatically in CrossOver/Whisky/Wine bottles and native Steam, else a picker (`win32_main.cpp`), saved via `ra_dialog.mm`. README: app instructions, multiplayer "on request" |
 
 Checks after the last change:
 - Link: 0 undefined and 0 duplicate symbols.
@@ -33,7 +33,8 @@ Checks after the last change:
 
 ## Open, in priority order
 
-0. **Network multiplayer, next steps** (LAN over UDP, Mac to Mac): determinism
+0. **Network multiplayer: on hold** until enough players ask for it (README,
+   "Multiplayer"). When it resumes, next steps (LAN over UDP, Mac to Mac): determinism
    harness (game CRC / record-playback on skirmish); Winsock shim
    (`WSAAsyncSelect` via the message pump, `getifaddrs` broadcast addresses);
    build `WSPROTO`/`WSPUDP`/`IPXMGR` with `WINSOCK_IPX`; port in the UDP
@@ -51,7 +52,9 @@ Checks after the last change:
    then read how each is used.
 5. **More sanitizer coverage:** run `RA_SANITIZE=1` sessions on other missions,
    the Soviet campaign, saving and loading, and the remaining menus.
-6. `.app` bundle build script with a saved data-folder setting.
+6. ~~`.app` bundle~~ done (`port/build-app.sh`). Launched with `open` and
+   nothing saved, it finds the CrossOver Steam data and plays the intro. The
+   fallback folder picker is unconfirmed by hand (scripts cannot drive it).
 7. Unanswered question from earlier: whether to clamp the two original
    over-reads (`Asm_Interpolate_Line_Interpolate`, the predator shimmer below
    the view).
@@ -80,6 +83,12 @@ Checks after the last change:
   from a y read off a dumped menu frame. Main menu: Multiplayer Game (320,278).
   Multiplayer menu: Modem/Serial (320,230), Skirmish (320,252). Skirmish
   dialog: OK (105,368). With Esc at 2, 4 and 6 s, the main menu is up by 12 s.
+- **The app's saved data folder:** `defaults write io.github.tfrey98.redalert
+  DataFolder -string "<path>"` (`-string`: the Steam path's parentheses break
+  plain `defaults write`); `defaults delete io.github.tfrey98.redalert
+  DataFolder` brings the picker back. Run
+  `"build/Red Alert.app/Contents/MacOS/redalert"` directly to pass
+  `RA_INPUT_SCRIPT` and friends.
 - **Jumping to a scenario:** a temporary hook (not committed), at the top of
   `Main_Loop()`, once:
   `Scen.Set_Scenario_Name(getenv("RA_TEST_SCEN")); Start_Scenario(Scen.ScenarioName, false);`.

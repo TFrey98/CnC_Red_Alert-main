@@ -1006,9 +1006,19 @@ palettes in places, and silently rescaling both would corrupt one of them.
    `X >> (sizeof(T)*8 - n)`, which is undefined behaviour when `n == 0`. It
    happened to work on x86; do not assume it will survive clang's optimiser on
    arm64.
-6. **Bundle and sign** — `.app` layout, then codesign and notarize. Much
-   simpler than originally scoped: with no third-party dylibs there is nothing
-   for `macdylibbundler` to do, and no bundled library to sign separately.
+6. **Bundle and sign** — **done, except notarization.** `port/build-app.sh`
+   writes `build/Red Alert.app` (executable, `.icns` made from Westwood's
+   `CODE/REDALERT.ICO` by `port/make-icon.py`, license) and a zip, signed ad
+   hoc. With no third-party dylibs there was nothing to bundle and the shader
+   is compiled from embedded source, so the executable is the whole app.
+   The data folder is found by `port/compat/win32_main.cpp`: `RA_DATA_DIR`,
+   then beside the executable or beside the `.app`, then the folder saved in
+   the app's preferences (`DataFolder`), then an installed copy found in the
+   usual places (CrossOver/Whisky/Wine bottles' `Program Files*` up to four
+   levels deep, native Steam), then a folder picker that requires
+   `REDALERT.MIX`. A found or picked folder is saved. Option at launch skips
+   the saved folder and the search.
+   Notarization needs a Developer ID, which this project does not have.
 
 ## Things to watch
 
